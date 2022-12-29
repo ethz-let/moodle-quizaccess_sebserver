@@ -1,1 +1,0 @@
-#moodle-quizaccess_sebserver
