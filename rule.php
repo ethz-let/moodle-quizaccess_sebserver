@@ -70,9 +70,9 @@ class quizaccess_sebserver extends quiz_access_rule_base {
            return $quitbutton;
         }
         // Only display if the link has been configured and attempts are greater than 0.
-        if (!empty($this->quiz->quitlink)) {
+        if (!empty($this->quiz->quitlink) && !empty($this->quiz->quitsecret)) {
             $quitbutton = html_writer::link(
-                $this->quiz->quitlink,
+                $this->quiz->quitlink .'&'. $this->quiz->quitsecret,
                 get_string('exitsebbutton', 'quizaccess_seb'),
                 ['class' => 'btn btn-secondary']
             );
@@ -91,14 +91,17 @@ class quizaccess_sebserver extends quiz_access_rule_base {
                     $mform->addElement('header','sebserverheader', get_string('pluginname', 'quizaccess_sebserver'));
                     $mform->addElement('selectyesno','sebserverenabled',  get_string('enablesebserver', 'quizaccess_sebserver'));
                     $mform->addElement('hidden', 'quitlink');
+                    $mform->addElement('hidden', 'quitsecret');
                 } else {
                   $mform->addElement('hidden', 'quitlink', '');
+                  $mform->addElement('hidden', 'quitsecret', '');
                   $mform->addElement('hidden', 'sebserverenabled', 1);
                   $mform->setType('sebserverenabled', PARAM_INT);
                 }
                 $mform->addElement('hidden', 'overrideseb', 0);
                 $mform->setType('overrideseb', PARAM_INT);
                 $mform->setType('quitlink', PARAM_RAW);
+                $mform->setType('quitsecret', PARAM_RAW);
             }
 
     }
@@ -151,6 +154,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
                 $record->quizid = $quiz->id;
                 $record->sebserverenabled = $quiz->sebserverenabled;
                 $record->quitlink = $quiz->quitlink;
+                $record->quitsecret = $quiz->quitsecret;
                 $record->overrideseb = $quiz->overrideseb;
                 $DB->insert_record('quizaccess_sebserver', $record);
             } else { // Update potential manual changes.
@@ -159,6 +163,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
                 $record->quizid = $quiz->id;
                 $record->sebserverenabled = $quiz->sebserverenabled;
                 $record->quitlink = $quiz->quitlink;
+                $record->quitsecret = $quiz->quitsecret;
                 $record->overrideseb = $quiz->overrideseb;
                 $DB->update_record('quizaccess_sebserver', $record);
             }
@@ -172,7 +177,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
 
     public static function get_settings_sql($quizid) {
         return array(
-            'sebserverenabled, quitlink',
+            'sebserverenabled, quitlink, quitsecret',
             'LEFT JOIN {quizaccess_sebserver} sebserver ON sebserver.quizid = quiz.id',
             array());
     }

@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for the quizaccess_sebserver plugin.
+ * Strings for the quizaccess_sebserver plugin.
  *
  * @package   quizaccess_sebserver
  * @author    Amr Hourani (amr.hourani@let.ethz.ch)
@@ -23,11 +23,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2023011101;
-$plugin->requires  = 2019111809;
-$plugin->cron      = 0;
-$plugin->component = 'quizaccess_sebserver';
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = 'v0.1 for Moodle 3.8+';
+$string['pluginname'] = 'SEB Server';
+$string['quizismanagedbysebserver'] = 'Exam is managed by SEB Server. You must launch Safe Exam Browser before attempting the exam.';
+$string['managedbysebserver'] = 'Exam is managed by SEB Server. Changing values might affect the exam setup, please proceed carefully. You can disable SEB Server connection through SEB Server section below';
+$string['enablesebserver'] = 'Enable SEB Server';
+$string['sebserver:managesebserver'] = 'Manage SEB Server';
+$string['privacy:metadata'] = 'SEB Server access rule plugin does not store any personal data.';

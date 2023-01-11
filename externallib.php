@@ -79,7 +79,7 @@ class quizaccess_sebserver_external extends external_api {
     public static function get_exams_parameters() {
       return new external_function_parameters(
               array(
-                          'courseid' => new external_value(PARAM_INT, 'Get details for specific course moodle by its ID. use 0 for all courses.', VALUE_DEFAULT, 0),
+                          'courseid' => new external_multiple_structure( new external_value(PARAM_INT, 'Course id') , 'List of course id. If empty return all courses except front page course.', VALUE_OPTIONAL),
                           'conditions' => new external_value(PARAM_TEXT, 'SQL condition (without WHERE). uses fields "startdate", "enddate", "timecreated" with any operator (AND, OR, BETWEEN, >, <, ..etc). Should be styled as standard SQL.. Example: "((start date between 20000 and 1000000) and (enddate < 400000)) or (timecreated <= 20000) ". use empty string "" to remove the conditions',  VALUE_DEFAULT, ''),
                           'filtercourses' => new external_value(PARAM_INT, 'Apply startdate and enddate "conditions" to courses too? use 0 for no conditions.', VALUE_DEFAULT, 0),
                           'showemptycourses' => new external_value(PARAM_INT, 'List courses that have no quizzes? use 1 to list all courses regardless if they have quizzes or not.', VALUE_DEFAULT, 1),
@@ -91,13 +91,10 @@ class quizaccess_sebserver_external extends external_api {
                         );
     }
 
-    public static function get_exams($courseid = 0, $conditions = '', $filtercourses = 0, $showemptycourses = 1, $startneedle = 0, $perpage = 99999){
+    public static function get_exams($courseid = array(), $conditions = '', $filtercourses = 0, $showemptycourses = 1, $startneedle = 0, $perpage = 99999){
       global $DB;
       $params = self::validate_parameters(self::get_exams_parameters(), array('courseid' => $courseid, 'conditions' => $conditions, 'filtercourses' => $filtercourses, 'showemptycourses' => $showemptycourses, 'startneedle' => $startneedle, 'perpage' => $perpage));
 
-      if(!$courseid){
-        $courseid = 0;
-      }
       if(!$conditions || trim($conditions) == '')  {
         $conditions = '';
       }
@@ -128,11 +125,12 @@ class quizaccess_sebserver_external extends external_api {
           $sqlconditions = '';
           $wherecalled = 0;
       }
-       if (!empty($courseid) && is_numeric($courseid) && $courseid != 0) {
+       if (!empty($courseid)) {
+          $coursesimp = implode(',', $courseid);
           if ($wherecalled == 0) {
-              $sqlconditions .= ' where id = ' . $courseid;
+              $sqlconditions .= ' where id in (' . $coursesimp . ')';
           } else {
-            $sqlconditions .= ' id = ' . $courseid;
+            $sqlconditions .= ' id in (' . $coursesimp . ')';
           }
        }
       $csql = 'select id, shortname, fullname, idnumber,
@@ -353,6 +351,8 @@ public static function set_restriction_parameters() {
                    VALUE_OPTIONAL), 'Array of Config keys', VALUE_DEFAULT, array()),
           'quizid' => new external_value(PARAM_INT, 'Quiz ID', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
           'quitlink' => new external_value(PARAM_TEXT, 'Exam quit link'),
+          'quitsecret' => new external_value(PARAM_TEXT, 'Exam quit secret'),
+
 
       )
   );
@@ -367,10 +367,10 @@ public static function set_restriction_parameters() {
  * @since Moodle 3.2
  * @throws moodle_exception
  */
-public static function set_restriction($browserkeys = array(), $configkeys = array(), $quizid, $quitlink = '') {
+public static function set_restriction($browserkeys = array(), $configkeys = array(), $quizid, $quitlink = '', $quitsecret = '') {
     global $USER, $DB;
 
-    $params = self::validate_parameters(self::set_restriction_parameters(), array('browserkeys' => $browserkeys,'configkeys' => $configkeys, 'quizid' => $quizid, 'quitlink' => $quitlink,));
+    $params = self::validate_parameters(self::set_restriction_parameters(), array('browserkeys' => $browserkeys,'configkeys' => $configkeys, 'quizid' => $quizid, 'quitlink' => $quitlink, 'quitsecret' => $quitsecret));
 
     if (empty($params['quizid'])){
         throw new moodle_exception('quizidmissing');
@@ -429,6 +429,7 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
                     $sebserverrec->id = $sebserverrecord->id;
                     $sebserverrec->quizid = $sebserverrecord->quizid;
                     $sebserverrec->quitlink = $params['quitlink'];
+                    $sebserverrec->quitsecret = $params['quitsecret'];
                     $sebserverrec->sebserverenabled = 1;
                     $sebserverrec->overrideseb = 0;
                     $DB->update_record('quizaccess_sebserver', $sebserverrec);
@@ -437,6 +438,7 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
                     $sebserverrec = new stdClass;
                     $sebserverrec->quizid = $quizid;
                     $sebserverrec->quitlink = $params['quitlink'];
+                    $sebserverrec->quitsecret = $params['quitsecret'];
                     $sebserverrec->sebserverenabled = 1;
                     $sebserverrec->overrideseb = 0;
                     $DB->insert_record('quizaccess_sebserver', $sebserverrec);
@@ -582,7 +584,7 @@ public static function get_restriction($quizid) {
         $cmid = $cm->id;
         if (has_capability('mod/quiz:manage', $quizobj->get_context())) {
 
-                  $sebserverrecord = $DB->get_record('quizaccess_sebserver', array('quizid' => $quizid), 'id, quizid, quitlink, sebserverenabled');
+                  $sebserverrecord = $DB->get_record('quizaccess_sebserver', array('quizid' => $quizid), 'id, quizid, quitlink, quitsecret, sebserverenabled');
                   if(!$sebserverrecord){
                     throw new moodle_exception('SEB Server is not enabled for quiz ID '.$quizid);
                   } else { // Insert
@@ -605,6 +607,7 @@ public static function get_restriction($quizid) {
                 $saved[] = array(
                     'quizid' => $quizid,
                     'quitlink' => $sebserverrecord->quitlink,
+                    'quitsecret' => $sebserverrecord->quitsecret,
                     'browserkeys' => $bkeys,
                     'configkeys' => array(),
                 );
@@ -647,6 +650,7 @@ public static function get_restriction_returns() {
                   array(
                       'quizid' => new external_value(PARAM_INT, 'The quiz the restriction was set for'),
                       'quitlink' => new external_value(PARAM_TEXT, 'Exam quit link'),
+                      'quitsecret' => new external_value(PARAM_TEXT, 'Exam quit secret'),
                       'browserkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Browser Keys')),
                       'configkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Config Keys')),
                   )

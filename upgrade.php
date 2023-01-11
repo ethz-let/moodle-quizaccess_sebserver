@@ -15,19 +15,30 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version information for the quizaccess_sebserver plugin.
+ * Upgrade script for plugin.
  *
- * @package   quizaccess_sebserver
- * @author    Amr Hourani (amr.hourani@let.ethz.ch)
- * @copyright 2022 ETH Zurich
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    quizaccess_sebserver
+ * @author     Amr Hourani <amr.hourani@let.ethz.ch>
+ * @copyright  2022 ETH Zurich
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2023011101;
-$plugin->requires  = 2019111809;
-$plugin->cron      = 0;
-$plugin->component = 'quizaccess_sebserver';
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = 'v0.1 for Moodle 3.8+';
+require_once($CFG->dirroot  . '/mod/quiz/accessrule/sebserver/lib.php');
+
+/**
+ * Function to upgrade quizaccess_sebserver plugin.
+ *
+ * @param int $oldversion The version we are upgrading from.
+ * @return bool Result.
+ */
+function xmldb_quizaccess_sebserver_upgrade($oldversion) {
+    global $DB;
+    $dbman = $DB->get_manager();
+
+    // Automatically generated Moodle v3.9.0 release upgrade line.
+    // Put any upgrade step following this.
+
+    return true;
+}
