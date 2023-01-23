@@ -22,6 +22,7 @@
  * @copyright 2022 ETH Zurich
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+/*
  // We define the services to install as pre-build services. A pre-build service is not editable by administrator.
  $services = array(
      'SEB-Server Webservice' => array(
@@ -31,6 +32,7 @@
          'shortname' => 'SEB-Server-Webservice',
      )
  );
+*/
  // We defined the web service functions to install.
  $functions = array(
 
