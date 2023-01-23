@@ -79,7 +79,7 @@ class quizaccess_sebserver_external extends external_api {
     public static function get_exams_parameters() {
       return new external_function_parameters(
               array(
-                          'courseid' => new external_multiple_structure( new external_value(PARAM_INT, 'Course id') , 'List of course id. If empty return all courses except front page course.', VALUE_OPTIONAL),
+                          'courseid' => new external_multiple_structure( new external_value(PARAM_INT, 'Course id') , 'List of course id. Use courseid[]=X&courseid[]=X... If courseid[]=0 passed, then return all courses (except front page course).', VALUE_OPTIONAL),
                           'conditions' => new external_value(PARAM_TEXT, 'SQL condition (without WHERE). uses fields "startdate", "enddate", "timecreated" with any operator (AND, OR, BETWEEN, >, <, ..etc). Should be styled as standard SQL.. Example: "((start date between 20000 and 1000000) and (enddate < 400000)) or (timecreated <= 20000) ". use empty string "" to remove the conditions',  VALUE_DEFAULT, ''),
                           'filtercourses' => new external_value(PARAM_INT, 'Apply startdate and enddate "conditions" to courses too? use 0 for no conditions.', VALUE_DEFAULT, 0),
                           'showemptycourses' => new external_value(PARAM_INT, 'List courses that have no quizzes? use 1 to list all courses regardless if they have quizzes or not.', VALUE_DEFAULT, 1),
@@ -125,7 +125,12 @@ class quizaccess_sebserver_external extends external_api {
           $sqlconditions = '';
           $wherecalled = 0;
       }
-       if (!empty($courseid)) {
+      // Special case for top level search for all courses.
+      $allcoursesincluded = 0;
+       if(max($courseid) == 0 && count($courseid) == 1 && $courseid[0] == 0){
+         $allcoursesincluded = 1;
+       }
+       if (!empty($courseid) && $allcoursesincluded != 1) {
           $coursesimp = implode(',', $courseid);
           if ($wherecalled == 0) {
               $sqlconditions .= ' where id in (' . $coursesimp . ')';
