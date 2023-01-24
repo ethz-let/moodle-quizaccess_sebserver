@@ -413,13 +413,13 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
         $cm = $quizobj->get_cm();
         $cmid = $cm->id;
         if (has_capability('mod/quiz:manage', $quizobj->get_context())) {
-                if(!empty($params['browserkeys'])){
+                if(!$params['browserkeys']){
                   $bk =  trim(implode("\n",$params['browserkeys']));
                   $bkempty = 0;
                 } else {
                   $bkempty = 1;
                 }
-                if(!empty($params['configkeys'])){
+                if(!$params['configkeys']){
                   $ck =  trim(implode("\n",$params['configkeys']));
                   $ckempty = 0;
                 } else {
@@ -429,6 +429,24 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
                 if($ckempty == 1 && $bkempty == 1){ // Delete restriction.
                   $DB->delete_records('quizaccess_sebserver', array('quizid' => $quizid));
                   $DB->set_field('quizaccess_seb_quizsettings', 'allowedbrowserexamkeys',null, array('quizid' => $quizid));
+                  $saved[] = array(
+                      'quizid' => $quizid,
+                      'quitlink' => $params['quitlink'],
+                      'quitsecret' => $params['quitsecret'],
+                      'browserkeys' => $params['browserkeys'],
+                      'configkeys' => array(),
+                  );
+                  $warnings[] = array(
+                      'item' => 'quiz',
+                      'itemid' => $quizid,
+                      'warningcode' => 'restrictiondeleted',
+                      'message' => 'You have deleted restriction for quiz: '.$quizid
+                  );
+                  $result = array();
+                  $result['data'] = $saved;
+                  $result['warnings'] = $warnings;
+                  return $result;
+
                 } else {
                   if($ckempty == 1 && $bkempty == 0){
                     throw new moodle_exception('browserkeysempty');
