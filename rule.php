@@ -70,7 +70,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
            return $quitbutton;
         }
         // Only display if the link has been configured and attempts are greater than 0.
-        if (!empty(trim($this->quiz->quitlink)) && !empty(trim($this->quiz->quitsecret))) {
+        if (!empty($this->quiz->quitlink) && !empty($this->quiz->quitsecret)) {
             $quitbutton = html_writer::link(
                 $this->quiz->quitlink .'&'. $this->quiz->quitsecret,
                 get_string('exitsebbutton', 'quizaccess_seb'),
@@ -90,8 +90,8 @@ class quizaccess_sebserver extends quiz_access_rule_base {
                     $mform->addElement('html', '<script>var sebsection = document.getElementById("fitem_id_seb_requiresafeexambrowser"); sebsection.insertAdjacentHTML( "beforebegin", "<div class=\"alert alert-warning alert-block fade in\">'.get_string('managedbysebserver', 'quizaccess_sebserver') .'</div>"); </script>');
                     $mform->addElement('header','sebserverheader', get_string('pluginname', 'quizaccess_sebserver'));
                     $mform->addElement('selectyesno','sebserverenabled',  get_string('enablesebserver', 'quizaccess_sebserver'));
-                    $mform->addElement('hidden', 'quitlink');
-                    $mform->addElement('hidden', 'quitsecret');
+                    $mform->addElement('text', 'quitlink', 'QuitLink', 'readonly size=75');
+                    $mform->addElement('text', 'quitsecret', 'QuitSecret', 'readonly size=20');
                 } else {
                   $mform->addElement('hidden', 'quitlink', '');
                   $mform->addElement('hidden', 'quitsecret', '');
