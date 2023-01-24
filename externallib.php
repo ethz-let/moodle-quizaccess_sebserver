@@ -135,7 +135,7 @@ class quizaccess_sebserver_external extends external_api {
           if ($wherecalled == 0) {
               $sqlconditions .= ' where id in (' . $coursesimp . ')';
           } else {
-            $sqlconditions .= ' id in (' . $coursesimp . ')';
+            $sqlconditions .= ' and id in (' . $coursesimp . ')';
           }
        }
       $csql = 'select id, shortname, fullname, idnumber,
