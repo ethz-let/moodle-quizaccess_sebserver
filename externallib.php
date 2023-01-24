@@ -79,7 +79,7 @@ class quizaccess_sebserver_external extends external_api {
     public static function get_exams_parameters() {
       return new external_function_parameters(
               array(
-                          'courseid' => new external_multiple_structure( new external_value(PARAM_INT, 'Course id') , 'List of course id. Use courseid[]=X&courseid[]=X... If courseid[]=0 passed, then return all courses (except front page course).', VALUE_OPTIONAL),
+                          'courseid' => new external_multiple_structure( new external_value(PARAM_INT, 'Course id') , 'List of course id. If empty return all courses except front page course.', VALUE_OPTIONAL),
                           'conditions' => new external_value(PARAM_TEXT, 'SQL condition (without WHERE). uses fields "startdate", "enddate", "timecreated" with any operator (AND, OR, BETWEEN, >, <, ..etc). Should be styled as standard SQL.. Example: "((start date between 20000 and 1000000) and (enddate < 400000)) or (timecreated <= 20000) ". use empty string "" to remove the conditions',  VALUE_DEFAULT, ''),
                           'filtercourses' => new external_value(PARAM_INT, 'Apply startdate and enddate "conditions" to courses too? use 0 for no conditions.', VALUE_DEFAULT, 0),
                           'showemptycourses' => new external_value(PARAM_INT, 'List courses that have no quizzes? use 1 to list all courses regardless if they have quizzes or not.', VALUE_DEFAULT, 1),
@@ -141,6 +141,7 @@ class quizaccess_sebserver_external extends external_api {
       $csql = 'select id, shortname, fullname, idnumber,
                startdate, enddate, visible, timecreated, timemodified
                from {course} ' . $sqlconditions;
+            //   throw new moodle_exception($csql);
       $cparams = array();
       $courses = $DB->get_records_sql($csql, $cparams, $startneedle, $perpage);
 
@@ -355,8 +356,8 @@ public static function set_restriction_parameters() {
           'configkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Config Keys',
                    VALUE_OPTIONAL), 'Array of Config keys', VALUE_DEFAULT, array()),
           'quizid' => new external_value(PARAM_INT, 'Quiz ID', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
-          'quitlink' => new external_value(PARAM_TEXT, 'Exam quit link'),
-          'quitsecret' => new external_value(PARAM_TEXT, 'Exam quit secret'),
+          'quitlink' => new external_value(PARAM_TEXT, 'Exam quit link', VALUE_OPTIONAL),
+          'quitsecret' => new external_value(PARAM_TEXT, 'Exam quit secret', VALUE_OPTIONAL),
 
 
       )
@@ -380,7 +381,12 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
     if (empty($params['quizid'])){
         throw new moodle_exception('quizidmissing');
     }
-
+    if (empty(trim($params['quitlink']))){
+        $params['quitlink'] = '';
+    }
+    if (empty(trim($params['quitsecret']))){
+        $params['quitsecret'] = '';
+    }
     $warnings = array();
     $saved = array();
 
@@ -400,7 +406,6 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
                 );
 
             }
-      //  }
         try {
         global $CFG;
         require_once($CFG->dirroot . '/mod/quiz/locallib.php');
@@ -479,8 +484,13 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
                 }
 
                 $saved[] = array(
-                    'quizid' => $quizid
+                    'quizid' => $quizid,
+                    'quitlink' => $params['quitlink'],
+                    'quitsecret' => $params['quitsecret'],
+                    'browserkeys' => $params['browserkeys'],
+                    'configkeys' => array(),
                 );
+
             } else {
                 $warnings[] = array(
                     'item' => 'quiz',
@@ -497,10 +507,9 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
                 'message' => $e->getMessage()
             );
         }
-//    }
 
     $result = array();
-    $result['saved'] = $saved;
+    $result['data'] = $saved;
     $result['warnings'] = $warnings;
     return $result;
 }
@@ -514,16 +523,21 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
 public static function set_restriction_returns() {
     return new external_single_structure(
         array(
-            'saved' => new external_multiple_structure(
+            'data' => new external_multiple_structure(
                 new external_single_structure(
                     array(
                         'quizid' => new external_value(PARAM_INT, 'The quiz the restriction was set for'),
+                        'quitlink' => new external_value(PARAM_TEXT, 'Exam quit link', VALUE_DEFAULT, ''),
+                        'quitsecret' => new external_value(PARAM_TEXT, 'Exam quit secret', VALUE_DEFAULT, ''),
+                        'browserkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Browser Keys')),
+                        'configkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Config Keys')),
                     )
-                ), 'Restriction saved'
+                ), 'Get Restrictions'
             ),
             'warnings' => new external_warnings()
         )
     );
+
 }
 
 /////////////
@@ -608,7 +622,12 @@ public static function get_restriction($quizid) {
                         foreach ($bkeys as $i => $key) {
                             $bkeys[$i] = strtolower($key);
                         }
-
+                if(!$sebserverrecord->quitlink){
+                  $sebserverrecord->quitlink = '';
+                }
+                if(!$sebserverrecord->quitsecret){
+                  $sebserverrecord->quitsecret = '';
+                }
                 $saved[] = array(
                     'quizid' => $quizid,
                     'quitlink' => $sebserverrecord->quitlink,
@@ -632,7 +651,6 @@ public static function get_restriction($quizid) {
                 'message' => $e->getMessage()
             );
         }
-//    }
 
     $result = array();
     $result['data'] = $saved;
@@ -654,8 +672,8 @@ public static function get_restriction_returns() {
               new external_single_structure(
                   array(
                       'quizid' => new external_value(PARAM_INT, 'The quiz the restriction was set for'),
-                      'quitlink' => new external_value(PARAM_TEXT, 'Exam quit link'),
-                      'quitsecret' => new external_value(PARAM_TEXT, 'Exam quit secret'),
+                      'quitlink' => new external_value(PARAM_TEXT, 'Exam quit link', VALUE_DEFAULT, ''),
+                      'quitsecret' => new external_value(PARAM_TEXT, 'Exam quit secret', VALUE_DEFAULT, ''),
                       'browserkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Browser Keys')),
                       'configkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Config Keys')),
                   )
