@@ -413,16 +413,18 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
         $cm = $quizobj->get_cm();
         $cmid = $cm->id;
         if (has_capability('mod/quiz:manage', $quizobj->get_context())) {
-                if(!$params['browserkeys']){
+                if($params['browserkeys']){
                   $bk =  trim(implode("\n",$params['browserkeys']));
-                  $bkempty = 0;
-                } else {
+                }
+                if($params['configkeys']){
+                  $ck =  trim(implode("\n",$params['configkeys']));
+                }
+                $bkempty = 0;
+                if(!$bk){
                   $bkempty = 1;
                 }
-                if(!$params['configkeys']){
-                  $ck =  trim(implode("\n",$params['configkeys']));
-                  $ckempty = 0;
-                } else {
+                $ckempty = 0;
+                if(!$ck){
                   $ckempty = 1;
                 }
 
@@ -448,7 +450,7 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
                   return $result;
 
                 } else {
-                  if($ckempty == 1 && $bkempty == 0){
+                  if($ckempty == 0 && $bkempty == 1){
                     throw new moodle_exception('browserkeysempty');
                   }
                   $sebserverrecord = $DB->get_record('quizaccess_sebserver', array('quizid' => $quizid));
