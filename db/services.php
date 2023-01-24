@@ -22,17 +22,18 @@
  * @copyright 2022 ETH Zurich
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-/*
+
  // We define the services to install as pre-build services. A pre-build service is not editable by administrator.
  $services = array(
      'SEB-Server Webservice' => array(
-         'functions' => array ('quizaccess_sebserver_backup_course', 'quizaccess_sebserver_get_exams', 'quizaccess_sebserver_get_restriction', 'quizaccess_sebserver_set_restriction'),
-         'restrictedusers' => 1,
+         'functions' => array ('quizaccess_sebserver_backup_course', 'quizaccess_sebserver_get_exams',
+                               'quizaccess_sebserver_get_restriction', 'quizaccess_sebserver_set_restriction',
+                               'core_webservice_get_site_info','core_user_get_users_by_field'),
          'enabled' => 1,
          'shortname' => 'SEB-Server-Webservice',
      )
  );
-*/
+
  // We defined the web service functions to install.
  $functions = array(
 
