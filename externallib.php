@@ -356,8 +356,8 @@ public static function set_restriction_parameters() {
           'configkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Config Keys',
                    VALUE_OPTIONAL), 'Array of Config keys', VALUE_DEFAULT, array()),
           'quizid' => new external_value(PARAM_INT, 'Quiz ID', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
-          'quitlink' => new external_value(PARAM_TEXT, 'Exam quit link', VALUE_OPTIONAL),
-          'quitsecret' => new external_value(PARAM_TEXT, 'Exam quit secret', VALUE_OPTIONAL),
+          'quitlink' => new external_value(PARAM_TEXT, 'Exam quit link', VALUE_DEFAULT, ''),
+          'quitsecret' => new external_value(PARAM_TEXT, 'Exam quit secret',  VALUE_DEFAULT, ''),
 
 
       )
