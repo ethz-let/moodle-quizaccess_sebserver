@@ -132,14 +132,11 @@ class quizaccess_sebserver extends quiz_access_rule_base {
     public function description() {
         global $CFG, $DB, $USER, $PAGE;
         $quizid = $this->quizobj->get_quizid();
-      //  $bek = "hello";
-      //  self::get_sebserver_config_cache()->set($quizid, $bek);
-      //  $bek = self::get_sebserver_config_cache()->get($quizid);
-         $return = '';
-         $return .= html_writer::start_div('alert alert-info alert-block fade in', array('style' => "text-align: left;")) .
-                     get_string('quizismanagedbysebserver', 'quizaccess_sebserver') . html_writer::end_div('');
-         $return .= html_writer::div($this->get_quit_button());
-         return $return;
+        $return = '';
+        $return .= html_writer::start_div('alert alert-info alert-block fade in', array('style' => "text-align: left;")) .
+                    get_string('quizismanagedbysebserver', 'quizaccess_sebserver') . html_writer::end_div('');
+        $return .= html_writer::div($this->get_quit_button());
+        return $return;
 
 
     }
