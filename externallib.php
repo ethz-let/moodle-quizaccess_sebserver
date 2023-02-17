@@ -55,15 +55,150 @@ class quizaccess_sebserver_external extends external_api {
         require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
         require_once($CFG->dirroot .'/backup/util/helper/backup_cron_helper.class.php');
 
-        $outcome = backup_cron_automated_helper::launch_automated_backup($course, time(), get_admin()->id);
+      // $outcome = backup_cron_automated_helper::launch_automated_backup($course, time(), get_admin()->id);
+       $starttime = time();
+       $userid = get_admin()->id;
+       $warnings = array();
+       $bkupdata = array();
 
-        return $outcome;
+       $outcome = backup_cron_automated_helper::BACKUP_STATUS_OK;
+       $config = get_config('backup');
+       $dir = $config->backup_auto_destination;
+       $storage = (int)$config->backup_auto_storage;
+
+       $bc = new backup_controller(backup::TYPE_1COURSE, $course->id, backup::FORMAT_MOODLE, backup::INTERACTIVE_NO,
+               backup::MODE_AUTOMATED, $userid);
+
+       try {
+
+           // Set the default filename.
+           $format = $bc->get_format();
+           $type = $bc->get_type();
+           $id = $bc->get_id();
+           $users = $bc->get_plan()->get_setting('users')->get_value();
+           $anonymised = $bc->get_plan()->get_setting('anonymize')->get_value();
+           $incfiles = (bool)$config->backup_auto_files;
+           $backupvaluename = backup_plan_dbops::get_default_backup_filename($format, $type,
+                   $id, $users, $anonymised, false, $incfiles);
+           $bc->get_plan()->get_setting('filename')->set_value($backupvaluename);
+
+           $bc->set_status(backup::STATUS_AWAITING);
+
+           $bc->execute_plan();
+           $results = $bc->get_results();
+           $outcome = backup_cron_automated_helper::outcome_from_results($results);
+           $file = $results['backup_destination']; // May be empty if file already moved to target location.
+
+           // If we need to copy the backup file to an external dir and it is not writable, change status to error.
+           // This is a feature to prevent moodledata to be filled up and break a site when the admin misconfigured
+           // the automated backups storage type and destination directory.
+           if ($storage !== 0 && (empty($dir) || !file_exists($dir) || !is_dir($dir) || !is_writable($dir))) {
+               $bc->log('Specified backup directory is not writable - ', backup::LOG_ERROR, $dir);
+               $dir = null;
+               $outcome = backup_cron_automated_helper::BACKUP_STATUS_ERROR;
+               $warnings[] = array(
+                   'item' => 'backup',
+                   'itemid' => $course->id,
+                   'warningcode' => 'notwritabledir',
+                   'message' => 'Specified backup directory is not writable - '.$dir
+               );
+           }
+
+           // Copy file only if there was no error.
+           if ($file && !empty($dir) && $storage !== 0 && $outcome != backup_cron_automated_helper::BACKUP_STATUS_ERROR) {
+               $filename = backup_plan_dbops::get_default_backup_filename($format, $type, $course->id, $users, $anonymised,
+                       !$config->backup_shortname);
+               if (!$file->copy_content_to($dir.'/'.$filename)) {
+                   $bc->log('Attempt to copy backup file to the specified directory failed - ',
+                           backup::LOG_ERROR, $dir);
+                   $outcome = backup_cron_automated_helper::BACKUP_STATUS_ERROR;
+                   $warnings[] = array(
+                       'item' => 'backup',
+                       'itemid' => $course->id,
+                       'warningcode' => 'copyfailed',
+                       'message' => 'Attempt to copy backup file to the specified directory failed - '.$dir
+                   );
+               }
+               if ($outcome != backup_cron_automated_helper::BACKUP_STATUS_ERROR && $storage === 1) {
+                   if (!$file->delete()) {
+                       $outcome = backup_cron_automated_helper::BACKUP_STATUS_WARNING;
+                       $bc->log('Attempt to delete the backup file from course automated backup area failed - ',
+                               backup::LOG_WARNING, $file->get_filename());
+                       $warnings[] = array(
+                           'item' => 'backup',
+                           'itemid' => $course->id,
+                           'warningcode' => 'deletefailed',
+                           'message' => 'Attempt to delete the backup file from course automated backup area failed - '.$dir
+                       );
+                   }
+               }
+           }
+
+       } catch (moodle_exception $e) {
+           $bc->log('backup_auto_failed_on_course', backup::LOG_ERROR, $course->shortname); // Log error header.
+           $bc->log('Exception: ' . $e->errorcode, backup::LOG_ERROR, $e->a, 1); // Log original exception problem.
+           $bc->log('Debug: ' . $e->debuginfo, backup::LOG_DEBUG, null, 1); // Log original debug information.
+           $outcome = backup_cron_automated_helper::BACKUP_STATUS_ERROR;
+           $warnings[] = array(
+               'item' => 'backup',
+               'itemid' => $course->id,
+               'warningcode' => 'backup_auto_failed_on_course',
+               'message' => $e->errorcode.' - '.$e->debuginfo
+           );
+       }
+
+       // Delete the backup file immediately if something went wrong.
+       if ($outcome === backup_cron_automated_helper::BACKUP_STATUS_ERROR) {
+
+           // Delete the file from file area if exists.
+           if (!empty($file)) {
+               $file->delete();
+           }
+
+           // Delete file from external storage if exists.
+           if ($storage !== 0 && !empty($filename) && file_exists($dir.'/'.$filename)) {
+               @unlink($dir.'/'.$filename);
+           }
+       }
+
+       $bc->destroy();
+       unset($bc);
+
+
+        if ($outcome == backup_cron_automated_helper::BACKUP_STATUS_ERROR ||
+               $outcome == backup_cron_automated_helper::BACKUP_STATUS_UNFINISHED) {
+                 // Reset unfinished to error.
+                 $backupcourse->laststatus = \backup_cron_automated_helper::BACKUP_STATUS_ERROR;
+                 throw new moodle_exception('Automated backup for course: ' . $course->fullname . ' failed.');
+           }
+        $context = context_course::instance($course->id);
+        $bkupdata[] = array(
+            'status' => $outcome,
+            'filelink' => $CFG->wwwroot.'/pluginfile.php/'.$context->id.'/backup/automated/'.$backupvaluename.'?forcedownload=1',
+        );
+        $result = array();
+        $result['data'] = $bkupdata;
+        $result['warnings'] = $warnings;
+        return $result;
 
     }
     public static function backup_course_returns() {
-        return new external_value(PARAM_INT,'Returns: 1 for Success, or 0 for Fail.');
-    }
 
+        return new external_single_structure(
+            array(
+                'data' => new external_multiple_structure(
+                    new external_single_structure(
+                        array(
+                            'status' => new external_value(PARAM_INT, 'The backup status code'),
+                            'filelink' => new external_value(PARAM_TEXT, 'Link to download the backup', VALUE_DEFAULT, ''),
+                        )
+                    ), 'Backup Course'
+                ),
+                'warnings' => new external_warnings()
+            )
+        );
+
+    }
 /////////////////////////// END BACKUP A COURSE /////////////////////////
 
 
