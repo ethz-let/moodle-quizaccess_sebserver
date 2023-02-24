@@ -55,7 +55,7 @@ class quizaccess_sebserver_external extends external_api {
         require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
         require_once($CFG->dirroot .'/backup/util/helper/backup_cron_helper.class.php');
 
-      // $outcome = backup_cron_automated_helper::launch_automated_backup($course, time(), get_admin()->id);
+      //$outcome = backup_cron_automated_helper::launch_automated_backup($course, time(), get_admin()->id);
        $starttime = time();
        $userid = get_admin()->id;
        $warnings = array();
@@ -175,6 +175,7 @@ class quizaccess_sebserver_external extends external_api {
         $bkupdata[] = array(
             'status' => $outcome,
             'filelink' => $CFG->wwwroot.'/pluginfile.php/'.$context->id.'/backup/automated/'.$backupvaluename.'?forcedownload=1',
+            'relativelink' => '/'.$context->id.'/backup/automated/'.$backupvaluename,
         );
         $result = array();
         $result['data'] = $bkupdata;
@@ -191,6 +192,7 @@ class quizaccess_sebserver_external extends external_api {
                         array(
                             'status' => new external_value(PARAM_INT, 'The backup status code'),
                             'filelink' => new external_value(PARAM_TEXT, 'Link to download the backup', VALUE_DEFAULT, ''),
+                            'relativelink' => new external_value(PARAM_TEXT, 'Link to download the backup', VALUE_DEFAULT, ''),
                         )
                     ), 'Backup Course'
                 ),
@@ -199,6 +201,7 @@ class quizaccess_sebserver_external extends external_api {
         );
 
     }
+
 /////////////////////////// END BACKUP A COURSE /////////////////////////
 
 
@@ -492,7 +495,7 @@ public static function set_restriction_parameters() {
                    VALUE_OPTIONAL), 'Array of Config keys', VALUE_DEFAULT, array()),
           'quizid' => new external_value(PARAM_INT, 'Quiz ID', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
           'quitlink' => new external_value(PARAM_TEXT, 'Exam quit link', VALUE_DEFAULT, ''),
-          'quitsecret' => new external_value(PARAM_TEXT, 'Exam quit secret',  VALUE_DEFAULT, ''),
+          'quitsecret' => new external_value(PARAM_TEXT, 'Exam quit secret', VALUE_DEFAULT, ''),
 
 
       )
