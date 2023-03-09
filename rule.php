@@ -132,11 +132,14 @@ class quizaccess_sebserver extends quiz_access_rule_base {
     public function description() {
         global $CFG, $DB, $USER, $PAGE;
         $quizid = $this->quizobj->get_quizid();
-        $return = '';
-        $return .= html_writer::start_div('alert alert-info alert-block fade in', array('style' => "text-align: left;")) .
-                    get_string('quizismanagedbysebserver', 'quizaccess_sebserver') . html_writer::end_div('');
-        $return .= html_writer::div($this->get_quit_button());
-        return $return;
+      //  $bek = "hello";
+      //  self::get_sebserver_config_cache()->set($quizid, $bek);
+      //  $bek = self::get_sebserver_config_cache()->get($quizid);
+         $return = '';
+         $return .= html_writer::start_div('alert alert-info alert-block fade in', array('style' => "text-align: left;")) .
+                     get_string('quizismanagedbysebserver', 'quizaccess_sebserver') . html_writer::end_div('');
+         $return .= html_writer::div($this->get_quit_button());
+         return $return;
 
 
     }
@@ -144,6 +147,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
         global $DB;
         if (empty($quiz->sebserverenabled) || $quiz->sebserverenabled == 0) {
             $DB->delete_records('quizaccess_sebserver', array('quizid' => $quiz->id));
+            $DB->set_field('quizaccess_seb_quizsettings', 'allowedbrowserexamkeys',null, array('quizid' => $quizid));
         } else {
             $rec = $DB->get_record('quizaccess_sebserver', array('quizid' => $quiz->id));
             if (!$rec) {
