@@ -65,14 +65,18 @@ class quizaccess_sebserver extends quiz_access_rule_base {
      */
     private function get_quit_button() : string {
         $quitbutton = '';
+        $contact = '?';
 
         if (empty($this->get_user_finished_attempts())) {
            return $quitbutton;
         }
         // Only display if the link has been configured and attempts are greater than 0.
         if (!empty($this->quiz->quitlink) && !empty($this->quiz->quitsecret)) {
+            if (strpos($this->quiz->quitlink, '?') !== false) {
+               $contact = '&';
+            }
             $quitbutton = html_writer::link(
-                $this->quiz->quitlink .'&'. $this->quiz->quitsecret,
+                $this->quiz->quitlink . $contact . $this->quiz->quitsecret,
                 get_string('exitsebbutton', 'quizaccess_seb'),
                 ['class' => 'btn btn-secondary']
             );
@@ -132,14 +136,11 @@ class quizaccess_sebserver extends quiz_access_rule_base {
     public function description() {
         global $CFG, $DB, $USER, $PAGE;
         $quizid = $this->quizobj->get_quizid();
-      //  $bek = "hello";
-      //  self::get_sebserver_config_cache()->set($quizid, $bek);
-      //  $bek = self::get_sebserver_config_cache()->get($quizid);
-         $return = '';
-         $return .= html_writer::start_div('alert alert-info alert-block fade in', array('style' => "text-align: left;")) .
-                     get_string('quizismanagedbysebserver', 'quizaccess_sebserver') . html_writer::end_div('');
-         $return .= html_writer::div($this->get_quit_button());
-         return $return;
+        $return = '';
+        $return .= html_writer::start_div('alert alert-info alert-block fade in', array('style' => "text-align: left;")) .
+                    get_string('quizismanagedbysebserver', 'quizaccess_sebserver') . html_writer::end_div('');
+        $return .= html_writer::div($this->get_quit_button());
+        return $return;
 
 
     }
