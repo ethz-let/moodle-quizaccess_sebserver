@@ -95,7 +95,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
                 } else {
                   $mform->addElement('hidden', 'quitlink', '');
                   $mform->addElement('hidden', 'quitsecret', '');
-                  $mform->addElement('hidden', 'sebserverenabled', 1);
+                  $mform->addElement('hidden', 'sebserverenabled', 0);
                   $mform->setType('sebserverenabled', PARAM_INT);
                 }
                 $mform->addElement('hidden', 'overrideseb', 0);
