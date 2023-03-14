@@ -547,6 +547,9 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
         try {
         global $CFG;
         require_once($CFG->dirroot . '/mod/quiz/locallib.php');
+        if (quiz_has_attempts($quizid)) {
+          throw new moodle_exception('Quiz already has at least one attempt. You can not change restriction.');
+        }
         $quizobj = quiz::create($quizid);
         $cm = $quizobj->get_cm();
         $cmid = $cm->id;
@@ -665,6 +668,16 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
                 'message' => $e->getMessage()
             );
         }
+
+    // delete the seb cache just in case.
+    $sebcache = \cache::make('quizaccess_seb', 'config');
+    $sebcache->delete($quizid);
+
+    $quizsettingscache = \cache::make('quizaccess_seb', 'quizsettings');
+    $quizsettingscache->delete($quizid);
+
+    $configkeycache = \cache::make('quizaccess_seb', 'configkey');
+    $configkeycache->delete($quizid);
 
     $result = array();
     $result['data'] = $saved;
