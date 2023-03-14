@@ -45,6 +45,10 @@ class backup_quizaccess_sebserver_subplugin extends backup_mod_quiz_access_subpl
 
         // Create XML elements.
         $subplugin = $this->get_subplugin_element();
+        
+        // Skip Mapping for SEB SERVER. See SEBSERV-700.
+        return $subplugin;
+
         $subpluginwrapper = new backup_nested_element($this->get_recommended_name());
         $subplugintablesettings = new backup_nested_element('quizaccess_sebserver',
                 null, array('sebserverenabled'));
