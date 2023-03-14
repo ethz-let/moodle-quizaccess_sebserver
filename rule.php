@@ -93,7 +93,11 @@ class quizaccess_sebserver extends quiz_access_rule_base {
                 if(!empty($sebserver) && $sebserver->sebserverenabled == 1){
                     $mform->addElement('html', '<script>var sebsection = document.getElementById("fitem_id_seb_requiresafeexambrowser"); sebsection.insertAdjacentHTML( "beforebegin", "<div class=\"alert alert-warning alert-block fade in\">'.get_string('managedbysebserver', 'quizaccess_sebserver') .'</div>"); </script>');
                     $mform->addElement('header','sebserverheader', get_string('pluginname', 'quizaccess_sebserver'));
-                    $mform->addElement('selectyesno','sebserverenabled',  get_string('enablesebserver', 'quizaccess_sebserver'));
+                    $enableselectchange = array('style="pointer-events: none!important;background-color: #ededed;"');
+                    if (is_siteadmin()) {
+                        $enableselectchange = array();
+                    }
+                    $mform->addElement('selectyesno','sebserverenabled',  get_string('enablesebserver', 'quizaccess_sebserver'), $enableselectchange);
                     $mform->addElement('text', 'quitlink', 'QuitLink', 'readonly size=75');
                     $mform->addElement('text', 'quitsecret', 'QuitSecret', 'readonly size=20');
                 } else {
