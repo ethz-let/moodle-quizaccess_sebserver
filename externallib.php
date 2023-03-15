@@ -548,7 +548,7 @@ public static function set_restriction($browserkeys = array(), $configkeys = arr
         global $CFG;
         require_once($CFG->dirroot . '/mod/quiz/locallib.php');
         if (quiz_has_attempts($quizid)) {
-          throw new moodle_exception('Quiz already has at least one attempt. You can not change restriction.');
+          throw new moodle_exception('attemptexist', 'sebserver', '', null, 'Quiz already has at least one attempt. You can not change restriction.');
         }
         $quizobj = quiz::create($quizid);
         $cm = $quizobj->get_cm();
