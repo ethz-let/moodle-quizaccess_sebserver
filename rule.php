@@ -152,7 +152,6 @@ class quizaccess_sebserver extends quiz_access_rule_base {
         global $DB;
         if (empty($quiz->sebserverenabled) || $quiz->sebserverenabled == 0) {
             $DB->delete_records('quizaccess_sebserver', array('quizid' => $quiz->id));
-            $DB->set_field('quizaccess_seb_quizsettings', 'allowedbrowserexamkeys',null, array('quizid' => $quiz->id));
         } else {
             $rec = $DB->get_record('quizaccess_sebserver', array('quizid' => $quiz->id));
             if (!$rec) {
