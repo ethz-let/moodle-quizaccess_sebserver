@@ -1,4 +1,4 @@
-# moodle-quizzaccess_sebserver
+# moodle-quizaccess_sebserver
 SEB Server plugin for moodle
 # Installation
 MOODLE_DIR/mod/quiz/accessrule
