@@ -25,9 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2023020100;
-$plugin->requires  = 2019111809;
+$plugin->version   = 2023050800;
+$plugin->requires  = 2021051714;
 $plugin->cron      = 0;
 $plugin->component = 'quizaccess_sebserver';
-$plugin->maturity  = MATURITY_STABLE;
-$plugin->release   = 'v0.1 for Moodle 3.8+';
+$plugin->maturity  = MATURITY_BETA;
+$plugin->release   = 'v0.1 for Moodle 3.11+';
