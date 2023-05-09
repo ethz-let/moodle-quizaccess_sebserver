@@ -28,7 +28,7 @@ require_once($CFG->libdir . "/externallib.php");
 
 class quizaccess_sebserver_external extends external_api {
 
-    // BACKUP A COURSE.
+    // Backup a Course.
     /**
      * Returns description of method parameters
      *
@@ -58,11 +58,7 @@ class quizaccess_sebserver_external extends external_api {
 
         require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
         require_once($CFG->dirroot .'/backup/util/helper/backup_cron_helper.class.php');
-
-        // phpcs:disable
-      //$outcome = backup_cron_automated_helper::launch_automated_backup($course, time(), get_admin()->id);
-        // phpcs:enable
-
+        
         $starttime = time();
         $userid = get_admin()->id;
         $warnings = array();
@@ -210,9 +206,9 @@ class quizaccess_sebserver_external extends external_api {
 
     }
 
-    // END BACKUP A COURSE.
+    // End Backup Course.
 
-    // GET COURSES.
+    // Get Exams.
 
     /**
      * Returns description of method parameters
@@ -297,9 +293,6 @@ class quizaccess_sebserver_external extends external_api {
         $csql = 'select id, shortname, fullname, idnumber,
                startdate, enddate, visible, timecreated, timemodified
                from {course} ' . $sqlconditions;
-        // phpcs:disable
-        //   throw new moodle_exception($csql);
-        // phpcs:enable
 
         $cparams = array();
         $courses = $DB->get_records_sql($csql, $cparams, $startneedle, $perpage);
@@ -352,9 +345,6 @@ class quizaccess_sebserver_external extends external_api {
             $courseinfo['quizzes'] = array();
             $returnedquizzes = array();
             $quizzes = array();
-            // phpcs:disable
-            //  $quizzes = get_all_instances_in_course("quiz", $course);
-            // phpcs:enable
 
             list($coursessql, $qparams) = $DB->get_in_or_equal(array_keys(array($course->id => $course)), SQL_PARAMS_NAMED, 'c0');
             $modulename = 'quiz';
@@ -405,9 +395,7 @@ class quizaccess_sebserver_external extends external_api {
                 foreach ($quizzes as $quiz) {
                     $context = context_module::instance($quiz->coursemodule);
                     if (has_capability('mod/quiz:view', $context)) {
-                        // phpcs:disable
-                        //$quizdetails['introfiles'] = external_util::get_area_files($context->id, 'mod_quiz', 'intro', false, false);
-                        // phpcs:enable
+                        
                         $viewablefields = array('id', 'course', 'coursemodule', 'name', 'intro', 'timeopen', 'timeclose');
 
                         // Fields only for managers.
@@ -502,7 +490,7 @@ class quizaccess_sebserver_external extends external_api {
         );
     }
 
-    // END GET EXAMS.
+    // End Get Exams.
 
     /**
      * Returns description of method parameters
@@ -514,11 +502,11 @@ class quizaccess_sebserver_external extends external_api {
 
         return new external_function_parameters (
             array(
+                'quizid' => new external_value(PARAM_INT, 'Quiz ID', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
                 'browserkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Browser Keys',
                     VALUE_OPTIONAL), 'Array of Browser Keys', VALUE_DEFAULT, array()),
                 'configkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Config Keys',
                     VALUE_OPTIONAL), 'Array of Config keys', VALUE_DEFAULT, array()),
-                'quizid' => new external_value(PARAM_INT, 'Quiz ID', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
                 'quitlink' => new external_value(PARAM_TEXT, 'Exam quit link', VALUE_DEFAULT, ''),
                 'quitsecret' => new external_value(PARAM_TEXT, 'Exam quit secret', VALUE_DEFAULT, ''),
 
@@ -535,12 +523,12 @@ class quizaccess_sebserver_external extends external_api {
      * @throws moodle_exception
      * @since Moodle 3.2
      */
-    public static function set_restriction($browserkeys = array(), $configkeys = array(), $quizid, $quitlink = '',
+    public static function set_restriction($quizid, $browserkeys = array(), $configkeys = array(), $quitlink = '',
         $quitsecret = '') {
         global $USER, $DB;
 
         $params = self::validate_parameters(self::set_restriction_parameters(),
-            array('browserkeys' => $browserkeys, 'configkeys' => $configkeys, 'quizid' => $quizid, 'quitlink' => $quitlink,
+            array('quizid' => $quizid, 'browserkeys' => $browserkeys, 'configkeys' => $configkeys, 'quitlink' => $quitlink,
                 'quitsecret' => $quitsecret));
 
         if (empty($params['quizid'])) {
@@ -635,7 +623,7 @@ class quizaccess_sebserver_external extends external_api {
                         $DB->update_record('quizaccess_sebserver', $sebserverrec);
 
                     } else {
-                            // Insert.
+                        // Insert.
                         $sebserverrec = new stdClass;
                         $sebserverrec->quizid = $quizid;
                         $sebserverrec->quitlink = $params['quitlink'];
