@@ -19,6 +19,7 @@
  *
  * @package   quizaccess_sebserver
  * @author    Amr Hourani (amr.hourani@let.ethz.ch)
+ * @copyright 2022 ETH Zurich
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
