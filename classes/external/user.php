@@ -14,6 +14,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Implementaton of the quizaccess_sebserver plugin.
+ *
+ * @package   quizaccess_sebserver
+ * @author    Amr Hourani (amr.hourani@let.ethz.ch)
+ * @copyright 2022 ETH Zurich
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 defined('MOODLE_INTERNAL') || die;
 
 // Require_login is not needed here.
