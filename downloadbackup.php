@@ -18,7 +18,7 @@
 /**
  * A script to serve files from web service client
  *
- * @package    core_webservice
+ * @package    quizaccess_sebserver
  * @copyright  ETH Zurich 2023
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
