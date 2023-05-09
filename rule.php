@@ -39,7 +39,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
      * Return an appropriately configured instance of this rule, if it is applicable
      * to the given quiz, otherwise return null.
      *
-     * @param \mod_quiz\quiz_settings $quizobj information about the quiz in question.
+     * @param quiz $quizobj information about the quiz in question.
      * @param int $timenow the time that should be considered as 'now'.
      * @param bool $canignoretimelimits whether the current user is exempt from
      *      time limits by the mod/quiz:ignoretimelimits capability.
@@ -98,9 +98,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
     }
 
     /**
-     * Add any fields that this rule requires to the quiz settings form. This
-     * method is called from {@link mod_quiz_mod_form::definition()}, while the
-     * security section is being built.
+     * Add any fields that this rule requires to the quiz settings form.
      *
      * @param mod_quiz_mod_form $quizform the quiz settings form that is being built.
      * @param MoodleQuickForm $mform the wrapped MoodleQuickForm.
@@ -180,8 +178,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
     }
 
     /**
-     * Save any submitted settings when the quiz settings form is submitted. This
-     * is called from {@link quiz_after_add_or_update()} in lib.php.
+     * Save any submitted settings when the quiz settings form is submitted.
      *
      * @param stdClass $quiz the data from the quiz form, including $quiz->id
      *      which is the id of the quiz being saved.
@@ -214,8 +211,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
     }
 
     /**
-     * Delete any rule-specific settings when the quiz is deleted. This is called
-     * from {@link quiz_delete_instance()} in lib.php.
+     * Delete any rule-specific settings when the quiz is deleted.
      *
      * @param stdClass $quiz the data from the database, including $quiz->id
      *      which is the id of the quiz being deleted.
@@ -227,12 +223,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
 
     /**
      * Return the bits of SQL needed to load all the settings from all the access
-     * plugins in one DB query. The easiest way to understand what you need to do
-     * here is probably to read the code of {@see \mod_quiz\access_manager::load_settings()}.
-     *
-     * If you have some settings that cannot be loaded in this way, then you can
-     * use the {@link get_extra_settings()} method instead, but that has
-     * performance implications.
+     * plugins in one DB query.
      *
      * @param int $quizid the id of the quiz we are loading settings for. This
      *     can also be accessed as quiz.id in the SQL. (quiz is a table alisas for {quiz}.)
