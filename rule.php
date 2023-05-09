@@ -68,12 +68,12 @@ class quizaccess_sebserver extends quiz_access_rule_base {
         $contact = '?';
 
         if (empty($this->get_user_finished_attempts())) {
-           return $quitbutton;
+            return $quitbutton;
         }
         // Only display if the link has been configured and attempts are greater than 0.
         if (!empty($this->quiz->quitlink) && !empty($this->quiz->quitsecret)) {
             if (strpos($this->quiz->quitlink, '?') !== false) {
-               $contact = '&';
+                $contact = '&';
             }
             $quitbutton = html_writer::link(
                 $this->quiz->quitlink . $contact . $this->quiz->quitsecret,
@@ -84,35 +84,39 @@ class quizaccess_sebserver extends quiz_access_rule_base {
 
         return $quitbutton;
     }
-    public static function add_settings_form_fields(
-            mod_quiz_mod_form $quizform, MoodleQuickForm $mform) {
-            if ($quizid = $quizform->get_instance()) { // Edit Mode.
-                global $DB;
-                // Check if quiz has Seb Server enabled for.
-                $sebserver = $DB->get_record_sql('select * from {quizaccess_sebserver} where quizid = ?', [$quizid]);
-                if(!empty($sebserver) && $sebserver->sebserverenabled == 1){
-                    $mform->addElement('html', '<script>var sebsection = document.getElementById("fitem_id_seb_requiresafeexambrowser"); sebsection.insertAdjacentHTML( "beforebegin", "<div class=\"alert alert-warning alert-block fade in\">'.get_string('managedbysebserver', 'quizaccess_sebserver') .'</div>"); </script>');
-                    $mform->addElement('header','sebserverheader', get_string('pluginname', 'quizaccess_sebserver'));
-                    $enableselectchange = array('style="pointer-events: none!important;background-color: #ededed;"');
-                    if (is_siteadmin()) {
-                        $enableselectchange = array();
-                    }
-                    $mform->addElement('selectyesno','sebserverenabled',  get_string('enablesebserver', 'quizaccess_sebserver'), $enableselectchange);
-                    $mform->addElement('text', 'quitlink', 'QuitLink', 'readonly size=75');
-                    $mform->addElement('text', 'quitsecret', 'QuitSecret', 'readonly size=20');
-                } else {
-                  $mform->addElement('hidden', 'quitlink', '');
-                  $mform->addElement('hidden', 'quitsecret', '');
-                  $mform->addElement('hidden', 'sebserverenabled', 0);
-                  $mform->setType('sebserverenabled', PARAM_INT);
-                }
-                $mform->addElement('hidden', 'overrideseb', 0);
-                $mform->setType('overrideseb', PARAM_INT);
-                $mform->setType('quitlink', PARAM_RAW);
-                $mform->setType('quitsecret', PARAM_RAW);
-            }
 
+    public static function add_settings_form_fields(mod_quiz_mod_form $quizform, MoodleQuickForm $mform) {
+        if ($quizid = $quizform->get_instance()) { // Edit Mode.
+            global $DB;
+            // Check if quiz has Seb Server enabled for.
+            $sebserver = $DB->get_record_sql('select * from {quizaccess_sebserver} where quizid = ?', [$quizid]);
+            if (!empty($sebserver) && $sebserver->sebserverenabled == 1) {
+                $mform->addElement('html',
+                    '<script>var sebsection = document.getElementById("fitem_id_seb_requiresafeexambrowser"); ' .
+                    'sebsection.insertAdjacentHTML( "beforebegin", "<div class=\"alert alert-warning alert-block fade in\">' .
+                    get_string('managedbysebserver', 'quizaccess_sebserver') . '</div>"); </script>');
+                $mform->addElement('header', 'sebserverheader', get_string('pluginname', 'quizaccess_sebserver'));
+                $enableselectchange = array('style="pointer-events: none!important;background-color: #ededed;"');
+                if (is_siteadmin()) {
+                    $enableselectchange = array();
+                }
+                $mform->addElement('selectyesno', 'sebserverenabled', get_string('enablesebserver', 'quizaccess_sebserver'),
+                    $enableselectchange);
+                $mform->addElement('text', 'quitlink', 'QuitLink', 'readonly size=75');
+                $mform->addElement('text', 'quitsecret', 'QuitSecret', 'readonly size=20');
+            } else {
+                $mform->addElement('hidden', 'quitlink', '');
+                $mform->addElement('hidden', 'quitsecret', '');
+                $mform->addElement('hidden', 'sebserverenabled', 0);
+                $mform->setType('sebserverenabled', PARAM_INT);
+            }
+            $mform->addElement('hidden', 'overrideseb', 0);
+            $mform->setType('overrideseb', PARAM_INT);
+            $mform->setType('quitlink', PARAM_RAW);
+            $mform->setType('quitsecret', PARAM_RAW);
+        }
     }
+
     /**
      * Check if the current user can configure SEB Server.
      *
@@ -145,7 +149,6 @@ class quizaccess_sebserver extends quiz_access_rule_base {
                     get_string('quizismanagedbysebserver', 'quizaccess_sebserver') . html_writer::end_div('');
         $return .= html_writer::div($this->get_quit_button());
         return $return;
-
 
     }
     public static function save_settings($quiz) {

@@ -38,14 +38,14 @@ function xmldb_quizaccess_sebserver_uninstall() {
     $dbman = $DB->get_manager();
     $oldrecord = $DB->get_record('external_services', array('shortname' => 'SEB-Server-Webservice'));
     if ($oldrecord) {
-      $params = ['id' => $oldrecord->id];
-      $DB->delete_records('external_services', $params);
+        $params = ['id' => $oldrecord->id];
+        $DB->delete_records('external_services', $params);
 
-      $eparams = ['externalserviceid' => $oldrecord->id];
-      $DB->delete_records('external_services_functions', $eparams);
+        $eparams = ['externalserviceid' => $oldrecord->id];
+        $DB->delete_records('external_services_functions', $eparams);
 
-      $uparams = ['externalserviceid' => $oldrecord->id];
-      $DB->delete_records('external_services_users', $uparams);
+        $uparams = ['externalserviceid' => $oldrecord->id];
+        $DB->delete_records('external_services_users', $uparams);
     }
 
     return true;

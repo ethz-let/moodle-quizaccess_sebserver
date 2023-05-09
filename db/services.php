@@ -23,50 +23,52 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
- // We define the services to install as pre-build services. A pre-build service is not editable by administrator.
- $services = array(
+defined('MOODLE_INTERNAL') || die();
+
+// We define the services to install as pre-build services. A pre-build service is not editable by administrator.
+$services = array(
      'SEB-Server Webservice' => array(
          'functions' => array ('quizaccess_sebserver_backup_course', 'quizaccess_sebserver_get_exams',
                                'quizaccess_sebserver_get_restriction', 'quizaccess_sebserver_set_restriction',
-                               'core_webservice_get_site_info','core_user_get_users_by_field'),
+                               'core_webservice_get_site_info', 'core_user_get_users_by_field'),
          'enabled' => 1,
          'shortname' => 'SEB-Server-Webservice',
      )
  );
 
  // We defined the web service functions to install.
- $functions = array(
+$functions = array(
 
-         'quizaccess_sebserver_backup_course' => array(
-             'classname'   => 'quizaccess_sebserver_external',
-             'methodname'  => 'backup_course',
-             'classpath'   => 'mod/quiz/accessrule/sebserver/externallib.php',
-             'description' => 'Backup Course by its ID',
-             'type'        => 'read',
-             'capabilities' => 'moodle/course:backup',
-         ),
-         'quizaccess_sebserver_get_exams' => array(
-             'classname' => 'quizaccess_sebserver_external',
-             'methodname' => 'get_exams',
-             'classpath' => 'mod/quiz/accessrule/sebserver/externallib.php',
-             'description' => 'Return courses details and their quizzes',
-             'type' => 'read',
-             'capabilities' => 'moodle/course:view, moodle/course:update, moodle/course:viewhiddencourses, mod/quiz:view',
-             ),
-         'quizaccess_sebserver_set_restriction' => array(
-             'classname' => 'quizaccess_sebserver_external',
-             'methodname' => 'set_restriction',
-             'classpath' => 'mod/quiz/accessrule/sebserver/externallib.php',
-             'description' => 'Set browser_keys and config_keys (not available on moodle) for certain quiz.',
-             'type' => 'write',
-             'capabilities' => 'moodle/course:view, moodle/course:update, moodle/course:viewhiddencourses, mod/quiz:manage',
-             ),
-         'quizaccess_sebserver_get_restriction' => array(
-             'classname' => 'quizaccess_sebserver_external',
-             'methodname' => 'get_restriction',
-             'classpath' => 'mod/quiz/accessrule/sebserver/externallib.php',
-             'description' => 'Get browser_keys and config_keys (not available on moodle) for certain quiz.',
-             'type' => 'read',
-             'capabilities' => 'moodle/course:view, moodle/course:update, moodle/course:viewhiddencourses, mod/quiz:manage',
-             ),
+    'quizaccess_sebserver_backup_course' => array(
+        'classname' => 'quizaccess_sebserver_external',
+        'methodname' => 'backup_course',
+        'classpath' => 'mod/quiz/accessrule/sebserver/externallib.php',
+        'description' => 'Backup Course by its ID',
+        'type' => 'read',
+        'capabilities' => 'moodle/course:backup',
+    ),
+    'quizaccess_sebserver_get_exams' => array(
+        'classname' => 'quizaccess_sebserver_external',
+        'methodname' => 'get_exams',
+        'classpath' => 'mod/quiz/accessrule/sebserver/externallib.php',
+        'description' => 'Return courses details and their quizzes',
+        'type' => 'read',
+        'capabilities' => 'moodle/course:view, moodle/course:update, moodle/course:viewhiddencourses, mod/quiz:view',
+    ),
+    'quizaccess_sebserver_set_restriction' => array(
+        'classname' => 'quizaccess_sebserver_external',
+        'methodname' => 'set_restriction',
+        'classpath' => 'mod/quiz/accessrule/sebserver/externallib.php',
+        'description' => 'Set browser_keys and config_keys (not available on moodle) for certain quiz.',
+        'type' => 'write',
+        'capabilities' => 'moodle/course:view, moodle/course:update, moodle/course:viewhiddencourses, mod/quiz:manage',
+    ),
+    'quizaccess_sebserver_get_restriction' => array(
+        'classname' => 'quizaccess_sebserver_external',
+        'methodname' => 'get_restriction',
+        'classpath' => 'mod/quiz/accessrule/sebserver/externallib.php',
+        'description' => 'Get browser_keys and config_keys (not available on moodle) for certain quiz.',
+        'type' => 'read',
+        'capabilities' => 'moodle/course:view, moodle/course:update, moodle/course:viewhiddencourses, mod/quiz:manage',
+    ),
 );

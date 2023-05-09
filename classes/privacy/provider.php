@@ -21,8 +21,9 @@
  * @copyright  2022 ETH Zurich
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace quizaccess_sebserver\privacy;
-defined('MOODLE_INTERNAL') || die();
+
 /**
  * Privacy Subsystem for quizaccess_sebserver implementing null_provider.
  *
