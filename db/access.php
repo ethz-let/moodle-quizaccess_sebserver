@@ -17,7 +17,7 @@
 /**
  * Define capabilities for plugin.
  *
- * @package    quizaccess_seberver
+ * @package    quizaccess_sebserver
  * @author     Amr Hourani <amr.hourani@let.eth.ch>
  * @copyright  2023 ETH LET
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
