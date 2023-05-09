@@ -28,7 +28,6 @@ require_once($CFG->libdir . "/externallib.php");
 
 class quizaccess_sebserver_external extends external_api {
 
-    // Backup a Course.
     /**
      * Returns description of method parameters
      *
@@ -40,6 +39,13 @@ class quizaccess_sebserver_external extends external_api {
                         array('id' => new external_value(PARAM_INT, 'Course ID')));
 
     }
+
+     /**
+     * Backup course.
+     *
+     * @param string $id Course ID.
+     * @return array
+     */
     public static function backup_course($id) {
         global $USER, $DB, $CFG;
         // Parameter validation.
@@ -186,6 +192,12 @@ class quizaccess_sebserver_external extends external_api {
 
     }
 
+    /**
+     * Returns description of method result value
+     *
+     * @return external_description
+     * @since Moodle 2.2
+     */
     public static function backup_course_returns() {
 
         return new external_single_structure(
@@ -204,10 +216,6 @@ class quizaccess_sebserver_external extends external_api {
         );
 
     }
-
-    // End Backup Course.
-
-    // Get Exams.
 
     /**
      * Returns description of method parameters
@@ -240,6 +248,17 @@ class quizaccess_sebserver_external extends external_api {
         );
     }
 
+     /**
+     * Get Exams.
+     *
+     * @param array $courseid Course IDs.
+     * @param string $conditions conditions.
+     * @param int $filtercourses filters courses.
+     * @param int $showemptycourses filters courses.
+     * @param int $startneedle start needed.
+     * @param int $perpage perpage.
+     * @return array
+     */
     public static function get_exams($courseid = array(), $conditions = '', $filtercourses = 0, $showemptycourses = 1,
         $startneedle = 0, $perpage = 99999) {
         global $DB;
