@@ -84,7 +84,13 @@ class quizaccess_sebserver extends quiz_access_rule_base {
 
         return $quitbutton;
     }
-
+    /**
+     * Helper function to add to quiz settings form.
+     *
+     * @param mod_quiz_mod_form $quizform mod quiz form.
+     * @param MoodleQuickForm $mform moodle form.
+     * @return void
+     */
     public static function add_settings_form_fields(mod_quiz_mod_form $quizform, MoodleQuickForm $mform) {
         if ($quizid = $quizform->get_instance()) { // Edit Mode.
             global $DB;
@@ -151,6 +157,12 @@ class quizaccess_sebserver extends quiz_access_rule_base {
         return $return;
 
     }
+     /**
+     * Helper function save settings.
+     *
+     * @param object $quiz The current quiz.
+     * @return void
+     */
     public static function save_settings($quiz) {
         global $DB;
         if (empty($quiz->sebserverenabled) || $quiz->sebserverenabled == 0) {
@@ -177,12 +189,22 @@ class quizaccess_sebserver extends quiz_access_rule_base {
             }
         }
     }
-
+     /**
+     * Helper function delete settings.
+     *
+     * @param object $quiz The current quiz.
+     * @return void
+     */
     public static function delete_settings($quiz) {
         global $DB;
         $DB->delete_records('quizaccess_sebserver', array('quizid' => $quiz->id));
     }
-
+     /**
+     * Helper function delete settings.
+     *
+     * @param object $quiz The current quiz.
+     * @return void
+     */
     public static function get_settings_sql($quizid) {
         return array(
             'sebserverenabled, quitlink, quitsecret',
