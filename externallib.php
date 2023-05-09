@@ -40,7 +40,7 @@ class quizaccess_sebserver_external extends external_api {
 
     }
 
-     /**
+    /**
      * Backup course.
      *
      * @param string $id Course ID.
@@ -248,7 +248,7 @@ class quizaccess_sebserver_external extends external_api {
         );
     }
 
-     /**
+    /**
      * Get Exams.
      *
      * @param array $courseid Course IDs.
@@ -505,8 +505,6 @@ class quizaccess_sebserver_external extends external_api {
 
         );
     }
-
-    // End Get Exams.
 
     /**
      * Returns description of method parameters
