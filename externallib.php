@@ -57,8 +57,7 @@ class quizaccess_sebserver_external extends external_api {
         }
 
         require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-        require_once($CFG->dirroot .'/backup/util/helper/backup_cron_helper.class.php');
-        
+        require_once($CFG->dirroot .'/backup/util/helper/backup_cron_helper.class.php');   
         $starttime = time();
         $userid = get_admin()->id;
         $warnings = array();
@@ -395,9 +394,7 @@ class quizaccess_sebserver_external extends external_api {
                 foreach ($quizzes as $quiz) {
                     $context = context_module::instance($quiz->coursemodule);
                     if (has_capability('mod/quiz:view', $context)) {
-                        
                         $viewablefields = array('id', 'course', 'coursemodule', 'name', 'intro', 'timeopen', 'timeclose');
-
                         // Fields only for managers.
                         if (has_capability('moodle/course:manageactivities', $context)) {
                             $additionalfields = array('timecreated', 'timemodified');
