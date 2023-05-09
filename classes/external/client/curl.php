@@ -1,5 +1,6 @@
 <?php
 
+// phpcs:disable
 class curl {
     /** @var bool */
     public  $cache    = false;
@@ -598,3 +599,4 @@ class curl_cache {
         }
     }
 }
+// phpcs:enable

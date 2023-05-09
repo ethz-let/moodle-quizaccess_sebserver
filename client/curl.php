@@ -1,15 +1,32 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
+// phpcs:disable
 class curl {
     /** @var bool */
-    public  $cache    = false;
-    public  $proxy    = false;
+    public $cache = false;
+    public $proxy = false;
     /** @var array */
-    public  $response = array();
-    public  $header   = array();
+    public $response = array();
+    public $header = array();
     /** @var string */
-    public  $info;
-    public  $error;
+    public $info;
+    public $error;
     public $count = 0;
 
     /** @var array */
@@ -36,8 +53,8 @@ class curl {
         if (!empty($options['debug'])) {
             $this->debug = true;
         }
-        if(!empty($options['cookie'])) {
-            if($options['cookie'] === true) {
+        if (!empty($options['cookie'])) {
+            if ($options['cookie'] === true) {
                 $this->cookie = 'curl_cookie.txt';
             } else {
                 $this->cookie = $options['cookie'];
@@ -50,14 +67,14 @@ class curl {
         }
     }
     /**
-     * Resets the CURL options that have already been set
+     * Resets the CURL options that have already been set.
      */
     public function resetopt(){
         $this->options = array();
         $this->options['CURLOPT_USERAGENT']         = 'MoodleBot/1.0';
-        // True to include the header in the output
+        // True to include the header in the output.
         $this->options['CURLOPT_HEADER']            = 0;
-        // True to Exclude the body from the output
+        // True to Exclude the body from the output.
         $this->options['CURLOPT_NOBODY']            = 0;
         // TRUE to follow any "Location: " header that the server
         // sends as part of the HTTP header (note this is recursive,
@@ -66,8 +83,7 @@ class curl {
         //$this->options['CURLOPT_FOLLOWLOCATION']    = 1;
         $this->options['CURLOPT_MAXREDIRS']         = 10;
         $this->options['CURLOPT_ENCODING']          = '';
-        // TRUE to return the transfer as a string of the return
-        // value of curl_exec() instead of outputting it out directly.
+        // TRUE to return the transfer as a string of the return value of curl_exec() instead of outputting it out directly.
         $this->options['CURLOPT_RETURNTRANSFER']    = 1;
         $this->options['CURLOPT_BINARYTRANSFER']    = 0;
         $this->options['CURLOPT_SSL_VERIFYPEER']    = 0;
@@ -151,8 +167,7 @@ class curl {
      * @param string $header
      * @return int The strlen of the header
      */
-    private function formatHeader($ch, $header)
-    {
+    private function formatHeader($ch, $header) {
         $this->count++;
         if (strlen($header) > 2) {
             list($key, $value) = explode(" ", rtrim($header, "\r\n"), 2);
@@ -186,8 +201,8 @@ class curl {
         $this->cleanopt();
         // set cookie
         if (!empty($this->cookie) || !empty($options['cookie'])) {
-            $this->setopt(array('cookiejar'=>$this->cookie,
-                            'cookiefile'=>$this->cookie
+            $this->setopt(array('cookiejar' => $this->cookie,
+                            'cookiefile' => $this->cookie
                              ));
         }
 
@@ -198,8 +213,8 @@ class curl {
         $this->setopt($options);
         // reset before set options
         curl_setopt($curl, CURLOPT_HEADERFUNCTION, array(&$this,'formatHeader'));
-        // set headers
-        if (empty($this->header)){
+        // Set headers.
+        if (empty($this->header)) {
             $this->setHeader(array(
                 'User-Agent: MoodleBot/1.0',
                 'Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7',
@@ -208,14 +223,14 @@ class curl {
         }
         curl_setopt($curl, CURLOPT_HTTPHEADER, $this->header);
 
-        if ($this->debug){
+        if ($this->debug) {
             echo '<h1>Options</h1>';
             var_dump($this->options);
             echo '<h1>Header</h1>';
             var_dump($this->header);
         }
 
-        // set options
+        // Set options.
         foreach($this->options as $name => $val) {
             if (is_string($name)) {
                 $name = constant(strtoupper($name));
@@ -598,3 +613,4 @@ class curl_cache {
         }
     }
 }
+// phpcs:enable
