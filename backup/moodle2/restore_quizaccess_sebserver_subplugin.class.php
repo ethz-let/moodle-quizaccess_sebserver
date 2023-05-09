@@ -40,6 +40,11 @@ require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/restore_mod_quiz_access_s
  */
 class restore_quizaccess_sebserver_subplugin extends restore_mod_quiz_access_subplugin {
 
+    /**
+     * Use this method to describe the XML structure required to store your
+     * sub-plugin's settings for a particular quiz, and how that data is stored
+     * in the database.
+     */
     protected function define_quiz_subplugin_structure() {
 
         $paths = array();
