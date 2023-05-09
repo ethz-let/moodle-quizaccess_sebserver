@@ -25,7 +25,9 @@
 defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/externallib.php");
-
+/**
+ * Service functions.
+ */
 class quizaccess_sebserver_external extends external_api {
 
     /**
@@ -532,9 +534,13 @@ class quizaccess_sebserver_external extends external_api {
     /**
      * Set user restrictions.
      *
-     * @param array $restrictions list of restrictions including name, value and userid
+     * @param int $quizid
+     * @param array $browserkeys
+     * @param array $configkeys
+     * @param string $quitlink
+     * @param string $quitsecret
      * @return array of warnings and restrictions saved
-     * @throws moodle_exception
+     * @throws moodle_exception.
      * @since Moodle 3.2
      */
     public static function set_restriction($quizid, $browserkeys = array(), $configkeys = array(), $quitlink = '',
@@ -760,9 +766,9 @@ class quizaccess_sebserver_external extends external_api {
     }
 
     /**
-     * Set user restrictions.
+     * Get user restrictions.
      *
-     * @param array $restrictions list of restrictions including name, value and userid
+     * @param in $quizid
      * @return array of warnings and restrictions saved
      * @throws moodle_exception
      * @since Moodle 3.2
