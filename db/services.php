@@ -45,7 +45,7 @@ $functions = array(
         'classpath' => 'mod/quiz/accessrule/sebserver/externallib.php',
         'description' => 'Backup Course by its ID',
         'type' => 'read',
-        'capabilities' => 'moodle/course:backup',
+        'capabilities' => 'moodle/backup:backupcourse',
     ),
     'quizaccess_sebserver_get_exams' => array(
         'classname' => 'quizaccess_sebserver_external',
