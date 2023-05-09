@@ -57,7 +57,7 @@ class quizaccess_sebserver_external extends external_api {
         }
 
         require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-        require_once($CFG->dirroot .'/backup/util/helper/backup_cron_helper.class.php');   
+        require_once($CFG->dirroot .'/backup/util/helper/backup_cron_helper.class.php');
         $starttime = time();
         $userid = get_admin()->id;
         $warnings = array();
