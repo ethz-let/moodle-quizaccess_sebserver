@@ -18,8 +18,6 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once(__DIR__ . '/../../../../../../config.php');
 
-require_login();
-
 @header("X-LMS-USER-ID: $USER->id");
 @header("X-LMS-USER-USERNAME: $USER->username");
 @header("X-LMS-USER-EMAIL: $USER->email");
