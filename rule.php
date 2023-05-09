@@ -34,7 +34,16 @@ require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class quizaccess_sebserver extends quiz_access_rule_base {
-
+    /**
+     * Return an appropriately configured instance of this rule, if it is applicable
+     * to the given quiz, otherwise return null.
+     *
+     * @param \mod_quiz\quiz_settings $quizobj information about the quiz in question.
+     * @param int $timenow the time that should be considered as 'now'.
+     * @param bool $canignoretimelimits whether the current user is exempt from
+     *      time limits by the mod/quiz:ignoretimelimits capability.
+     * @return access_rule_base|null the rule, if applicable, else null.
+     */
     public static function make(quiz $quizobj, $timenow, $canignoretimelimits) {
 
         if (empty($quizobj->get_quiz()->sebserverenabled)) {
@@ -85,11 +94,12 @@ class quizaccess_sebserver extends quiz_access_rule_base {
         return $quitbutton;
     }
     /**
-     * Helper function to add to quiz settings form.
+     * Add any fields that this rule requires to the quiz settings form. This
+     * method is called from {@link mod_quiz_mod_form::definition()}, while the
+     * security section is being built.
      *
-     * @param mod_quiz_mod_form $quizform mod quiz form.
-     * @param MoodleQuickForm $mform moodle form.
-     * @return void
+     * @param mod_quiz_mod_form $quizform the quiz settings form that is being built.
+     * @param MoodleQuickForm $mform the wrapped MoodleQuickForm.
      */
     public static function add_settings_form_fields(mod_quiz_mod_form $quizform, MoodleQuickForm $mform) {
         if ($quizid = $quizform->get_instance()) { // Edit Mode.
@@ -157,11 +167,12 @@ class quizaccess_sebserver extends quiz_access_rule_base {
         return $return;
 
     }
-     /**
-     * Helper function save settings.
+    /**
+     * Save any submitted settings when the quiz settings form is submitted. This
+     * is called from {@link quiz_after_add_or_update()} in lib.php.
      *
-     * @param object $quiz The current quiz.
-     * @return void
+     * @param stdClass $quiz the data from the quiz form, including $quiz->id
+     *      which is the id of the quiz being saved.
      */
     public static function save_settings($quiz) {
         global $DB;
@@ -189,21 +200,36 @@ class quizaccess_sebserver extends quiz_access_rule_base {
             }
         }
     }
-     /**
-     * Helper function delete settings.
+    /**
+     * Delete any rule-specific settings when the quiz is deleted. This is called
+     * from {@link quiz_delete_instance()} in lib.php.
      *
-     * @param object $quiz The current quiz.
-     * @return void
+     * @param stdClass $quiz the data from the database, including $quiz->id
+     *      which is the id of the quiz being deleted.
      */
     public static function delete_settings($quiz) {
         global $DB;
         $DB->delete_records('quizaccess_sebserver', array('quizid' => $quiz->id));
     }
-     /**
-     * Helper function delete settings.
+    /**
+     * Return the bits of SQL needed to load all the settings from all the access
+     * plugins in one DB query. The easiest way to understand what you need to do
+     * here is probably to read the code of {@see \mod_quiz\access_manager::load_settings()}.
      *
-     * @param object $quiz The current quiz.
-     * @return void
+     * If you have some settings that cannot be loaded in this way, then you can
+     * use the {@link get_extra_settings()} method instead, but that has
+     * performance implications.
+     *
+     * @param int $quizid the id of the quiz we are loading settings for. This
+     *     can also be accessed as quiz.id in the SQL. (quiz is a table alisas for {quiz}.)
+     * @return array with three elements:
+     *     1. fields: any fields to add to the select list. These should be alised
+     *        if neccessary so that the field name starts the name of the plugin.
+     *     2. joins: any joins (should probably be LEFT JOINS) with other tables that
+     *        are needed.
+     *     3. params: array of placeholder values that are needed by the SQL. You must
+     *        used named placeholders, and the placeholder names should start with the
+     *        plugin name, to avoid collisions.
      */
     public static function get_settings_sql($quizid) {
         return array(
