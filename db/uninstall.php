@@ -30,7 +30,6 @@ require_once($CFG->dirroot  . '/mod/quiz/accessrule/sebserver/lib.php');
 /**
  * Function to upgrade quizaccess_sebserver plugin.
  *
- * @param int $oldversion The version we are upgrading from.
  * @return bool Result.
  */
 function xmldb_quizaccess_sebserver_uninstall() {
