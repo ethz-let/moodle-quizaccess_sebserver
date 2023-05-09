@@ -34,7 +34,7 @@ require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class quizaccess_sebserver extends quiz_access_rule_base {
-    
+
     /**
      * Return an appropriately configured instance of this rule, if it is applicable
      * to the given quiz, otherwise return null.
@@ -53,7 +53,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
 
         return new self($quizobj, $timenow);
     }
-    
+
     /**
      * Returns a list of finished attempts for the current user.
      *
@@ -69,7 +69,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
             false
         );
     }
-    
+
     /**
      * Helper function to display an Exit Safe Exam Browser button if configured to do so and attempts are > 0.
      *
@@ -96,7 +96,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
 
         return $quitbutton;
     }
-    
+
     /**
      * Add any fields that this rule requires to the quiz settings form. This
      * method is called from {@link mod_quiz_mod_form::definition()}, while the
@@ -146,7 +146,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
     public static function can_configure_sebserver(\context $context) : bool {
         return has_capability('quizaccess/sebserver:managesebserver', $context);
     }
-    
+
     /**
      * It is possible for one rule to override other rules.
      *
@@ -159,7 +159,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
     public function get_superceded_rules() {
         return array();
     }
-    
+
     /**
      * Information, such as might be shown on the quiz view page, relating to this restriction.
      * There is no obligation to return anything. If it is not appropriate to tell students
@@ -178,7 +178,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
         return $return;
 
     }
-    
+
     /**
      * Save any submitted settings when the quiz settings form is submitted. This
      * is called from {@link quiz_after_add_or_update()} in lib.php.
@@ -212,7 +212,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
             }
         }
     }
-    
+
     /**
      * Delete any rule-specific settings when the quiz is deleted. This is called
      * from {@link quiz_delete_instance()} in lib.php.
@@ -224,7 +224,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
         global $DB;
         $DB->delete_records('quizaccess_sebserver', array('quizid' => $quiz->id));
     }
-    
+
     /**
      * Return the bits of SQL needed to load all the settings from all the access
      * plugins in one DB query. The easiest way to understand what you need to do
