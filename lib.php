@@ -18,9 +18,8 @@
  * Main library of plugin.
  *
  * @package    quizaccess_sebserver
- * @author     Andrew Madden <andrewmadden@catalyst-au.net>
- * @author     Dmitrii Metelkin <dmitriim@catalyst-au.net>
- * @copyright  2019 Catalyst IT
+ * @author     ETH Zurich <amr.hourani@let.ethz.ch>
+ * @copyright  2022 ETH Zurich
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
