@@ -27,6 +27,7 @@ defined('MOODLE_INTERNAL') || die;
 
 // Require_login is not needed here.
 // phpcs:disable moodle.Files.RequireLogin.Missing
+
 require_once(__DIR__ . '/../../../../../../config.php');
 
 @header("X-LMS-USER-ID: $USER->id");

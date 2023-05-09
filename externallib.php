@@ -26,6 +26,9 @@ defined('MOODLE_INTERNAL') || die;
 
 require_once($CFG->libdir . "/externallib.php");
 
+/**
+ * Class quizaccess_sebserver_external
+ */
 class quizaccess_sebserver_external extends external_api {
 
     /**
@@ -43,8 +46,12 @@ class quizaccess_sebserver_external extends external_api {
     /**
      * Backup course.
      *
-     * @param string $id Course ID.
+     * @param int $id the quiz id
      * @return array
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
      */
     public static function backup_course($id) {
         global $USER, $DB, $CFG;
@@ -64,6 +71,11 @@ class quizaccess_sebserver_external extends external_api {
 
         require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
         require_once($CFG->dirroot .'/backup/util/helper/backup_cron_helper.class.php');
+
+        // phpcs:disable
+        // $outcome = backup_cron_automated_helper::launch_automated_backup($course, time(), get_admin()->id);
+        // phpcs:enable
+
         $starttime = time();
         $userid = get_admin()->id;
         $warnings = array();
@@ -195,11 +207,9 @@ class quizaccess_sebserver_external extends external_api {
     /**
      * Returns description of method result value
      *
-     * @return external_description
-     * @since Moodle 2.2
+     * @return external_single_structure
      */
     public static function backup_course_returns() {
-
         return new external_single_structure(
             array(
                 'data' => new external_multiple_structure(
@@ -248,7 +258,7 @@ class quizaccess_sebserver_external extends external_api {
         );
     }
 
-    /**
+     /**
      * Get Exams.
      *
      * @param array $courseid Course IDs.
@@ -257,7 +267,12 @@ class quizaccess_sebserver_external extends external_api {
      * @param int $showemptycourses filters courses.
      * @param int $startneedle start needed.
      * @param int $perpage perpage.
-     * @return array
+     * @return array the course informations
+     * @throws coding_exception
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
+     * @throws moodle_exception
+     * @throws required_capability_exception
      */
     public static function get_exams($courseid = array(), $conditions = '', $filtercourses = 0, $showemptycourses = 1,
         $startneedle = 0, $perpage = 99999) {
@@ -532,10 +547,16 @@ class quizaccess_sebserver_external extends external_api {
     /**
      * Set user restrictions.
      *
-     * @param array $restrictions list of restrictions including name, value and userid
+     * @param int $quizid the quiz id
+     * @param array $browserkeys the browser keys
+     * @param array $configkeys the config keys
+     * @param string $quitlink the quit link
+     * @param string $quitsecret the quit password
      * @return array of warnings and restrictions saved
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @since Moodle 3.2
+     * @throws restricted_context_exception
      */
     public static function set_restriction($quizid, $browserkeys = array(), $configkeys = array(), $quitlink = '',
         $quitsecret = '') {
@@ -762,10 +783,12 @@ class quizaccess_sebserver_external extends external_api {
     /**
      * Set user restrictions.
      *
-     * @param array $restrictions list of restrictions including name, value and userid
+     * @param int $quizid the quiz id
      * @return array of warnings and restrictions saved
+     * @throws dml_exception
+     * @throws invalid_parameter_exception
      * @throws moodle_exception
-     * @since Moodle 3.2
+     * @throws restricted_context_exception
      */
     public static function get_restriction($quizid) {
         global $USER, $DB;
