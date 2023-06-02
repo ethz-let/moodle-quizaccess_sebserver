@@ -312,7 +312,7 @@ class quizaccess_sebserver_external extends external_api {
         }
         $csql = 'select id, shortname, fullname, idnumber,
                startdate, enddate, visible, timecreated, timemodified
-               from {course} ' . $sqlconditions;
+               from {course} ' . $sqlconditions . ' ORDER BY id DESC';
 
         $cparams = array();
         $courses = $DB->get_records_sql($csql, $cparams, $startneedle, $perpage);
