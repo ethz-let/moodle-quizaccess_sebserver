@@ -1,5 +1,8 @@
 # moodle-quizaccess_sebserver
+![](https://github.com/ethz-let/moodle-quizaccess_sebserver/actions/workflows/moodle-plugin-ci.yml/badge.svg)
+
 SEB Server plugin for moodle
+
 # Installation
 MOODLE_DIR/mod/quiz/accessrule
 # Service
