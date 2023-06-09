@@ -327,7 +327,6 @@ class quizaccess_sebserver_external extends external_api {
         $statsarray['coursecount'] = count($courses);
         $statsarray['needle'] = $startneedle;
         $statsarray['perpage'] = $perpage;
-
         $coursesinfo['stats'] = $statsarray;
 
         foreach ($courses as $course) {
@@ -376,6 +375,11 @@ class quizaccess_sebserver_external extends external_api {
                 $quizsqlconditions = str_ireplace('startdate', 'm.timeopen', $conditions);
                 $quizsqlconditions = str_ireplace('enddate', 'm.timeclose', $quizsqlconditions);
                 $quizsqlconditions = str_ireplace('timecreated', 'm.timecreated', $quizsqlconditions);
+                $quizsqlconditions = str_ireplace('name', 'm.name', $quizsqlconditions);
+                $quizsqlconditions = str_ireplace('and shortname', '', $quizsqlconditions);
+                $quizsqlconditions = str_ireplace('or shortname', '', $quizsqlconditions);
+                $quizsqlconditions = str_ireplace('and fullname', '', $quizsqlconditions);
+                $quizsqlconditions = str_ireplace('or fullname', '', $quizsqlconditions);
                 $quizsqlconditions = ' and ' . $quizsqlconditions;
             }
             if (!$rawmods = $DB->get_records_sql("SELECT cm.id AS coursemodule, m.*, cw.section, cm.visible AS visible,
