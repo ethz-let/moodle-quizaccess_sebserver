@@ -310,6 +310,7 @@ class quizaccess_sebserver_external extends external_api {
                 $sqlconditions .= ' and id in (' . $coursesimp . ')';
             }
         }
+        $sqlconditions = str_ireplace('m.name', 'fullname', $sqlconditions);
         $csql = 'select id, shortname, fullname, idnumber,
                startdate, enddate, visible, timecreated, timemodified
                from {course} ' . $sqlconditions . ' ORDER BY id DESC';
@@ -375,11 +376,9 @@ class quizaccess_sebserver_external extends external_api {
                 $quizsqlconditions = str_ireplace('startdate', 'm.timeopen', $conditions);
                 $quizsqlconditions = str_ireplace('enddate', 'm.timeclose', $quizsqlconditions);
                 $quizsqlconditions = str_ireplace('timecreated', 'm.timecreated', $quizsqlconditions);
-                $quizsqlconditions = str_ireplace('name', 'm.name', $quizsqlconditions);
-                $quizsqlconditions = str_ireplace('and shortname', '', $quizsqlconditions);
-                $quizsqlconditions = str_ireplace('or shortname', '', $quizsqlconditions);
-                $quizsqlconditions = str_ireplace('and fullname', '', $quizsqlconditions);
-                $quizsqlconditions = str_ireplace('or fullname', '', $quizsqlconditions);
+                $quizsqlconditions = str_ireplace('shortname', 'm.name', $quizsqlconditions);
+                $quizsqlconditions = str_ireplace('fullname', 'm.name', $quizsqlconditions);
+                
                 $quizsqlconditions = ' and ' . $quizsqlconditions;
             }
             if (!$rawmods = $DB->get_records_sql("SELECT cm.id AS coursemodule, m.*, cw.section, cm.visible AS visible,
