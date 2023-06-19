@@ -389,7 +389,7 @@ class quizaccess_sebserver_external extends external_api {
                                                        cm.section = cw.id AND
                                                        md.name = 'quiz' AND
                                                        md.id = cm.module
-                                                       $quizsqlconditions")) {
+                                                       $quizsqlconditions", $qparams)) {
                 $courseinfo['quizzes'] = array();
                 $foundquizes = 0;
             }
