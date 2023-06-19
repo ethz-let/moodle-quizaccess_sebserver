@@ -367,8 +367,6 @@ class quizaccess_sebserver_external extends external_api {
             $quizzes = array();
 
             list($coursessql, $qparams) = $DB->get_in_or_equal(array_keys(array($course->id => $course)), SQL_PARAMS_NAMED, 'c0');
-            $modulename = 'quiz';
-            $qparams['modulename'] = $modulename;
             $includeinvisible = true;
 
             $foundquizes = 1;
@@ -376,32 +374,33 @@ class quizaccess_sebserver_external extends external_api {
                 $quizsqlconditions = str_ireplace('startdate', 'm.timeopen', $conditions);
                 $quizsqlconditions = str_ireplace('enddate', 'm.timeclose', $quizsqlconditions);
                 $quizsqlconditions = str_ireplace('timecreated', 'm.timecreated', $quizsqlconditions);
-                $quizsqlconditions = str_ireplace('shortname', 'm.name', $quizsqlconditions);
-                $quizsqlconditions = str_ireplace('fullname', 'm.name', $quizsqlconditions);
-                
                 $quizsqlconditions = ' and ' . $quizsqlconditions;
+            }
+            // Special case to list all quizes in filtered courses when shortname there.
+            if (str_contains($quizsqlconditions, 'shortname') || str_contains($quizsqlconditions, 'fullname')) {
+                $quizsqlconditions = '';
             }
             if (!$rawmods = $DB->get_records_sql("SELECT cm.id AS coursemodule, m.*, cw.section, cm.visible AS visible,
                                                        cm.groupmode, cm.groupingid
                                                   FROM {course_modules} cm, {course_sections} cw, {modules} md,
-                                                       {" . $modulename . "} m
+                                                       {quiz} m
                                                  WHERE cm.course $coursessql AND
                                                        cm.instance = m.id AND
                                                        cm.section = cw.id AND
-                                                       md.name = :modulename AND
+                                                       md.name = 'quiz' AND
                                                        md.id = cm.module
-                                                       $quizsqlconditions", $qparams)) {
+                                                       $quizsqlconditions")) {
                 $courseinfo['quizzes'] = array();
                 $foundquizes = 0;
             }
             if ($foundquizes == 1) {
                 $modinfo = get_fast_modinfo($course, null);
 
-                if (empty($modinfo->instances[$modulename])) {
+                if (empty($modinfo->instances['quiz'])) {
                     continue;
                 }
 
-                foreach ($modinfo->instances[$modulename] as $cm) {
+                foreach ($modinfo->instances['quiz'] as $cm) {
                     if (!$includeinvisible && !$cm->uservisible) {
                         continue;
                     }
