@@ -32,3 +32,5 @@ $string['managedbysebserver'] = 'Exam is managed by SEB Server. Changing values 
 $string['enablesebserver'] = 'Enable SEB Server';
 $string['sebserver:managesebserver'] = 'Manage SEB Server';
 $string['privacy:metadata'] = 'SEB Server access rule plugin does not store any personal data.';
+$string['quitlink'] = 'Quit link';
+$string['quitsecret'] = 'Quit password';
