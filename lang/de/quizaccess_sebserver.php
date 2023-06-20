@@ -32,3 +32,6 @@ $string['managedbysebserver'] = 'Die Prüfung wird von SEB Server verwaltet. Das
 $string['enablesebserver'] = 'SEB-Server aktivieren';
 $string['sebserver:managesebserver'] = 'SEB-Server verwalten';
 $string['privacy:metadata'] = 'Das SEB-Server-Plugin speichert keine personenbezogenen Daten.';
+$string['quitlink'] = 'Quit link';
+$string['quitsecret'] = 'Beenden/Entsperren-Kennwort';
+
