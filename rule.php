@@ -23,18 +23,16 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use mod_quiz\local\access_rule_base;
+use mod_quiz\quiz_settings;
 
-defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
 /**
  * A rule requiring SEB Server connection.
  *
  * @copyright  2022 ETH Zurich
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizaccess_sebserver extends quiz_access_rule_base {
-
+class quizaccess_sebserver extends access_rule_base {
     /**
      * Return an appropriately configured instance of this rule, if it is applicable
      * to the given quiz, otherwise return null.
@@ -120,9 +118,9 @@ class quizaccess_sebserver extends quiz_access_rule_base {
                 }
                 $mform->addElement('selectyesno', 'sebserverenabled', get_string('enablesebserver', 'quizaccess_sebserver'),
                     $enableselectchange);
-                $mform->addElement('text', 'quitlink', get_string('quitlink', 'quizaccess_seb'), 'readonly size=75');
+                $mform->addElement('text', 'quitlink', get_string('quitlink', 'quizaccess_sebserver'), 'readonly size=75');
                 $mform->addElement('passwordunmask', 'quitsecret',
-                                   get_string('quitsecret', 'quizaccess_seb'), 'readonly size=20');
+                                   get_string('quitsecret', 'quizaccess_sebserver'), 'readonly size=20');
             } else {
                 $mform->addElement('hidden', 'quitlink', '');
                 $mform->addElement('hidden', 'quitsecret', '');
