@@ -120,8 +120,9 @@ class quizaccess_sebserver extends quiz_access_rule_base {
                 }
                 $mform->addElement('selectyesno', 'sebserverenabled', get_string('enablesebserver', 'quizaccess_sebserver'),
                     $enableselectchange);
-                $mform->addElement('text', 'quitlink', 'QuitLink', 'readonly size=75');
-                $mform->addElement('text', 'quitsecret', 'QuitSecret', 'readonly size=20');
+                $mform->addElement('text', 'quitlink', get_string('quitlink', 'quizaccess_seb'), 'readonly size=75');
+                $mform->addElement('passwordunmask', 'quitsecret', 
+                                   get_string('quitsecret', 'quizaccess_seb'), 'readonly size=20');
             } else {
                 $mform->addElement('hidden', 'quitlink', '');
                 $mform->addElement('hidden', 'quitsecret', '');
