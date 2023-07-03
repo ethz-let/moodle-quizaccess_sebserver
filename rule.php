@@ -26,13 +26,23 @@
 use mod_quiz\local\access_rule_base;
 use mod_quiz\quiz_settings;
 
+// This work-around is required until Moodle 4.2 is the lowest version we support.
+if (class_exists('\mod_quiz\local\access_rule_base')) {
+    class_alias('\mod_quiz\local\access_rule_base', '\quizaccess_sebserver_parent_class_alias');
+    class_alias('\mod_quiz\quiz_settings', '\quizaccess_sebserver_quiz_settings_class_alias');
+} else {
+    require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
+    class_alias('\quiz_access_rule_base', '\quizaccess_sebserver_parent_class_alias');
+    class_alias('\quiz', '\quizaccess_sebserver_quiz_settings_class_alias');
+}
+
 /**
  * A rule requiring SEB Server connection.
  *
  * @copyright  2022 ETH Zurich
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizaccess_sebserver extends access_rule_base {
+class quizaccess_sebserver extends quizaccess_sebserver_parent_class_alias {
     /**
      * Return an appropriately configured instance of this rule, if it is applicable
      * to the given quiz, otherwise return null.
@@ -43,7 +53,7 @@ class quizaccess_sebserver extends access_rule_base {
      *      time limits by the mod/quiz:ignoretimelimits capability.
      * @return access_rule_base|null the rule, if applicable, else null.
      */
-    public static function make(quiz $quizobj, $timenow, $canignoretimelimits) {
+    public static function make(quizaccess_sebserver_quiz_settings_class_alias $quizobj, $timenow, $canignoretimelimits) {
 
         if (empty($quizobj->get_quiz()->sebserverenabled)) {
             return null;
