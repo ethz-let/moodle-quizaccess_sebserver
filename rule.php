@@ -26,13 +26,26 @@
 use mod_quiz\local\access_rule_base;
 use mod_quiz\quiz_settings;
 
+defined ( 'MOODLE_INTERNAL' ) || die ();
+
+global $CFG;
+
+// This work-around is required until Moodle 4.2 is the lowest version we support.
+if (class_exists('\mod_quiz\local\access_rule_base')) {
+    // Use aliases at class_loader level to maintain compatibility.
+    \class_alias(mod_quiz\local\access_rule_base::class, quiz_access_rule_base::class);
+    \class_alias(mod_quiz\quiz_settings::class, quiz::class);
+} else {
+    require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
+}
+
 /**
  * A rule requiring SEB Server connection.
  *
  * @copyright  2022 ETH Zurich
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizaccess_sebserver extends access_rule_base {
+class quizaccess_sebserver extends quiz_access_rule_base {
     /**
      * Return an appropriately configured instance of this rule, if it is applicable
      * to the given quiz, otherwise return null.
