@@ -30,4 +30,4 @@ $plugin->requires  = 2021051714;
 $plugin->cron      = 0;
 $plugin->component = 'quizaccess_sebserver';
 $plugin->maturity  = MATURITY_BETA;
-$plugin->release   = 'v0.2 for Moodle 3.11+';
+$plugin->release   = 'v0.2 for Moodle 3.11+ up until 4.1';
