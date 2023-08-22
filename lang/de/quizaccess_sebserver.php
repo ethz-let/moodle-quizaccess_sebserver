@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'SEB Server';
 $string['quizismanagedbysebserver'] = 'Die Prüfung wird von SEB Server verwaltet. Sie müssen den Safe Exam Browser starten, bevor Sie an der Prüfung teilnehmen.';
-$string['managedbysebserver'] = 'Die Prüfung wird von SEB Server verwaltet. Das Ändern von Werten kann sich auf die Untersuchungseinstellungen auswirken, bitte gehen Sie vorsichtig vor. Sie können die Verbindung zum SEB-Server über den Abschnitt SEB-Server unten deaktivieren';
+$string['managedbysebserver'] = 'Die Prüfung wird von SEB Server verwaltet. Das Ändern von Werten kann sich auf die Prüfungseinstellungen auswirken, bitte gehen Sie vorsichtig vor. Sie können die Verbindung zum SEB-Server über den Abschnitt SEB-Server unten deaktivieren';
 $string['enablesebserver'] = 'SEB-Server aktivieren';
 $string['sebserver:managesebserver'] = 'SEB-Server verwalten';
 $string['privacy:metadata'] = 'Das SEB-Server-Plugin speichert keine personenbezogenen Daten.';
