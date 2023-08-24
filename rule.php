@@ -36,7 +36,7 @@ require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
  * @copyright  2022 ETH Zurich
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class quizaccess_sebserver extends access_rule_base {
+class quizaccess_sebserver extends quiz_access_rule_base {
     /**
      * Return an appropriately configured instance of this rule, if it is applicable
      * to the given quiz, otherwise return null.
