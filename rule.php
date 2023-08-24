@@ -23,8 +23,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use mod_quiz\local\access_rule_base;
-use mod_quiz\quiz_settings;
+use quizaccess_seb\quiz_settings;
+
+defined('MOODLE_INTERNAL') || die();
+
+global $CFG;
+require_once($CFG->dirroot . '/mod/quiz/accessrule/accessrulebase.php');
 
 /**
  * A rule requiring SEB Server connection.
