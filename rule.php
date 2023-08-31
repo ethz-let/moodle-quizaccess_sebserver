@@ -43,7 +43,7 @@ class quizaccess_sebserver extends access_rule_base {
      *      time limits by the mod/quiz:ignoretimelimits capability.
      * @return access_rule_base|null the rule, if applicable, else null.
      */
-    public static function make(quiz $quizobj, $timenow, $canignoretimelimits) {
+    public static function make(quiz_settings $quizobj, $timenow, $canignoretimelimits) {
 
         if (empty($quizobj->get_quiz()->sebserverenabled)) {
             return null;
@@ -112,9 +112,9 @@ class quizaccess_sebserver extends access_rule_base {
                     'sebsection.insertAdjacentHTML( "beforebegin", "<div class=\"alert alert-warning alert-block fade in\">' .
                     get_string('managedbysebserver', 'quizaccess_sebserver') . '</div>"); </script>');
                 $mform->addElement('header', 'sebserverheader', get_string('pluginname', 'quizaccess_sebserver'));
-                $enableselectchange = array('style="pointer-events: none!important;background-color: #ededed;"');
+                $enableselectchange = ['style="pointer-events: none!important;background-color: #ededed;"'];
                 if (is_siteadmin()) {
-                    $enableselectchange = array();
+                    $enableselectchange = [];
                 }
                 $mform->addElement('selectyesno', 'sebserverenabled', get_string('enablesebserver', 'quizaccess_sebserver'),
                     $enableselectchange);
@@ -154,7 +154,7 @@ class quizaccess_sebserver extends access_rule_base {
      *      For example array('ipaddress', 'password').
      */
     public function get_superceded_rules() {
-        return array();
+        return [];
     }
 
     /**
@@ -169,7 +169,7 @@ class quizaccess_sebserver extends access_rule_base {
         global $CFG, $DB, $USER, $PAGE;
         $quizid = $this->quizobj->get_quizid();
         $return = '';
-        $return .= html_writer::start_div('alert alert-info alert-block fade in', array('style' => "text-align: left;")) .
+        $return .= html_writer::start_div('alert alert-info alert-block fade in', ['style' => "text-align: left;"]) .
                     get_string('quizismanagedbysebserver', 'quizaccess_sebserver') . html_writer::end_div('');
         $return .= html_writer::div($this->get_quit_button());
         return $return;
@@ -185,9 +185,9 @@ class quizaccess_sebserver extends access_rule_base {
     public static function save_settings($quiz) {
         global $DB;
         if (empty($quiz->sebserverenabled) || $quiz->sebserverenabled == 0) {
-            $DB->delete_records('quizaccess_sebserver', array('quizid' => $quiz->id));
+            $DB->delete_records('quizaccess_sebserver', ['quizid' => $quiz->id]);
         } else {
-            $rec = $DB->get_record('quizaccess_sebserver', array('quizid' => $quiz->id));
+            $rec = $DB->get_record('quizaccess_sebserver', ['quizid' => $quiz->id]);
             if (!$rec) {
                 $record = new stdClass();
                 $record->quizid = $quiz->id;
@@ -217,7 +217,7 @@ class quizaccess_sebserver extends access_rule_base {
      */
     public static function delete_settings($quiz) {
         global $DB;
-        $DB->delete_records('quizaccess_sebserver', array('quizid' => $quiz->id));
+        $DB->delete_records('quizaccess_sebserver', ['quizid' => $quiz->id]);
     }
 
     /**
