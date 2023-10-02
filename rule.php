@@ -46,15 +46,16 @@ if (class_exists('\mod_quiz\local\access_rule_base')) {
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class quizaccess_sebserver extends quiz_access_rule_base {
+
     /**
      * Return an appropriately configured instance of this rule, if it is applicable
      * to the given quiz, otherwise return null.
      *
-     * @param quiz $quizobj information about the quiz in question.
+     * @param quiz_settings $quizobj information about the quiz in question.
      * @param int $timenow the time that should be considered as 'now'.
      * @param bool $canignoretimelimits whether the current user is exempt from
      *      time limits by the mod/quiz:ignoretimelimits capability.
-     * @return access_rule_base|null the rule, if applicable, else null.
+     * @return access_rule_base|self|null
      */
     public static function make(quiz_settings $quizobj, $timenow, $canignoretimelimits) {
 
