@@ -55,7 +55,7 @@ class quizaccess_sebserver extends quiz_access_rule_base {
      * @param int $timenow the time that should be considered as 'now'.
      * @param bool $canignoretimelimits whether the current user is exempt from
      *      time limits by the mod/quiz:ignoretimelimits capability.
-     * @return access_rule_base|self|null
+     * @return access_rule_base|null the rule, if applicable, else null.
      */
     public static function make(quiz_settings $quizobj, $timenow, $canignoretimelimits) {
 
