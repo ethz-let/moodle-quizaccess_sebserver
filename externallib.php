@@ -297,30 +297,30 @@ class quizaccess_sebserver_external extends external_api {
             $sqlconditions = '';
             $wherecalled = 0;
         }
-        // Special case for top level search for all courses.
-        $allcoursesincluded = 0;
-        if (max($courseid) == 0 && count($courseid) == 1 && $courseid[0] == 0) {
-            $allcoursesincluded = 1;
-        }
-        if (!empty($courseid) && $allcoursesincluded != 1) {
-            $coursesimp = implode(',', $courseid);
-            if ($wherecalled == 0) {
-                $sqlconditions .= ' where id in (' . $coursesimp . ')';
-            } else {
-                $sqlconditions .= ' and id in (' . $coursesimp . ')';
-            }
-        }
-        $sqlconditions = str_ireplace('m.name', 'fullname', $sqlconditions);
-        $csql = 'select id, shortname, fullname, idnumber,
+      // Special case for top level search for all courses.
+      $allcoursesincluded = 0;
+       if(max($courseid) == 0 && count($courseid) == 1 && $courseid[0] == 0){
+         $allcoursesincluded = 1;
+       }
+       if (!empty($courseid) && $allcoursesincluded != 1) {
+          $coursesimp = implode(',', $courseid);
+          if ($wherecalled == 0) {
+              $sqlconditions .= ' where id in (' . $coursesimp . ')';
+          } else {
+            $sqlconditions .= ' and id in (' . $coursesimp . ')';
+          }
+       }
+      $sqlconditions = str_ireplace('m.name', 'fullname', $sqlconditions);
+      $csql = 'select id, shortname, fullname, idnumber,
                startdate, enddate, visible, timecreated, timemodified
-               from {course} ' . $sqlconditions . ' ORDER BY id DESC';
+               from {course} ' . $sqlconditions;
+            //   throw new moodle_exception($csql);
+      $cparams = array();
+      $courses = $DB->get_records_sql($csql, $cparams, $startneedle, $perpage);
 
-        $cparams = array();
-        $courses = $DB->get_records_sql($csql, $cparams, $startneedle, $perpage);
-
-        if (!$courses) {
-            throw new moodle_exception('nocoursefound', 'webservice', '', '');
-        }
+      if(!$courses) {
+        throw new moodle_exception('nocoursefound', 'webservice', '', '');
+      }
 
         $coursesinfo = array();
         $statsarray = array();
@@ -369,17 +369,18 @@ class quizaccess_sebserver_external extends external_api {
             list($coursessql, $qparams) = $DB->get_in_or_equal(array_keys(array($course->id => $course)), SQL_PARAMS_NAMED, 'c0');
             $includeinvisible = true;
 
-            $foundquizes = 1;
-            if (!empty($conditions) && trim($conditions) != '') {
-                $quizsqlconditions = str_ireplace('startdate', 'm.timeopen', $conditions);
-                $quizsqlconditions = str_ireplace('enddate', 'm.timeclose', $quizsqlconditions);
-                $quizsqlconditions = str_ireplace('timecreated', 'm.timecreated', $quizsqlconditions);
-                $quizsqlconditions = ' and ' . $quizsqlconditions;
-            }
-            // Special case to list all quizes in filtered courses when shortname there.
-            if (str_contains($quizsqlconditions, 'shortname') || str_contains($quizsqlconditions, 'fullname')) {
-                $quizsqlconditions = '';
-            }
+          $foundquizes = 1;
+          if (!empty($conditions) && trim($conditions) != '') {
+              $quizsqlconditions = str_ireplace('startdate', 'm.timeopen', $conditions);
+              $quizsqlconditions = str_ireplace('enddate', 'm.timeclose', $quizsqlconditions);
+              $quizsqlconditions = str_ireplace('timecreated', 'm.timecreated', $quizsqlconditions);
+              $quizsqlconditions = str_ireplace('fullname', 'm.name', $quizsqlconditions);
+              $quizsqlconditions = ' and ' . $quizsqlconditions;
+          }
+          // Speical case to list all quizes in filtered courses when shortname there.
+          if (str_contains($quizsqlconditions, 'shortname')) {
+              $quizsqlconditions = '';
+          }
             if (!$rawmods = $DB->get_records_sql("SELECT cm.id AS coursemodule, m.*, cw.section, cm.visible AS visible,
                                                        cm.groupmode, cm.groupingid
                                                   FROM {course_modules} cm, {course_sections} cw, {modules} md,
