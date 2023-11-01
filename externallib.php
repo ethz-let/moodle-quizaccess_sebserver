@@ -38,22 +38,31 @@ class quizaccess_sebserver_external extends external_api {
      */
     public static function backup_course_parameters() {
         return new external_function_parameters(
-                        array('id' => new external_value(PARAM_INT, 'Course ID')));
+          array(
+                       'id' => new external_value(PARAM_INT, 'Course or Quiz ID', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
+                       'backuptype' => new external_value(PARAM_RAW, '"course" or "quiz"', VALUE_DEFAULT, 'course'),
+
+               )
+                 );
 
     }
-
-    /**
-     * Backup course.
-     *
-     * @param string $id Course ID.
-     * @return array
-     */
-    public static function backup_course($id) {
+    public static function backup_course($id, $backuptype) {
         global $USER, $DB, $CFG;
-        // Parameter validation.
-        $params = self::validate_parameters(self::backup_course_parameters(), array('id' => $id));
-        if ($id == 1) {
-            throw new moodle_exception('accessnotallowed');
+        //Parameter validation
+        $params = self::validate_parameters(self::backup_course_parameters(), array('id' => $id, 'backuptype' => $backuptype));
+
+        $id = $params['id'];
+        $backuptype = $params['backuptype'];
+        
+        if ($id == 1 && $backuptype == 'course') {
+            throw new moodle_exception('Site level backup is not allowed');
+        }
+        if ($backuptype != 'course' && $backuptype != 'quiz') {
+            throw new moodle_exception('Backup type paramater is invalid');
+        }
+        if($backuptype == 'quiz'){
+          $quiz = $DB->get_record('quiz', array('id' => $id), 'id, course', MUST_EXIST);
+          $id = $quiz->course;
         }
         $course = $DB->get_record('course', array('id' => $id), 'id', MUST_EXIST);
         $coursecontext = context_course::instance($course->id);
@@ -61,7 +70,7 @@ class quizaccess_sebserver_external extends external_api {
 
         // Capability checking.
         if (!has_capability('moodle/backup:backupcourse', $coursecontext)) {
-            throw new moodle_exception('accessnotallowed');
+            throw new moodle_exception('User has no moodle/backup:backupcourse capabilities');
         }
 
         require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
