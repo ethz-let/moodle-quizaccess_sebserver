@@ -31,5 +31,4 @@ $plugin->cron      = 0;
 $plugin->component = 'quizaccess_sebserver';
 $plugin->maturity  = MATURITY_BETA;
 $plugin->release   = 'v0.4 DEV';
-$plugin->supported = [401, 402, 403, 404];
 $plugin->incompatible = 400;
