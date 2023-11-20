@@ -85,12 +85,9 @@ class quizaccess_sebserver extends quiz_access_rule_base {
             return $quitbutton;
         }
         // Only display if the link has been configured and attempts are greater than 0.
-        if (!empty($this->quiz->quitlink) && !empty($this->quiz->quitsecret)) {
-            if (strpos($this->quiz->quitlink, '?') !== false) {
-                $contact = '&';
-            }
+        if (!empty($this->quiz->quitlink)) {
             $quitbutton = html_writer::link(
-                $this->quiz->quitlink . $contact . $this->quiz->quitsecret,
+                $this->quiz->quitlink,
                 get_string('exitsebbutton', 'quizaccess_seb'),
                 ['class' => 'btn btn-secondary']
             );
