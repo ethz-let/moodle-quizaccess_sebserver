@@ -39,7 +39,7 @@ class quizaccess_sebserver_external extends external_api {
     public static function backup_course_parameters() {
         return new external_function_parameters(
           array(
-                       'id' => new external_value(PARAM_INT, 'Course or Quiz ID', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
+                       'id' => new external_value(PARAM_INT, 'Course ID or Quiz CMID', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
                        'backuptype' => new external_value(PARAM_RAW, '"course" or "quiz"', VALUE_DEFAULT, 'course'),
 
                )
@@ -61,8 +61,8 @@ class quizaccess_sebserver_external extends external_api {
             throw new moodle_exception('Backup type paramater is invalid');
         }
         if($backuptype == 'quiz'){
-          $quiz = $DB->get_record('quiz', array('id' => $id), 'id, course', MUST_EXIST);
-          $id = $quiz->course;
+          $qcm = get_coursemodule_from_id('quiz', $id, 0, false, MUST_EXIST);
+          $id = $qcm->course;
         }
         $course = $DB->get_record('course', array('id' => $id), 'id', MUST_EXIST);
         $coursecontext = context_course::instance($course->id);
