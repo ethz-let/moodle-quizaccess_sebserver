@@ -24,7 +24,18 @@
  */
 
 use mod_quiz\local\access_rule_base;
+use mod_quiz\quiz_attempt;
 use mod_quiz\quiz_settings;
+
+defined('MOODLE_INTERNAL') || die();
+
+// This work-around is required until Moodle 4.2 is the lowest version we support.
+if (class_exists('\mod_quiz\quiz_attempt')) {
+    class_alias('\mod_quiz\quiz_attempt', '\quiz_archive_quiz_attempt');
+} else {
+    require_once($CFG->dirroot . '/mod/quiz/attemptlib.php');
+    class_alias('\quiz_attempt', '\quiz_archive_quiz_attempt');
+}
 
 /**
  * A rule requiring SEB Server connection.
@@ -33,11 +44,12 @@ use mod_quiz\quiz_settings;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class quizaccess_sebserver extends access_rule_base {
+
     /**
      * Return an appropriately configured instance of this rule, if it is applicable
      * to the given quiz, otherwise return null.
      *
-     * @param quiz $quizobj information about the quiz in question.
+     * @param quiz_settings $quizobj information about the quiz in question.
      * @param int $timenow the time that should be considered as 'now'.
      * @param bool $canignoretimelimits whether the current user is exempt from
      *      time limits by the mod/quiz:ignoretimelimits capability.
@@ -63,7 +75,7 @@ class quizaccess_sebserver extends access_rule_base {
         return quiz_get_user_attempts(
             $this->quizobj->get_quizid(),
             $USER->id,
-            quiz_attempt::FINISHED,
+            quiz_archive_quiz_attempt::FINISHED,
             false
         );
     }
