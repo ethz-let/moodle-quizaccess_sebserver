@@ -412,6 +412,7 @@ class quizaccess_sebserver_external extends external_api {
             $includeinvisible = true;
 
             $foundquizes = 1;
+            $quizsqlconditions = '';
             if (!empty($conditions) && trim($conditions) != '') {
                 $quizsqlconditions = str_ireplace('startdate', 'm.timeopen', $conditions);
                 $quizsqlconditions = str_ireplace('enddate', 'm.timeclose', $quizsqlconditions);
