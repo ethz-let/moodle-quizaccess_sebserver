@@ -22,7 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 defined('MOODLE_INTERNAL') || die();
-use mod_quiz\quiz_settings;
 
 require_once($CFG->libdir . '/externallib.php');
 require_once($CFG->dirroot . '/mod/quiz/accessrule/sebserver/rule.php');
@@ -839,8 +838,7 @@ class quizaccess_sebserver_external extends external_api {
         }
         try {
             global $CFG;
-            require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-            $quizobj = quiz_settings::create($quizid);
+            $quizobj = \mod_quiz\quiz_settings::create($quizid);
             $cm = $quizobj->get_cm();
             $cmid = $cm->id;
             if (has_capability('mod/quiz:manage', $quizobj->get_context())) {
@@ -1055,8 +1053,7 @@ class quizaccess_sebserver_external extends external_api {
 
         try {
             global $CFG;
-            require_once($CFG->dirroot . '/mod/quiz/locallib.php');
-            $quizobj = quiz_settings::create($quizid);
+            $quizobj = \mod_quiz\quiz_settings::create($quizid);
             $cm = $quizobj->get_cm();
             $cmid = $cm->id;
             if (has_capability('mod/quiz:manage', $quizobj->get_context())) {
