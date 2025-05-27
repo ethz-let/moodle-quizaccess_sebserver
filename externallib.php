@@ -838,10 +838,11 @@ class quizaccess_sebserver_external extends external_api {
         }
         try {
             global $CFG;
-            $quizobj = \mod_quiz\quiz_settings::create($quizid);
-            $cm = $quizobj->get_cm();
-            $cmid = $cm->id;
-            if (has_capability('mod/quiz:manage', $quizobj->get_context())) {
+            [$quizcourse, $quizcm] = get_course_and_cm_from_instance($quizid, 'quiz');
+            $quizcontext = context_module::instance($quizcm->id);
+            $quizcontextid = $nextquizcontext->id;
+            $cmid = $quizcm->id;
+            if (has_capability('mod/quiz:manage', $quizcontext)) {
                 if ($params['browserkeys']) {
                     $bk = trim(implode("\n", $params['browserkeys']));
                 }
@@ -1053,10 +1054,11 @@ class quizaccess_sebserver_external extends external_api {
 
         try {
             global $CFG;
-            $quizobj = \mod_quiz\quiz_settings::create($quizid);
-            $cm = $quizobj->get_cm();
-            $cmid = $cm->id;
-            if (has_capability('mod/quiz:manage', $quizobj->get_context())) {
+            [$quizcourse, $quizcm] = get_course_and_cm_from_instance($quizid, 'quiz');
+            $quizcontext = context_module::instance($quizcm->id);
+            $quizcontextid = $nextquizcontext->id;
+            $cmid = $quizcm->id;
+            if (has_capability('mod/quiz:manage', $quizcontext)) {
 
                 $sebserverrecord = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quizid],
                     '*');
