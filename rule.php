@@ -620,7 +620,7 @@ class quizaccess_sebserver extends access_rule_base {
     /**
      * Setup attempt page.
      *
-     * @param stdClass page.
+     * @param stdClass $page page.
      * Set header earlier so that Safe Exam Browser can detect proctoring using SAML2 method of login.
      */
     public function setup_attempt_page($page) {
