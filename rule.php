@@ -639,6 +639,25 @@ class quizaccess_sebserver extends access_rule_base {
         ];
     }
     /**
+     * Setup attempt page
+     *
+     * @param stdClass page
+     * set header earlier so that Safe Exam Browser can detect proctoring using SAML2 method of login
+     */
+    
+    public function setup_attempt_page($page) {
+        global $USER;
+
+        // Force session init or preload
+        if (isloggedin() && !isguestuser()) {
+                // You could log this or preload something
+                header("X-LMS-USER-ID: $USER->id");
+                header("X-LMS-USER-USERNAME: $USER->username");
+                header("X-LMS-USER-EMAIL: $USER->email");
+                header("X-LMS-USER-IDNUMBER: $USER->idnumber");
+        }
+    }
+    /**
      * Calls Rest API of SebServer.
      *
      * @param string $url end point.
