@@ -840,7 +840,7 @@ class quizaccess_sebserver_external extends external_api {
             global $CFG;
             [$quizcourse, $quizcm] = get_course_and_cm_from_instance($quizid, 'quiz');
             $quizcontext = context_module::instance($quizcm->id);
-            $quizcontextid = $nextquizcontext->id;
+            $quizcontextid = $quizcontext->id;
             $cmid = $quizcm->id;
             if (has_capability('mod/quiz:manage', $quizcontext)) {
                 if ($params['browserkeys']) {
@@ -1056,7 +1056,7 @@ class quizaccess_sebserver_external extends external_api {
             global $CFG;
             [$quizcourse, $quizcm] = get_course_and_cm_from_instance($quizid, 'quiz');
             $quizcontext = context_module::instance($quizcm->id);
-            $quizcontextid = $nextquizcontext->id;
+            $quizcontextid = $quizcontext->id;
             $cmid = $quizcm->id;
             if (has_capability('mod/quiz:manage', $quizcontext)) {
 
