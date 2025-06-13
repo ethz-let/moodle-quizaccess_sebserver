@@ -122,77 +122,80 @@ class quizaccess_sebserver extends access_rule_base {
      */
     public static function add_settings_form_fields(mod_quiz_mod_form $quizform, MoodleQuickForm $mform) {
         global $DB;
-        $quizid = $ineditmode = $quizform->get_instance();
-        $displaydwnloadbutton = [];
-        if ($ineditmode) {
-            $readonly = 'readonly ';
-            // Check if quiz has Seb Server enabled for.
-            $sebserver = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quizid]);
-            if (!empty($sebserver) && $sebserver->sebserverenabled == 1) {
-                $displaydwnloadbutton = ['style="pointer-events: none!important;background-color: #ededed;"'];
-                if (!quiz_has_attempts($quizid)) {
-                    $mform->addElement('html',
-                    '<script>var sebsection = document.getElementById("fitem_id_seb_requiresafeexambrowser"); ' .
-                    'sebsection.insertAdjacentHTML( "beforebegin", "<div class=\"alert alert-warning alert-block fade in\">' .
-                    get_string('managedbysebserver', 'quizaccess_sebserver') . '</div>"); </script>');
-                }
-            }
-        } else {
-            $readonly = '';
+        global $COURSE;
+        $context = context_course::instance($COURSE->id);
+        $canusesebserver = has_capability('quizaccess/sebserver:canusesebserver', $context);
+
+        if ($canusesebserver) {
+            $quizid = $ineditmode = $quizform->get_instance();
             $displaydwnloadbutton = [];
-        }
-        $mform->addElement('header', 'sebserverheader', get_string('pluginname', 'quizaccess_sebserver'));
+            if ($ineditmode) {
+                $readonly = 'readonly ';
+                // Check if quiz has Seb Server enabled for.
+                $sebserver = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quizid]);
+                if (!empty($sebserver) && $sebserver->sebserverenabled == 1) {
+                    $displaydwnloadbutton = ['style="pointer-events: none!important;background-color: #ededed;"'];
+                    if (!quiz_has_attempts($quizid)) {
+                        $mform->addElement('html',
+                            '<script>var sebsection = document.getElementById("fitem_id_seb_requiresafeexambrowser"); ' .
+                            'sebsection.insertAdjacentHTML( "beforebegin", "<div class=\"' .
+                            'alert alert-warning alert-block fade in\">' .
+                            get_string('managedbysebserver', 'quizaccess_sebserver') . '</div>"); </script>');
+                    }
+                }
+            } else {
+                $readonly = '';
+                $displaydwnloadbutton = [];
+            }
+            $mform->addElement('header', 'sebserverheader', get_string('pluginname', 'quizaccess_sebserver'));
 
-        $enableselectchange = ['style="pointer-events: none!important;background-color: #ededed;"'];
+            $enableselectchange = ['style="pointer-events: none!important;background-color: #ededed;"'];
 
-        $connection = self::sebserverconnectiondetails(1);
-        $readonlymanageddevices = '';
-        if (empty($connection)) {
-            $mform->addElement('html',
+            $connection = self::sebserverconnectiondetails(1);
+            $readonlymanageddevices = '';
+            if (empty($connection)) {
+                $mform->addElement('html',
                     '<div class="alert alert-warning alert-block fade in">' .
                     get_string('connectionnotsetupyet', 'quizaccess_sebserver') . '</div>');
-        } else {
-            $templates = [-1 => get_string('selectemplate', 'quizaccess_sebserver')];
-            // Sometimes Sebserver set quiz with no template.
-            if ($ineditmode && $sebserver && $sebserver->sebservertemplateid == 0) {
-                $templates += [0 => get_string('notemplate', 'quizaccess_sebserver')];
-            }
-            foreach ($connection[3] as $templatedetails) {
-                  $templates += [$templatedetails->{'template_id'} => $templatedetails->{'template_name'}];
-            }
-            // What if Template was imported direct via sebserver?.
-            if ($ineditmode && $sebserver) {
-                if (!array_key_exists($sebserver->sebservertemplateid, $templates)) {
-                    $templates += [$sebserver->sebservertemplateid =>
-                        get_string('manageddevicetemplate', 'quizaccess_sebserver') . ' ' . $sebserver->sebservertemplateid];
+            } else {
+                $templates = [-1 => get_string('selectemplate', 'quizaccess_sebserver')];
+                // Sometimes Sebserver set quiz with no template.
+                if ($ineditmode && $sebserver && $sebserver->sebservertemplateid == 0) {
+                    $templates += [0 => get_string('notemplate', 'quizaccess_sebserver')];
+                }
+                foreach ($connection[3] as $templatedetails) {
+                    $templates += [$templatedetails->{'template_id'} => $templatedetails->{'template_name'}];
+                }
+                // What if Template was imported direct via sebserver?.
+                if ($ineditmode && $sebserver) {
+                    if (!array_key_exists($sebserver->sebservertemplateid, $templates)) {
+                        $templates += [$sebserver->sebservertemplateid =>
+                            get_string('manageddevicetemplate', 'quizaccess_sebserver') . ' ' . $sebserver->sebservertemplateid];
+                        $readonlymanageddevices =
+                            'sebserverenabled.setAttribute("style","pointer-events: none!important;background-color: #ededed;");';
+                    }
+                }
+                // Now prevent anyone from modifying if there are attempts.
+                if ($ineditmode && quiz_has_attempts($quizid)) {
                     $readonlymanageddevices =
                         'sebserverenabled.setAttribute("style","pointer-events: none!important;background-color: #ededed;");';
                 }
             }
-            // Now prevent anyone from modifying if there are attempts.
-            if ($ineditmode && quiz_has_attempts($quizid)) {
-                $readonlymanageddevices =
-                        'sebserverenabled.setAttribute("style","pointer-events: none!important;background-color: #ededed;");';
+            $candeletesebserver = has_capability('quizaccess/sebserver:candeletesebserver', $context);
+
+            if (!$ineditmode && $canusesebserver && $connection) { // Create Mode.
+                $enableselectchange = [];
             }
-        }
-        global $COURSE;
-        $context = context_course::instance($COURSE->id);
-        $canusesebserver = has_capability('quizaccess/sebserver:canusesebserver', $context);
-        $candeletesebserver = has_capability('quizaccess/sebserver:candeletesebserver', $context);
+            if ($ineditmode && $candeletesebserver && $connection) { // Edit Mode.
+                $enableselectchange = [];
+            }
 
-        if (!$ineditmode && $canusesebserver && $connection) { // Create Mode.
-            $enableselectchange = [];
-        }
-        if ($ineditmode && $candeletesebserver && $connection) { // Edit Mode.
-            $enableselectchange = [];
-        }
+            $sebserverformchange = $enableselectchange + ['onChange' => 'sebserevrselectionchange(this)'];
+            $mform->addElement('selectyesno', 'sebserverenabled', get_string('enablesebserver', 'quizaccess_sebserver'),
+                $sebserverformchange);
+            $mform->setType('sebserverenabled', PARAM_INT);
 
-        $sebserverformchange = $enableselectchange + ['onChange' => 'sebserevrselectionchange(this)'];
-        $mform->addElement('selectyesno', 'sebserverenabled', get_string('enablesebserver', 'quizaccess_sebserver'),
-          $sebserverformchange);
-        $mform->setType('sebserverenabled', PARAM_INT);
-
-        $embedjsscript = '<script>
+            $embedjsscript = '<script>
 
                           coresebplugin = document.querySelector("#id_seb_requiresafeexambrowser");
                           initialselectedseboption = coresebplugin.value;
@@ -224,47 +227,47 @@ class quizaccess_sebserver extends access_rule_base {
 
                           }
                           </script>';
-        $mform->addElement('html', $embedjsscript);
-        if (is_array($templates) && $connection) {
-            if (!$ineditmode) {
-                $allowtemplatechange = [];
-            } else {
-                $allowtemplatechange = ['style="pointer-events: none!important;background-color: #ededed;"'];
+            $mform->addElement('html', $embedjsscript);
+            if (isset($templates) && is_array($templates) && $connection) {
+                if (!$ineditmode) {
+                    $allowtemplatechange = [];
+                } else {
+                    $allowtemplatechange = ['style="pointer-events: none!important;background-color: #ededed;"'];
+                }
+                // Address previous quizes that were created before sebserver.
+                if ($ineditmode && empty($enableselectchange) && (!$sebserver || $sebserver->sebserverenabled == 0) ) {
+                    $allowtemplatechange = [];
+                    $readonly = ''; // Quit secret needs to be enabled too.
+                }
+                $mform->addElement('select', 'sebservertemplateid', get_string('sebserverexamtemplate', 'quizaccess_sebserver'),
+                    $templates, $allowtemplatechange);
+                $mform->setType('sebservertemplateid', PARAM_INT);
+                $mform->disabledif ('sebservertemplateid', 'sebserverenabled', 'neq', 1);
+                $mform->addHelpButton('sebservertemplateid', 'sebservertemplateid', 'quizaccess_sebserver');
             }
-            // Address previous quizes that were created before sebserver.
-            if ($ineditmode && empty($enableselectchange) && (!$sebserver || $sebserver->sebserverenabled == 0) ) {
-                $allowtemplatechange = [];
-                $readonly = ''; // Quit secret needs to be enabled too.
-            }
-            $mform->addElement('select', 'sebservertemplateid', get_string('sebserverexamtemplate', 'quizaccess_sebserver'),
-                               $templates, $allowtemplatechange);
-            $mform->setType('sebservertemplateid', PARAM_INT);
-            $mform->disabledif ('sebservertemplateid', 'sebserverenabled', 'neq', 1);
-            $mform->addHelpButton('sebservertemplateid', 'sebservertemplateid', 'quizaccess_sebserver');
-        }
-        $mform->addElement('selectyesno', 'sebservershowquitbtn', get_string('showquitbtn', 'quizaccess_sebserver'),
-                           $displaydwnloadbutton);
-        $mform->setType('sebservershowquitbtn', PARAM_INT);
-        $mform->setDefault('sebservershowquitbtn', 1);
-        $mform->disabledif ('sebservershowquitbtn', 'sebserverenabled', 'neq', 1);
-        $mform->addElement('text', 'sebserverquitsecret',
-                            get_string('sebserverquitsecret', 'quizaccess_sebserver'), $readonly . ' size="70"');
-        $mform->setType('sebserverquitsecret', PARAM_RAW);
-        $mform->setDefault('sebserverquitsecret', '');
-        $mform->disabledif ('sebserverquitsecret', 'sebserverenabled', 'neq', 1);
-        $mform->addHelpButton('sebserverquitsecret', 'sebserverquitsecret', 'quizaccess_sebserver');
+            $mform->addElement('selectyesno', 'sebservershowquitbtn', get_string('showquitbtn', 'quizaccess_sebserver'),
+                $displaydwnloadbutton);
+            $mform->setType('sebservershowquitbtn', PARAM_INT);
+            $mform->setDefault('sebservershowquitbtn', 1);
+            $mform->disabledif ('sebservershowquitbtn', 'sebserverenabled', 'neq', 1);
+            $mform->addElement('text', 'sebserverquitsecret',
+                get_string('sebserverquitsecret', 'quizaccess_sebserver'), $readonly . ' size="70"');
+            $mform->setType('sebserverquitsecret', PARAM_RAW);
+            $mform->setDefault('sebserverquitsecret', '');
+            $mform->disabledif ('sebserverquitsecret', 'sebserverenabled', 'neq', 1);
+            $mform->addHelpButton('sebserverquitsecret', 'sebserverquitsecret', 'quizaccess_sebserver');
 
-        if ($ineditmode) {
-            $mform->addElement('html',
+            if ($ineditmode) {
+                $mform->addElement('html',
                     '<div class="alert alert-warning alert-block fade in">' .
                     get_string('modificationinstruction', 'quizaccess_sebserver') . '</div>');
-            if (is_siteadmin() && $sebserver) {
-                $mform->addElement('checkbox', 'resetseb', get_string('adminsonly', 'quizaccess_sebserver'),
-                                   get_string('resetseb', 'quizaccess_sebserver'));
-                $mform->addHelpButton('resetseb', 'resetseb', 'quizaccess_sebserver');
+                if (is_siteadmin() && $sebserver) {
+                    $mform->addElement('checkbox', 'resetseb', get_string('adminsonly', 'quizaccess_sebserver'),
+                        get_string('resetseb', 'quizaccess_sebserver'));
+                    $mform->addHelpButton('resetseb', 'resetseb', 'quizaccess_sebserver');
+                }
             }
         }
-
     }
 
     /**
