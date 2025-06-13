@@ -42,6 +42,4 @@ $PAGE->set_pagelayout('redirect');  // No header and footer needed.
 $PAGE->set_title(get_string('pageshouldredirect', 'moodle'));
 
 $CFG->docroot = false;
-$message = get_string('pageshouldredirect');
-$delay = 5;
-echo $OUTPUT->redirect_message($urltogo, $message, $delay, false);
+echo '<meta http-equiv="refresh" content="0; url=' . $urltogo . '" />';
