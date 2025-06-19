@@ -147,6 +147,7 @@ class quizaccess_sebserver extends access_rule_base {
 
         $connection = self::sebserverconnectiondetails(1);
         $readonlymanageddevices = '';
+        $templates = [];
         if (empty($connection)) {
             $mform->addElement('html',
                     '<div class="alert alert-warning alert-block fade in">' .
