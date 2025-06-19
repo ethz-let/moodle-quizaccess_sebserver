@@ -25,8 +25,8 @@ Feature: SEB Server section in quiz edit form
 
   Scenario: Teachers without capabilities should not see the "SEB Server" section.
     Given the following "role capability" exists:
-      | capability                           | permission | role           | contextlevel | reference |
-      | quizaccess/sebserver:canusesebserver | Prevent    | editingteacher | Module       |           |
+      | role                                 | editingteacher |
+      | quizaccess/sebserver:canusesebserver | Prevent        |
     And the following "activities" exist:
       | activity | course | section | name   |
       | quiz     | C1     | 1       | Quiz 1 |
