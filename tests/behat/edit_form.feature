@@ -32,4 +32,4 @@ Feature: SEB Server section in quiz edit form
       | quiz     | C1     | 1       | Quiz 1 |
     When I am on the "Quiz 1" "quiz activity editing" page logged in as teacher1
     And I expand all fieldsets
-    Then the "id_sebserverenabled" "field" should be readonly
+    Then the "style" attribute of "id_sebserverenabled" "field" should contain "pointer-events: none"
