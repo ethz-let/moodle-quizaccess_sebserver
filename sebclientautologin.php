@@ -78,7 +78,7 @@ if (!$keyrec = $DB->get_record('user_private_key', ['script' => 'quizaccess_sebs
         }
     }
     die('There is no login key record in the database.
-                                 It could have expired.'.$dielink);
+         It could have expired, also please make sure that session clearing in SEB is disabled.' . $dielink);
 }
 
 if (!empty($keyrec->validuntil) && $keyrec->validuntil < time()) {
