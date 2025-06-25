@@ -429,7 +429,7 @@ class quizaccess_sebserver extends access_rule_base {
                 is_https() ? $url->set_scheme('https') : $url->set_scheme('http');
                 $url->param('forcedownload', 1);
                 $return .= ' ' . html_writer::link(
-                    $url.'?forcedownload=1',
+                    $url,
                     get_string('downloadsebserverconfig', 'quizaccess_sebserver'),
                     ['class' => 'btn btn-primary',
                     'id'     => 'id_downloadsebserverconfigfile']
