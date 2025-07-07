@@ -577,7 +577,7 @@ class quizaccess_sebserver extends access_rule_base {
             $quizsettingscache->delete($quiz->id);
 
             $configkeycache = \cache::make('quizaccess_seb', 'configkey');
-            $configkeycache->delete($quiz->id);                
+            $configkeycache->delete($quiz->id);
         } else {
             $rec = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quiz->id]);
             if (!$rec) {
