@@ -499,8 +499,8 @@ class quizaccess_sebserver extends access_rule_base {
             $errors['sebservertemplateid'] = get_string('templatemustbeselected', 'quizaccess_sebserver');
             return $errors;
         }
-        if ($data['quit_password'] !== null && $data['quit_password'] !== trim($data['quit_password'])) {
-            $errors['sebservertemplateid'] = get_string('err_wrappingwhitespace', 'core_form');
+        if ($data['sebserverquitsecret'] !== null && $data['sebserverquitsecret'] !== trim($data['sebserverquitsecret'])) {
+            $errors['sebserverquitsecret'] = get_string('err_wrappingwhitespace', 'core_form');
             return $errors;
         }
 
