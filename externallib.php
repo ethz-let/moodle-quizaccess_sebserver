@@ -1156,6 +1156,9 @@ class quizaccess_sebserver_external extends external_api {
         if (!isset($params['quitsecret'])) {
             $params['quitsecret'] = '';
         }
+        if ($params['quitsecret'] !== '' && $params['quitsecret'] !== trim($params['quitsecret'])) {
+            throw new moodle_exception(get_string('err_wrappingwhitespace', 'core_form'));
+        }
         if (!isset($params['showquitlink'])) {
             $params['showquitlink'] = 1;
         }

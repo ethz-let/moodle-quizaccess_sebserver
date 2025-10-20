@@ -25,9 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2025070700;
+$plugin->version   = 2025102000;
 $plugin->requires  = 2023042400.00; // Requires Moodle 4.2.
-$plugin->supported = [402, 500];
+$plugin->supported = [402, 503];
 $plugin->cron      = 0;
 $plugin->component = 'quizaccess_sebserver';
 $plugin->maturity  = MATURITY_BETA;
