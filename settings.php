@@ -29,9 +29,7 @@ global $ADMIN;
 
 if ($hassiteconfig) {
 
-    if ($record = $DB->get_record('config_plugins',
-                                  ['plugin' => 'quizaccess_sebserver',
-                                   'name' => 'connection'])) {
+    if($record = $DB->get_record('config_plugins', ['plugin' => 'quizaccess_sebserver', 'name' => 'connection'])) {
 
         $table = new html_table();
         $conndetails = json_decode($record->value);
@@ -53,7 +51,8 @@ if ($hassiteconfig) {
                 $templatedetails->{'template_description'} = '';
             }
             $template->data[] = [$templatedetails->{'template_id'} , $templatedetails->{'template_name'},
-                                 $templatedetails->{'template_description'}];
+                                 $templatedetails->{'template_description'}
+                                ];
         }
         $examtemplatestable = html_writer::table($template);
 
@@ -68,5 +67,6 @@ if ($hassiteconfig) {
     $settings->add(new admin_setting_heading(
         'quizaccess_sebserver/sebserverconnectiondetails',
         get_string('setting:sebserverconnectiondetails', 'quizaccess_sebserver'),
-        $connectiondetails));
+        $connectiondetails)
+    );
 }

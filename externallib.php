@@ -28,7 +28,7 @@ require_once($CFG->dirroot . '/mod/quiz/accessrule/sebserver/rule.php');
 /**
  * Service functions.
  */
-class quizaccess_sebserver_external extends external_api {
+class quizaccess_sebserver_external extends external_api{
 
     /**
      * Returns description of method parameters
@@ -38,11 +38,11 @@ class quizaccess_sebserver_external extends external_api {
      */
     public static function backup_course_parameters() {
         return new external_function_parameters(
-          [
+            [
                        'id' => new external_value(PARAM_INT, 'Course ID or Quiz CMID', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
                        'backuptype' => new external_value(PARAM_RAW, '"course" or "quiz"', VALUE_DEFAULT, 'course'),
 
-          ]
+            ]
         );
     }
 
@@ -57,7 +57,8 @@ class quizaccess_sebserver_external extends external_api {
         global $USER, $DB, $CFG;
         // Parameter validation.
         $params = self::validate_parameters(self::backup_course_parameters(),
-                  ['id' => $id, 'backuptype' => $backuptype]);
+                                            ['id' => $id, 'backuptype' => $backuptype]
+                                           );
 
         $id = $params['id'];
         $backuptype = $params['backuptype'];
@@ -86,7 +87,7 @@ class quizaccess_sebserver_external extends external_api {
         }
 
         require_once($CFG->dirroot . '/backup/util/includes/backup_includes.php');
-        require_once($CFG->dirroot .'/backup/util/helper/backup_cron_helper.class.php');
+        require_once($CFG->dirroot . '/backup/util/helper/backup_cron_helper.class.php');
         $starttime = time();
         $userid = get_admin()->id;
         $warnings = [];
@@ -104,10 +105,12 @@ class quizaccess_sebserver_external extends external_api {
         $storage = 0;
         if ($backuptype == 'quiz') {
             $bc = new backup_controller(backup::TYPE_1ACTIVITY, $quizcmid, backup::FORMAT_MOODLE, backup::INTERACTIVE_NO,
-            backup::MODE_GENERAL, $userid);
+                                        backup::MODE_GENERAL, $userid
+                                       );
         } else {
             $bc = new backup_controller(backup::TYPE_1COURSE, $course->id, backup::FORMAT_MOODLE, backup::INTERACTIVE_NO,
-            backup::MODE_AUTOMATED, $userid);
+                                        backup::MODE_AUTOMATED, $userid
+                                       );
         }
 
         try {
@@ -120,7 +123,8 @@ class quizaccess_sebserver_external extends external_api {
             $anonymised = $bc->get_plan()->get_setting('anonymize')->get_value();
             $incfiles = (bool) $config->backup_auto_files;
             $backupvaluename = backup_plan_dbops::get_default_backup_filename($format, $type,
-                $id, $users, $anonymised, false, $incfiles);
+                                                                              $id, $users, $anonymised, false, $incfiles
+                                                                             );
             $bc->get_plan()->get_setting('filename')->set_value($backupvaluename);
 
             $bc->set_status(backup::STATUS_AWAITING);

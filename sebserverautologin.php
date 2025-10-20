@@ -70,7 +70,7 @@ $params = ['id' => $conndetails[2],
            ];
 $method = 'post';
 $endpointurl = $conndetails[0] . $function;
-$sebserverresponse = quizaccess_sebserver::call_sebsever($endpointurl, $conndetails[1], $params , $method);
+$sebserverresponse = quizaccess_sebserver::call_sebsever($endpointurl, $conndetails[1], $params, $method);
 
 if ($sebserverresponse[2] !== 200) {
     $responsebody = $sebserverresponse[0];
@@ -83,10 +83,8 @@ if ($sebserverresponse[2] !== 200) {
         if (isset($responsebody->error)) {
             $error .= $responsebody->error;
         }
-
     } else {
-        $error = ' ERROR ' . $sebserverresponse[2] . ' ' .$sebserverresponse[1] .
-                 ' [' . $function . '/' . $method . ']';
+        $error = ' ERROR ' . $sebserverresponse[2] . ' ' .$sebserverresponse[1] . ' [' . $function . '/' . $method . ']';
     }
     throw new moodle_exception($error);
 } else {
@@ -102,5 +100,4 @@ if ($sebserverresponse[2] !== 200) {
             redirect($loginlink);
         }
     }
-
 }

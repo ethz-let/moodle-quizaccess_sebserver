@@ -35,7 +35,7 @@ require_login($cm->course, false, $cm);
 
 $headers = [];
 $headers[] = 'Cache-Control: private, max-age=1, no-transform';
-$headers[] = 'Expires: '. gmdate('D, d M Y H:i:s', time()) .' GMT';
+$headers[] = 'Expires: ' . gmdate('D, d M Y H:i:s', time()) . ' GMT';
 $headers[] = 'Pragma: no-cache';
 $headers[] = 'Content-Disposition: attachment; filename=sebserverconfig.seb';
 $headers[] = 'Content-Type: application/seb';
@@ -43,9 +43,13 @@ $headers[] = 'Content-Type: application/seb';
 // Retrieve the config for quiz.
 $context = context_module::instance($cmid);
 $fs = new file_storage();
-$files = $fs->get_area_files($context->id, 'quizaccess_sebserver', 'filemanager_sebserverconfigfile',  0,
-            'id DESC', false);
-$file  = reset($files);
+$files = $fs->get_area_files($context->id,
+                            'quizaccess_sebserver',
+                            'filemanager_sebserverconfigfile',
+                            0,
+                            'id DESC',
+                            false);
+$file = reset($files);
 
 if (empty($file)) {
     throw new \moodle_exception('noconfigfound', 'quizaccess_seb', '', $cm->id);

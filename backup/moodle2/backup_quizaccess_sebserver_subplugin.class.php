@@ -38,7 +38,7 @@ require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/backup_mod_quiz_access_su
  * @copyright 2022 ETH Zurich
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_quizaccess_sebserver_subplugin extends backup_mod_quiz_access_subplugin {
+class backup_quizaccess_sebserver_subplugin extends backup_mod_quiz_access_subplugin{
 
     /**
      * Use this method to describe the XML structure required to store your
@@ -54,11 +54,13 @@ class backup_quizaccess_sebserver_subplugin extends backup_mod_quiz_access_subpl
         return $subplugin;
 
         $subpluginwrapper = new backup_nested_element($this->get_recommended_name());
+        $subplugintablesettings = new backup_nested_element('quizaccess_sebserver', null, ['sebserverenabled']);
         $subplugintablesettings = new backup_nested_element('quizaccess_sebserver',
-                null, ['sebserverenabled']);
-        $subplugintablesettings = new backup_nested_element('quizaccess_sebserver',
-                null, ['sebserverrestricted', 'sebserverquitsecret', 'sebserverquitlink', 'sebservertemplateid',
-                            'sebservershowquitbtn', 'sebservertimemodified', 'sebservercalled', 'nextquizid', 'nextcourseid']);
+                                                            null, ['sebserverrestricted', 'sebserverquitsecret',
+                                                            'sebserverquitlink', 'sebservertemplateid',
+                                                            'sebservershowquitbtn', 'sebservertimemodified',
+                                                            'sebservercalled', 'nextquizid', 'nextcourseid']
+                                                           );
         // Connect XML elements into the tree.
         $subplugin->add_child($subpluginwrapper);
         $subpluginwrapper->add_child($subplugintablesettings);

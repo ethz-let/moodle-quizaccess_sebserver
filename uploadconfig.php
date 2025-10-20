@@ -149,14 +149,14 @@ foreach ($files as $file) {
 
     // Copy the file into temp.
     $realfilename = 'SEBServerSettings.seb';
-    $destinationdir = $CFG->tempdir.'/sebserver';
+    $destinationdir = $CFG->tempdir . '/sebserver';
     if (!is_dir($destinationdir)) {
         mkdir($destinationdir, 0777, true);
     }
     $destinationfile = $destinationdir . '/' . $realfilename;
     file_put_contents($destinationfile, $file);
     // Generate componenet file.
-    $filerecord = new stdClass;
+    $filerecord = new stdClass();
     $filerecord->component = 'quizaccess_sebserver';
     $filerecord->contextid = $context->id;
     $filerecord->filearea = 'filemanager_sebserverconfigfile';
@@ -166,8 +166,10 @@ foreach ($files as $file) {
     $filerecord->filesize = $file->size;
 
     // Check if the file already exist.
-    $existingfile = $fs->file_exists($filerecord->contextid, $filerecord->component, $filerecord->filearea,
-                $filerecord->itemid, $filerecord->filepath, $filerecord->filename);
+    $existingfile = $fs->file_exists($filerecord->contextid, $filerecord->component,
+                                     $filerecord->filearea,$filerecord->itemid,
+                                     $filerecord->filepath, $filerecord->filename
+                                    );
     if ($existingfile) {
           $fs->delete_area_files($filerecord->contextid, $filerecord->component, $filerecord->filearea);
     }

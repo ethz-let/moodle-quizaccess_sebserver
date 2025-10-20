@@ -52,7 +52,7 @@ function quizaccess_sebserver_pluginfile($course, $cm, $context, $filearea, $arg
     if (!$args) {
         $filepath = '/';
     } else {
-        $filepath = '/' .implode('/', $args) . '/';
+        $filepath = '/' . implode('/', $args) . '/';
     }
 
     $fs = get_file_storage();

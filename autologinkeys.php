@@ -45,25 +45,18 @@ require_capability('mod/quiz:view', $context);
 if (!confirm_sesskey()) {
     throw new \moodle_exception('sesskey');
 }
-if (has_capability('moodle/site:config', context_system::instance(), $USER->id) ||
-    is_siteadmin($USER->id)) {
+if (has_capability('moodle/site:config', context_system::instance(), $USER->id) || is_siteadmin($USER->id)) {
     throw new moodle_exception('Admins are not allowed to use Autologin.');
 }
 
 $fs = new file_storage();
-$files = $fs->get_area_files($context->id, 'quizaccess_sebserver', 'filemanager_sebserverconfigfile',  0,
-            'id DESC', false);
+$files = $fs->get_area_files($context->id, 'quizaccess_sebserver', 'filemanager_sebserverconfigfile', 0, 'id DESC', false);
 $file  = reset($files);
 if ($file) {
-    $fileurl = \moodle_url::make_pluginfile_url(
-                            $file->get_contextid(),
-                            $file->get_component(),
-                            $file->get_filearea(),
-                            $file->get_itemid(),
-                            $file->get_filepath(),
-                            $file->get_filename(),
-                            false
-                );
+    $fileurl = \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
+                                                $file->get_filearea(), $file->get_itemid(),
+                                                $file->get_filepath(), $file->get_filename(), false
+                                               );
 } else {
     $error = get_string('sebseverconfignotfound', 'quizaccess_sebserver');
     throw new moodle_exception($error);
