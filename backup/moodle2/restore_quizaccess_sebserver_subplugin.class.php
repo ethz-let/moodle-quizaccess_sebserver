@@ -24,6 +24,8 @@
  */
 
 defined('MOODLE_INTERNAL') || die;
+use quizaccess_seb\seb_quiz_settings;
+use quizaccess_seb\settings_provider;
 
 require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/restore_mod_quiz_access_subplugin.class.php');
 
@@ -63,10 +65,16 @@ class restore_quizaccess_sebserver_subplugin extends restore_mod_quiz_access_sub
      */
     public function process_quizaccess_sebserver($data) {
         global $DB;
-        // EMDL-1022 Backup-restore will NOT contain SEBServer linking
-        // due to change of courseid, quizid etc.
+        // If SebServer was Enabled, on Restore it should be unlinked
+        // See EMDL-1022 and EMDL-1502.
         $data = (object)$data;
-        $data->sebserverquizid = $this->get_new_parentid('quiz');
-        $DB->insert_record('quizaccess_sebserver', $data);
+        $quizid = $this->get_new_parentid('quiz');
+
+        if($data && $data->sebserverenabled == 1) {
+           $quizsettings = seb_quiz_settings::get_by_quiz_id($quizid);
+           if (!empty($quizsettings)) {
+               $quizsettings->delete();
+            }
+        }
     }
 }
