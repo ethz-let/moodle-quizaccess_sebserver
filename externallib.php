@@ -126,7 +126,7 @@ class quizaccess_sebserver_external extends external_api{
                                                                               $id, $users, $anonymised, false, $incfiles
                                                                              );
             $bc->get_plan()->get_setting('filename')->set_value($backupvaluename);
-
+            $bc->set_execution(backup::EXECUTION_INMEDIATE);
             $bc->set_status(backup::STATUS_AWAITING);
 
             $bc->execute_plan();
@@ -217,20 +217,10 @@ class quizaccess_sebserver_external extends external_api{
             // Reset unfinished to error.
             throw new moodle_exception('Automated backup for course: ' . $course->fullname . ' failed.');
         }
-        if ($backuptype == 'quiz') {
-            $location = '/backup/activity/';
-            $plugincontextid = $quizcontext->id;
-        } else {
-            $location = '/backup/automated/';
-            $plugincontextid = $contextid;
-            set_config('backup_auto_destination', $orgdir, 'backup');
-            set_config('backup_auto_storage', $orgstorage, 'backup');
-        }
+        set_config('backup_auto_destination', $orgdir, 'backup');
+        set_config('backup_auto_storage', $orgstorage, 'backup');
         $bkupdata[] = [
             'status' => $outcome,
-            'filelink' => $CFG->wwwroot . '/pluginfile.php/' . $plugincontextid . $location . $backupvaluename .
-                '?forcedownload=1',
-            'relativelink' => '/' . $plugincontextid . $location . $backupvaluename,
         ];
 
         $result = [];
@@ -254,8 +244,6 @@ class quizaccess_sebserver_external extends external_api{
                     new external_single_structure(
                         [
                             'status' => new external_value(PARAM_INT, 'The backup status code'),
-                            'filelink' => new external_value(PARAM_TEXT, 'Link to download the backup', VALUE_DEFAULT, ''),
-                            'relativelink' => new external_value(PARAM_TEXT, 'Link to download the backup', VALUE_DEFAULT, ''),
                         ]
                     ), 'Backup Course'
                 ),

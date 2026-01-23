@@ -61,5 +61,4 @@ if (empty($enabledfiledownload)) {
 }
 
 // Finally we can serve the file :).
-$relativepath = $relativelink;
-file_pluginfile($relativelink, 1, $preview, $offline);
+file_pluginfile($relativelink, 1);
