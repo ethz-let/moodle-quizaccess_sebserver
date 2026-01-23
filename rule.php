@@ -170,11 +170,6 @@ class quizaccess_sebserver extends access_rule_base {
                         'sebserverenabled.setAttribute("style","pointer-events: none!important;background-color: #ededed;");';
                     $readonly = ' readonly style="background-color: #ededed;"';    
                 }
-                // Special case for prior sebserver quizzes when pass was not mandatory.
-                if(!$sebserver->sebserverquitsecret || trim($sebserver->sebserverquitsecret) == '') {
-                    // Allow teachers to edit the filed to skip non-empty password validation.
-                    $readonly = '';
-                }
             }
             // Now prevent anyone from modifying if there are attempts.
             if ($ineditmode && quiz_has_attempts($quizid)) {
@@ -504,14 +499,19 @@ class quizaccess_sebserver extends access_rule_base {
             $errors['sebservertemplateid'] = get_string('templatemustbeselected', 'quizaccess_sebserver');
             return $errors;
         }
-        if($sebserverenabled == 1 && (empty(trim($sebserverquitsecret)) ||  is_null($sebserverquitsecret) ) ) {
-            
-            $errors['sebserverquitsecret'] = get_string('required');
-        }  
+        
+        $sebserver = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quizid]);
 
-        if ($data['sebserverquitsecret'] !== null && $data['sebserverquitsecret'] !== trim($data['sebserverquitsecret'])) {
-            $errors['sebserverquitsecret'] = get_string('err_wrappingwhitespace', 'core_form');
-            return $errors;
+        // For old quizzes with lack of quitpass, let them skip pass validation.
+        if(!$sebserver) {
+            if($sebserverenabled == 1 && (empty(trim($sebserverquitsecret)) ||  is_null($sebserverquitsecret) ) ) {
+                $errors['sebserverquitsecret'] = get_string('required');
+                return $errors;
+            }  
+            if ($data['sebserverquitsecret'] !== null && $data['sebserverquitsecret'] !== trim($data['sebserverquitsecret'])) {
+                $errors['sebserverquitsecret'] = get_string('err_wrappingwhitespace', 'core_form');
+                return $errors;
+            }
         }
 
         $endpoint = $conndetails[0];
@@ -519,7 +519,6 @@ class quizaccess_sebserver extends access_rule_base {
         $connid = $conndetails[2];
 
         // Check if its a disable and send info to SebServer.
-        $sebserver = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quizid]);
         // Disable SebServer?.
         if ($sebserver && $data['sebserverenabled'] == 0) {
             $function = '/exam';
