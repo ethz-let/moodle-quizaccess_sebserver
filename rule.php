@@ -125,7 +125,7 @@ class quizaccess_sebserver extends access_rule_base {
         $quizid = $ineditmode = $quizform->get_instance();
         $displaydwnloadbutton = [];
         if ($ineditmode) {
-            $readonly = ' readonly style="background-color: #ededed; cursor: not-allowed;" ';
+            $readonly = ' readonly style="background-color: #ededed; pointer-events: none;" ';
             // Check if quiz has Seb Server enabled for.
             $sebserver = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quizid]);
             if (!empty($sebserver) && $sebserver->sebserverenabled == 1) {
@@ -168,7 +168,7 @@ class quizaccess_sebserver extends access_rule_base {
                         get_string('manageddevicetemplate', 'quizaccess_sebserver') . ' ' . $sebserver->sebservertemplateid];
                     $readonlymanageddevices =
                         'sebserverenabled.setAttribute("style","pointer-events: none!important;background-color: #ededed;");';
-                    $readonly = ' readonly style="background-color: #ededed; cursor: not-allowed;"';    
+                    $readonly = ' readonly style="background-color: #ededed; pointer-events: none;"';    
                 }
             }
             // Now prevent anyone from modifying if there are attempts.
