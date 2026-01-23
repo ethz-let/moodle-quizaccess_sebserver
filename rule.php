@@ -125,7 +125,7 @@ class quizaccess_sebserver extends access_rule_base {
         $quizid = $ineditmode = $quizform->get_instance();
         $displaydwnloadbutton = [];
         if ($ineditmode) {
-            $readonly = 'readonly ';
+            $readonly = ' readonly style="background-color: #ededed;" ';
             // Check if quiz has Seb Server enabled for.
             $sebserver = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quizid]);
             if (!empty($sebserver) && $sebserver->sebserverenabled == 1) {
