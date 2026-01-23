@@ -256,9 +256,11 @@ class quizaccess_sebserver extends access_rule_base {
         $mform->addHelpButton('sebserverquitsecret', 'sebserverquitsecret', 'quizaccess_sebserver');
 
         if ($ineditmode) {
-            $mform->addElement('html',
-                    '<div class="alert alert-warning alert-block fade in">' .
-                    get_string('modificationinstruction', 'quizaccess_sebserver') . '</div>');
+            if(trim($readonlymanageddevices) == '') {
+                $mform->addElement('html',
+                        '<div class="alert alert-warning alert-block fade in">' .
+                        get_string('modificationinstruction', 'quizaccess_sebserver') . '</div>');
+            }
             if (is_siteadmin() && $sebserver) {
                 $mform->addElement('checkbox', 'resetseb', get_string('adminsonly', 'quizaccess_sebserver'),
                                    get_string('resetseb', 'quizaccess_sebserver'));
