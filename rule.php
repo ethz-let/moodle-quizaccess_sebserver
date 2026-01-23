@@ -133,8 +133,8 @@ class quizaccess_sebserver extends access_rule_base {
                 if (!quiz_has_attempts($quizid)) {
                     $mform->addElement('html',
                     '<script>var sebsection = document.getElementById("fitem_id_seb_requiresafeexambrowser"); ' .
-                    'sebsection.insertAdjacentHTML( "beforebegin", "<div class=\"alert alert-warning alert-block fade in\">' .
-                    get_string('managedbysebserver', 'quizaccess_sebserver') . '</div>"); </script>');
+                    'if(sebsection){ sebsection.insertAdjacentHTML("beforebegin", "<div class=\"alert alert-warning alert-block fade in\">' .
+                    get_string('managedbysebserver', 'quizaccess_sebserver') . '</div>");} </script>');
                 }
             }
         } else {
@@ -168,6 +168,7 @@ class quizaccess_sebserver extends access_rule_base {
                         get_string('manageddevicetemplate', 'quizaccess_sebserver') . ' ' . $sebserver->sebservertemplateid];
                     $readonlymanageddevices =
                         'sebserverenabled.setAttribute("style","pointer-events: none!important;background-color: #ededed;");';
+                    $readonly = ' readonly style="background-color: #ededed;"';    
                 }
             }
             // Now prevent anyone from modifying if there are attempts.
@@ -195,17 +196,16 @@ class quizaccess_sebserver extends access_rule_base {
 
         $embedjsscript = '<script>
 
-                          coresebplugin = document.querySelector("#id_seb_requiresafeexambrowser");
-                          initialselectedseboption = coresebplugin.value;
+                          var coresebplugin = document.querySelector("#id_seb_requiresafeexambrowser");
                           sebserverenabled = document.getElementById("id_sebserverenabled");
                           initialsebserverenabled = sebserverenabled.selectedIndex;
-                          if (initialsebserverenabled == 1) { // Enabled.
+                          if (initialsebserverenabled == 1 && coresebplugin) { // Enabled.
+                           initialselectedseboption = coresebplugin.value;
                            sebserevrselectionchange(sebserverenabled);
 
                           }
                           ' . $readonlymanageddevices . '
                           function sebserevrselectionchange(sel) {
-                                var coresebplugin = document.querySelector("#id_seb_requiresafeexambrowser");
                                 var allowedexamkeys = document.getElementById("id_seb_allowedbrowserexamkeys");
                                 // Create a new change event
                                 if (sel.value == 1) {
@@ -250,6 +250,7 @@ class quizaccess_sebserver extends access_rule_base {
         $mform->disabledif ('sebservershowquitbtn', 'sebserverenabled', 'neq', 1);
         $mform->addElement('text', 'sebserverquitsecret',
                             get_string('sebserverquitsecret', 'quizaccess_sebserver'), $readonly . ' size="70"');
+        //$mform->addRule('sebserverquitsecret', null, 'required', null, 'server');
         $mform->setType('sebserverquitsecret', PARAM_RAW);
         $mform->setDefault('sebserverquitsecret', '');
         $mform->disabledif ('sebserverquitsecret', 'sebserverenabled', 'neq', 1);
@@ -499,6 +500,11 @@ class quizaccess_sebserver extends access_rule_base {
             $errors['sebservertemplateid'] = get_string('templatemustbeselected', 'quizaccess_sebserver');
             return $errors;
         }
+        if($sebserverenabled == 1 && (empty(trim($sebserverquitsecret)) ||  is_null($sebserverquitsecret) ) ) {
+            
+            $errors['sebserverquitsecret'] = get_string('cannotuseseperategroupsandsingletopic', 'forum');
+        }  
+
         if ($data['sebserverquitsecret'] !== null && $data['sebserverquitsecret'] !== trim($data['sebserverquitsecret'])) {
             $errors['sebserverquitsecret'] = get_string('err_wrappingwhitespace', 'core_form');
             return $errors;
