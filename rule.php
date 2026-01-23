@@ -170,6 +170,11 @@ class quizaccess_sebserver extends access_rule_base {
                         'sebserverenabled.setAttribute("style","pointer-events: none!important;background-color: #ededed;");';
                     $readonly = ' readonly style="background-color: #ededed;"';    
                 }
+                // Special case for prior sebserver quizzes when pass was not mandatory.
+                if(!$sebserver->sebserverquitsecret || trim($sebserver->sebserverquitsecret) == '') {
+                    // Allow teachers to edit the filed to skip non-empty password validation.
+                    $readonly = '';
+                }
             }
             // Now prevent anyone from modifying if there are attempts.
             if ($ineditmode && quiz_has_attempts($quizid)) {
@@ -250,7 +255,6 @@ class quizaccess_sebserver extends access_rule_base {
         $mform->disabledif ('sebservershowquitbtn', 'sebserverenabled', 'neq', 1);
         $mform->addElement('text', 'sebserverquitsecret',
                             get_string('sebserverquitsecret', 'quizaccess_sebserver'), $readonly . ' size="70"');
-        //$mform->addRule('sebserverquitsecret', null, 'required', null, 'server');
         $mform->setType('sebserverquitsecret', PARAM_RAW);
         $mform->setDefault('sebserverquitsecret', '');
         $mform->disabledif ('sebserverquitsecret', 'sebserverenabled', 'neq', 1);
@@ -502,7 +506,7 @@ class quizaccess_sebserver extends access_rule_base {
         }
         if($sebserverenabled == 1 && (empty(trim($sebserverquitsecret)) ||  is_null($sebserverquitsecret) ) ) {
             
-            $errors['sebserverquitsecret'] = get_string('cannotuseseperategroupsandsingletopic', 'forum');
+            $errors['sebserverquitsecret'] = get_string('required');
         }  
 
         if ($data['sebserverquitsecret'] !== null && $data['sebserverquitsecret'] !== trim($data['sebserverquitsecret'])) {
