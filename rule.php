@@ -582,8 +582,8 @@ class quizaccess_sebserver extends access_rule_base {
             $fs = get_file_storage();
             $fs->delete_area_files($context->id, 'quizaccess_sebserver', 'filemanager_sebserverconfigfile');
             $DB->delete_records('quizaccess_sebserver', ['sebserverquizid' => $quiz->id]);
-            $DB->set_field('quizaccess_seb_quizsettings', 'allowedbrowserexamkeys',
-                            null, ['quizid' => $quiz->id]);
+            // Disable seb deeper integration regardless. See EMDL-1602.
+            $DB->delete_records('quizaccess_seb_quizsettings', ['quizid' => $quiz->id]);
             // Delete the seb cache just in case.
             $sebcache = \cache::make('quizaccess_seb', 'config');
             $sebcache->delete($quiz->id);

@@ -857,8 +857,8 @@ class quizaccess_sebserver_external extends external_api{
                 if ($ckempty == 1 && $bkempty == 1) { // Delete restriction.
                     $DB->set_field('quizaccess_sebserver', 'sebserverrestricted', 0,
                     ['sebserverquizid' => $quizid]);
-                    $DB->set_field('quizaccess_seb_quizsettings', 'allowedbrowserexamkeys', null,
-                    ['quizid' => $quizid]);
+                    // Disable seb deeper integration regardless. See EMDL-1602.
+                    $DB->delete_records('quizaccess_seb_quizsettings', ['quizid' => $quizid]);
                     $saved[] = [
                         'quizid' => $quizid,
                         'browserkeys' => $params['browserkeys'],
