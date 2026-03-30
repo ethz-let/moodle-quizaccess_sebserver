@@ -444,9 +444,6 @@ class quizaccess_sebserver_external extends external_api{
                         continue;
                     }
                     $instance = $rawmods[$cm->id];
-                    if (!empty($cm->extra)) {
-                        $instance->extra = $cm->extra;
-                    }
                     $quizzes[] = $instance;
                 }
 
