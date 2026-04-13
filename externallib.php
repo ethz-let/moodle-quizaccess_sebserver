@@ -448,22 +448,12 @@ class quizaccess_sebserver_external extends external_api{
                 }
 
                 foreach ($quizzes as $quiz) {
-                    $context = context_module::instance($quiz->coursemodule);
-                    if (has_capability('mod/quiz:view', $context)) {
-                        $viewablefields = ['id', 'course', 'coursemodule', 'name', 'intro',
-                                           'timeopen', 'timeclose'];
-                        // Fields only for managers.
-                        if (has_capability('moodle/course:manageactivities', $context)) {
-                            $additionalfields = ['timecreated', 'timemodified'];
-                            $viewablefields = array_merge($viewablefields, $additionalfields);
-                        }
-
-                        foreach ($viewablefields as $field) {
-                            $quizdetails[$field] = $quiz->{$field};
-                            if ($field == 'name' || $field == 'intro') {
-                                $quizdetails[$field] = external_format_string($quiz->{$field}, $context->id);
-                            }
-
+                    $viewablefields = ['id', 'course', 'coursemodule', 'name', 'intro',
+                                        'timeopen', 'timeclose', 'timecreated', 'timemodified'];
+                    foreach ($viewablefields as $field) {
+                        $quizdetails[$field] = $quiz->{$field};
+                        if ($field == 'name' || $field == 'intro') {
+                            $quizdetails[$field] = external_format_string($quiz->{$field}, $context->id);
                         }
                     }
                     $returnedquizzes[] = $quizdetails;
