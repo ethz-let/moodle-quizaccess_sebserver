@@ -1356,4 +1356,67 @@ class quizaccess_sebserver_external extends external_api{
 
     }
 
+    /**
+     * Validate SEB Client version.
+     *
+     * @param string $version The version string
+     * @param int $cmid The cmid
+     * @throws moodle_exception.
+     * @since Moodle 3.2
+     */
+    public static function validate_sebversion($version, $cmid) {
+        global $USER, $DB;
+
+        $params = self::validate_parameters(self::validate_sebversion_parameters(),
+                                            ['version' => $version, 'cmid' => $cmid]);
+        // Capability checking.
+        $context = context_system::instance();
+
+        if (empty($params['version'])) {
+            throw new moodle_exception('SEB Client version missing.');
+        }
+         if (!($params['cmid']) || $params['cmid'] == 0) {
+            throw new moodle_exception('cmid missing.');
+        }
+        $result['versionvalidated'] = true;
+        // Do version checks in db for that test.
+        if($allgood == 1) {
+            $SESSION->quizaccess_sebserver_sebversion[$cmid] = true;
+        } else {
+            $result['versionvalidated'] = false;
+            unset($SESSION->quizaccess_sebserver_sebversion[$cmid]);
+        }
+        
+
+        return $result;
+    }
+
+    /**
+     * Returns description of method result value
+     *
+     * @return external_description
+     * @since Moodle 3.2
+     */
+    public static function validate_sebversion_returns() {
+        return new external_single_structure(
+            [
+                'result' => new external_value(PARAM_BOOL, 'True if passes seb client version check.'),
+            ]
+        );
+    }
+
+    /**
+     * Returns description of method parameters
+     *
+     * @return external_function_parameters
+     * @since Moodle 2.3
+     */
+    public static function validate_sebversion_parameters() {
+        return new external_function_parameters(
+            [
+                'version' => new external_value(PARAM_RAW, 'Version string as in JSAPI', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
+                'cmid' => new external_value(PARAM_INT, 'Quiz cmid.', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
+            ]
+        );
+    }
 }
