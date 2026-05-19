@@ -292,7 +292,15 @@ class quizaccess_sebserver extends access_rule_base {
     public function get_superceded_rules() {
         return [];
     }
-
+    
+    /**
+     * This is called when the current attempt at the quiz is finished.
+     */
+    public function current_attempt_finished() {
+        global $SESSION;
+        unset($SESSION->quizaccess_sebserver_sebversion[$this->quizobj->get_cmid()]);
+    }
+    
     /**
      * Information, such as might be shown on the quiz view page, relating to this restriction.
      * There is no obligation to return anything. If it is not appropriate to tell students
@@ -330,8 +338,11 @@ class quizaccess_sebserver extends access_rule_base {
         }
         $validsession = !empty($SESSION->quizaccess_seb_access[$cmid]);
         if ($validsession) {
+            $PAGE->requires->js_call_amd('quizaccess_sebserver/validate_sebversion', 'init',
+                                         [$this->quiz->cmid]);
             $return .= html_writer::div($this->get_quit_button()) .' ';
         }
+        
         // Get SebConfig file from SebServer.
         $conndetails = self::sebserverconnectiondetails();
         if (empty($conndetails)) {
