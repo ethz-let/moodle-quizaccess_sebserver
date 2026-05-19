@@ -74,5 +74,19 @@ function xmldb_quizaccess_sebserver_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2025032100, 'quizaccess', 'sebserver');
     }
+    if ($oldversion < 2026062000) {
+        $table = new xmldb_table('quizaccess_sebserver_sebversion');
+        $table->add_field('id', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, XMLDB_SEQUENCE, null);
+        $table->add_field('sebserverquizid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null);
+        $table->add_field('os', XMLDB_TYPE_CHAR, '10', null, null, null, '');
+        $table->add_field('version', XMLDB_TYPE_CHAR, '12', null, null, null, '');
+        $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+        $table->add_key('sebserverquizid', XMLDB_KEY_FOREIGN, ['sebserverquizid'], 'quiz', ['id']);
+        // Create the table
+        if (!$dbman->table_exists($table)) {
+            $dbman->create_table($table);
+        }
+        upgrade_plugin_savepoint(true, 2026062000, 'quizaccess', 'sebserver');
+    }
     return true;
 }
