@@ -98,4 +98,12 @@ $functions = [
         'type' => 'write',
         'capabilities' => 'quizaccess/sebserver:managesebserverconnection',
     ],
+    'quizaccess_sebserver_validate_version' => [
+        'classname' => 'quizaccess_sebserver_external',
+        'methodname' => 'validate_version',
+        'classpath' => 'mod/quiz/accessrule/sebserver/externallib.php',
+        'description' => 'Validate minimum required version of SebClient',
+        'type' => 'read',
+        'ajax' => true,
+    ],
 ];
