@@ -1442,7 +1442,8 @@ class quizaccess_sebserver_external extends external_api{
                 } else {
                     // Exclude Build number in case of lack of build Nr.
                     if ($clientos == 'win') {
-                        $clientversion = $clientversion[0] . '.' . $clientversion[1] . '.' . $clientversion[2];
+                        $splitclientversion = explode('.', $clientversion);
+                        $clientversion = $splitclientversion[0] . '.' . $splitclientversion[1] . '.' . $splitclientversion[2];
                     }
                 }        
 
