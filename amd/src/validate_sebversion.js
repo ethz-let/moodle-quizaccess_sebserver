@@ -39,27 +39,33 @@ define([
     /** @var SELECTOR List of CSS selectors. */
     const SELECTOR = {
         MAIN: '#region-main',
-        LOADING: '.seb-loading',
+        VERSIONLOADING: '.sebserver-versionloading',
+        VERSIONERROR: '.sebserver-versionerror',
     };
 
     /** @var Template List of mustache templates. */
     const TEMPLATE = {
-        LOADING: 'quizaccess_seb/loading',
+        VERSIONLOADING: 'quizaccess_sebserver/versionloading',
+        VERSIONERROR: 'quizaccess_sebserver/versionerror',
     };
+
+    exitLink = '';
+    requiredVersions = '';
+    foundVersion = '';
+
     /**
      * Manages view when access has been granted.
      */
     function allowAccess(){
         window.location.reload();
     };
-
     /**
      * Add an alert to page to inform that Safe Exam Browser access is being checked.
      *
      * @return {Promise}
      */
-    function addLoadingAlert() {
-        return Templates.render(TEMPLATE.LOADING, {}).then((html, js) => {
+    function addVersionLoadingAlert() {
+        return Templates.render(TEMPLATE.VERSIONLOADING, {}).then((html, js) => {
             const alertRegion = window.document.querySelector(SELECTOR.MAIN);
             return Templates.prependNodeContents(alertRegion, html, js);
         }).catch(Notification.exception);
@@ -68,23 +74,49 @@ define([
     /**
      * Remove the Safe Exam Browser access check alert from the page.
      */
-    function clearLoadingAlert() {
-        const alert = window.document.querySelector(SELECTOR.LOADING);
+    function clearVersionLoadingAlert() {
+        const alert = window.document.querySelector(SELECTOR.VERSIONLOADING);
         if (alert) {
             Templates.replaceNode(alert, '', '');
         }
     };
 
+    // divs for version error messages.
+
+    /**
+     * Add an alert to page to inform that Safe Exam Browser access is being checked.
+     *
+     * @return {Promise}
+     */
+    function addVersionError() {
+        return Templates.render(TEMPLATE.VERSIONERROR, {exitlink: exitLink, foundversion: foundVersion, requiredversions: requiredVersions}).then((html, js) => {
+            const alertRegion = window.document.querySelector(SELECTOR.MAIN);
+            return Templates.prependNodeContents(alertRegion, html, js);
+        }).catch(Notification.exception);
+    };
+
+    /**
+     * Remove the Safe Exam Browser access check alert from the page.
+     */
+    function clearVersionError() {
+        const alert = window.document.querySelector(SELECTOR.VERSIONERROR);
+        if (alert) {
+            Templates.replaceNode(alert, '', '');
+        }
+    };
+    // END divs for version error messages.
+
     /**
      * Display validation failed modal.
      */
-    function showValidationFailedModal() {
-        ModalAlert.create({
-            title: Str.get_string('invalidsebversiontitle', 'quizaccess_sebserver'),
-            body: Str.get_string('invalidsebversionbody', 'quizaccess_sebserver'),
-            large: false,
-            show: true,
-        }).catch(Notification.exception);
+    function showVersionValidationFailedModal() {
+        addVersionError();
+        clearVersionLoadingAlert();
+        // Hide the invalid key text caused by SEB deeper intergration.
+        var q = document.querySelectorAll('.quizattempt .text-start');
+        q.forEach(function(elem) {
+            elem.style.display = 'none';
+        });
     }
 
     /**
@@ -97,15 +129,22 @@ define([
         // Action opening up the quiz.
         validateSebVersion(cmid).then((response) => {
             // Show the alert for an extra second to allow user to see it.
-        setTimeout(clearLoadingAlert, 1000);
-            if (response.configkey && response.browserexamkey) {
-            // View.allowAccess();
-            return true;
+            setTimeout(clearVersionLoadingAlert, 1000);
+            setTimeout(clearVersionError, 1000);
+            if (response.versionvalidated == true) {
+               allowAccess();
             } else {
-                setTimeout(showValidationFailedModal, 1000);
+                requiredVersionsArray = response.restrectedversions;
+               /* requiredVersions = '';
+                for(var i = 0; i < requiredVersionsArray.length; i++){
+                    for(var j = 0; j < requiredVersionsArray[i].length; j++){
+                        requiredVersions += "<li>" + requiredVersionsArray[i][j] + "</li>";
+                    }
+                }*/
+                requiredVersions = "<li>" + requiredVersionsArray.join("</li><li>") + "</li>";
+                foundVersion = response.foundversion;
+                setTimeout(showVersionValidationFailedModal, 1000);
             }
-
-            return response;
         }).catch(err => {
             Notification.exception(err);
         });
@@ -118,12 +157,11 @@ define([
      * @return {Promise}
      */
     function validateSebVersion(cmid) {
-        consoleparseFloat
         const request = {
-            methodname: 'quizaccess_sebserver_validate_version',
+            methodname: 'quizaccess_sebserver_validate_sebversion',
             args: {
+                version: window.SafeExamBrowser.version,
                 cmid: cmid,
-                sebversion: window.SafeExamBrowser.version
             },
         };
 
@@ -131,15 +169,15 @@ define([
     }
 
     return {
-        init: async function(cmid) {
+        init: async function(cmid, exitlink) {
                     // If the SafeExamBrowser object is instantiated, try and use it to fetch the access keys.
                     if (window.SafeExamBrowser !== null) {
-                        await addLoadingAlert();
-                        setTimeout(showValidationFailedModal, 1000);
+                        await addVersionLoadingAlert();
+                        exitLink = exitlink;
                         if (window.SafeExamBrowser.version !== null) {
                             checksebversion(cmid);
                         } else {
-                            setTimeout(showValidationFailedModal, 1000);
+                            setTimeout(showVersionValidationFailedModal, 1000);
                         }
                     }
         }

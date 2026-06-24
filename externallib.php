@@ -1365,7 +1365,7 @@ class quizaccess_sebserver_external extends external_api{
      * @since Moodle 3.2
      */
     public static function validate_sebversion($version, $cmid) {
-        global $USER, $DB;
+        global $SESSION;
 
         $params = self::validate_parameters(self::validate_sebversion_parameters(),
                                             ['version' => $version, 'cmid' => $cmid]);
@@ -1378,15 +1378,95 @@ class quizaccess_sebserver_external extends external_api{
          if (!($params['cmid']) || $params['cmid'] == 0) {
             throw new moodle_exception('cmid missing.');
         }
-        $result['versionvalidated'] = true;
-        // Do version checks in db for that test.
-        if($allgood == 1) {
-            $SESSION->quizaccess_sebserver_sebversion[$cmid] = true;
-        } else {
-            $result['versionvalidated'] = false;
-            unset($SESSION->quizaccess_sebserver_sebversion[$cmid]);
-        }
+        $versionrestrictions = get_config('quizaccess_sebserver', 'sebversions');
+        $version = strtolower(trim($params['version']));
+       // $version = "SEB_Windows_2.10.2.906";
+       // $version = strtolower(trim($version));
+        // Convert windows to win.
+        $tornversionstr = explode('_', $version);
+        $clientos = strtolower($tornversionstr[1]);
+        $clientos = str_replace('windows', 'win', $clientos);
+
+        $clientversion = $tornversionstr[2];
+        $foundversion = $clientos . '[' . $clientversion . ']';
         
+        $result['versionvalidated'] = false;
+        $requiredversions = [];
+
+        if ($versionrestrictions && !empty(trim($versionrestrictions))) {
+            $availableversion = explode("\r\n", $versionrestrictions);
+            foreach ($availableversion as $ver) {
+                                                  
+                // Check if version contains .min.
+                $ver = trim(strtolower($ver));
+                $verpieces = explode('.', $ver);
+
+                // Skip other OS's.
+                if ($clientos != $verpieces[0]) {
+                    continue;
+                }
+                // Alliance Edition Exception.
+                if (str_contains($ver, '.AE')) {
+                    if (!str_contains($version, 'Alliance Edition')) {
+                        continue;
+                    } else {
+                        $restrectedversion = str_replace('.AE', '', $ver); 
+                    }
+                }
+                if (str_contains($ver, '.min')) {
+                    $operator = '>=';
+                    $restrectedversion = str_replace('.min', '', $ver); 
+                } elseif (str_contains($ver, '.max')) {
+                    $operator = '<=';
+                    $restrectedversion = str_replace('.max', '', $ver); 
+                } elseif (str_contains($ver, '.ne')) {
+                    $operator = '<>';
+                    $restrectedversion = str_replace('.min', '', $ver);
+                } else {
+                    $operator = '=';
+                    $restrectedversion = str_replace('.eq', '', $ver); 
+                }
+
+                $splitrestrectedversion = explode('.', $restrectedversion);
+                $versioncompare = $splitrestrectedversion[1] . '.' . $splitrestrectedversion[2] .
+                                  '.' . $splitrestrectedversion[3];
+
+                // Another exception for windows build versions.
+                if (array_key_exists(4, $splitrestrectedversion) &&
+                    is_numeric($splitrestrectedversion[4])) {
+                    // If restricted version contains buildID, then include it.
+                    $versioncompare .= '.' . $splitrestrectedversion[4];
+                    if ($clientos != 'win') {
+                        $clientversion .= '.' . $tornversionstr[3];
+                    }
+                } else {
+                    // Exclude Build number in case of lack of build Nr.
+                    if ($clientos == 'win') {
+                        $clientversion = $clientversion[0] . '.' . $clientversion[1] . '.' . $clientversion[2];
+                    }
+                }        
+
+                if (version_compare($clientversion, $versioncompare, $operator)) {
+                    $SESSION->quizaccess_sebserver_sebversion[$cmid] = true;
+                    $requiredversions[] =  $clientos . ': ' . $operator . $versioncompare;
+                    $result['versionvalidated'] = true;
+                    break;
+                } else {
+                    $requiredversions[] =  $clientos . ': ' . $operator . $versioncompare;
+                }
+            }
+        } else {
+            // Seems No version restriction is set. Allow all.
+            $SESSION->quizaccess_sebserver_sebversion[$cmid] = true;
+            $result['versionvalidated'] = true;
+        }
+
+        $result['restrectedversions'] = $requiredversions;
+        $result['foundversion'] = $clientos . '[' . $clientversion . ']';//$foundversion;
+
+        if($result['versionvalidated'] !== true) {
+             unset($SESSION->quizaccess_sebserver_sebversion[$cmid]);
+        }   
 
         return $result;
     }
@@ -1398,11 +1478,13 @@ class quizaccess_sebserver_external extends external_api{
      * @since Moodle 3.2
      */
     public static function validate_sebversion_returns() {
+
         return new external_single_structure(
             [
-                'result' => new external_value(PARAM_BOOL, 'True if passes seb client version check.'),
-            ]
-        );
+                'versionvalidated' => new external_value(PARAM_BOOL, 'Whether valid version'),
+                'restrectedversions' => new external_multiple_structure(new external_value(PARAM_RAW, 'List of valid versions')),
+                'foundversion' => new external_value(PARAM_RAW, 'Current seb client version'),
+            ]);
     }
 
     /**

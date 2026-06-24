@@ -1,0 +1,10 @@
+{
+    "name": "ethz-let/moodle-quizaccess_sebserver",
+    "license": "GPL-3.0-or-later",
+    "description": "SEB Server plugin for moodle. This plugin works only with SEB Server version 2.0.",
+    "type": "moodle-quizaccess",
+    "homepage": "https://github.com/ethz-let/moodle-quizaccess_sebserver",
+    "require": {
+        "moodle/lms": ">=4.2.0 <5.3.0"
+    }
+}

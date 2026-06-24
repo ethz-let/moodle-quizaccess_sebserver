@@ -1,0 +1,10 @@
+#id_s_quizaccess_sebserver_sebversions, .quizaccess_sebserver_sebversionsinfo {
+  width: 50%;
+  min-height: 100px;
+  background: url([[pix:quizaccess_sebserver|numbering]]) top -12px left / auto no-repeat, 
+              linear-gradient(#FFF 50%, #FFF 50%) top left / 100% 32px;
+  padding: 0 0 0 30px;
+  resize: vertical;
+  line-height: 16px;
+  font-size: 15px;
+}

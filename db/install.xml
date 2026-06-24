@@ -24,17 +24,5 @@
         <KEY NAME="sebserverquizid" TYPE="foreign-unique" FIELDS="sebserverquizid" REFTABLE="quiz" REFFIELDS="id" PREVIOUS="primary"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="quizaccess_sebserver_sebversion" COMMENT="Stores Seb Client version requirements.">
-      <FIELDS>
-        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true" NEXT="quizid"/>
-        <FIELD NAME="sebserverquizid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="false" SEQUENCE="false" COMMENT="Foreign key to quiz.id." PREVIOUS="id" NEXT="os"/>
-        <FIELD NAME="os" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="OS name"  PREVIOUS="sebserverquizid" NEXT="version"/>
-        <FIELD NAME="version" TYPE="char" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="OS name"  PREVIOUS="sebserverquizid"/>
-      </FIELDS>
-      <KEYS>
-        <KEY NAME="primary" TYPE="primary" FIELDS="id" NEXT="sebserverquizid"/>
-        <KEY NAME="sebserverquizid" TYPE="foreign-unique" FIELDS="sebserverquizid" REFTABLE="quiz" REFFIELDS="id" PREVIOUS="primary"/>
-      </KEYS>
-    </TABLE>
   </TABLES>
 </XMLDB>

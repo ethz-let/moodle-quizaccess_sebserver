@@ -1,0 +1,55 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template quizaccess_sebserver/versionerror
+
+    versionerror container.
+
+    Example context (json):
+    {
+        "extraclasses": "class"
+    }
+}}
+<div class="sebserver-versionerror alert alert-warning fade in" role="alert" data-aria-autofocus="true">
+<h3>{{#str}}invalidversiontitle , quizaccess_sebserver{{/str}}</h3>
+<br />
+    <div class="d-flex">
+	
+        <span>
+            {{#str}}invalidversionmsg , quizaccess_sebserver{{/str}}
+<br />
+<b>{{#str}}currentversion , quizaccess_sebserver{{/str}}:</b> {{{foundversion}}}
+<br />
+<b>{{#str}}requiredversions , quizaccess_sebserver{{/str}}:</b> <ul>{{{requiredversions}}}</ul>
+
+        </span>
+</div>
+    <br />
+        <div class="p-3 mb-2 bg-light text-dark">
+
+            {{#str}}howtofixversionerror , quizaccess_sebserver{{/str}}
+
+<br />
+
+<div class="pt-3">
+<a class="btn btn-primary text-white" id="seb-quit-button" href="{{{exitlink}}}">{{#str}}exitsebbutton, quizaccess_seb{{/str}}</a>
+</div>
+
+
+</div>
+
+</div>

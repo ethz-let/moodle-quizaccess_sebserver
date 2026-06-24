@@ -254,7 +254,18 @@ class quizaccess_sebserver extends access_rule_base {
         $mform->setDefault('sebserverquitsecret', '');
         $mform->disabledif ('sebserverquitsecret', 'sebserverenabled', 'neq', 1);
         $mform->addHelpButton('sebserverquitsecret', 'sebserverquitsecret', 'quizaccess_sebserver');
+        
+        $defaultempty = get_string('setting:noversionrestriction', 'quizaccess_sebserver');
+        $versionrestrictions = get_config('quizaccess_sebserver', 'sebversions');
+        if(!$versionrestrictions || empty(trim($versionrestrictions))) {
+            $sebversionsinfo = $defaultempty;
+        } else {
+            $sebversionsinfo = '<ul>';
+            $sebversionsinfo .= '<li>' . str_replace("\n", '</li><li>', $versionrestrictions) . '</li>';
+            $sebversionsinfo .= '</ul>';
+        }
 
+        $mform->addElement('static', 'allowedsebversions', get_string('allowedsebversions', 'quizaccess_sebserver'), $sebversionsinfo);
         if ($ineditmode) {
             if(trim($readonlymanageddevices) == '') {
                 $mform->addElement('html',
@@ -316,6 +327,7 @@ class quizaccess_sebserver extends access_rule_base {
         $cmid = $this->quizobj->get_cmid();
         $courseid = $this->quizobj->get_courseid();
         $return = '';
+
         if ($this->quizobj->has_capability('quizaccess/sebserver:sebserverautologinlink')) {
             $return .= html_writer::start_div('alert alert-info alert-block fade in',
                                              ['style' => "text-align: left;"]) .
@@ -337,10 +349,30 @@ class quizaccess_sebserver extends access_rule_base {
             }
         }
         $validsession = !empty($SESSION->quizaccess_seb_access[$cmid]);
+        $validversion = !empty($SESSION->quizaccess_sebserver_sebversion[$cmid]);
         if ($validsession) {
-            $PAGE->requires->js_call_amd('quizaccess_sebserver/validate_sebversion', 'init',
-                                         [$this->quiz->cmid]);
             $return .= html_writer::div($this->get_quit_button()) .' ';
+
+            if(!$this->quiz->sebserverquitlink){
+                $this->quiz->sebserverquitlink = '';
+            }
+            
+            if(!$validversion || !$SESSION->quizaccess_sebserver_sebversion[$cmid]){
+                unset($SESSION->quizaccess_seb_access[$cmid]);
+                unset($SESSION->quizaccess_sebserver_sebversion[$cmid]);
+
+                $PAGE->requires->js_call_amd('quizaccess_sebserver/validate_sebversion', 'init',
+                    [$this->quiz->cmid, $this->quiz->sebserverquitlink]);
+
+                $quitbutton = html_writer::link(
+                    $this->quiz->sebserverquitlink,
+                    get_string('exitsebbutton', 'quizaccess_seb'),
+                    ['id' => 'seb-quit-button', 'class' => 'btn btn-primary']
+                );
+
+                unset($SESSION->quizaccess_seb_access[$cmid]);
+                return $return;
+            }
         }
         
         // Get SebConfig file from SebServer.
@@ -593,6 +625,7 @@ class quizaccess_sebserver extends access_rule_base {
             $fs = get_file_storage();
             $fs->delete_area_files($context->id, 'quizaccess_sebserver', 'filemanager_sebserverconfigfile');
             $DB->delete_records('quizaccess_sebserver', ['sebserverquizid' => $quiz->id]);
+            $DB->delete_records('quizaccess_sebserver_sebversion', ['sebserverquizid' => $quiz->id]);
             // Disable seb deeper integration regardless. See EMDL-1602.
             $DB->delete_records('quizaccess_seb_quizsettings', ['quizid' => $quiz->id]);
             // Delete the seb cache just in case.

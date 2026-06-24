@@ -69,4 +69,14 @@ if ($hassiteconfig) {
         get_string('setting:sebserverconnectiondetails', 'quizaccess_sebserver'),
         $connectiondetails)
     );
+    
+    $settings->add(new admin_setting_heading(
+        'quizaccess_sebserver/sebclientsrestrictiondetails',
+        get_string('setting:sebclientsrestrictiondetails', 'quizaccess_sebserver'), '&nbsp;')
+    );
+    $text = get_string('setting:sebclientrestrictionvalues', 'quizaccess_sebserver');
+    $help = '<div class="p-3 mb-2 bg-light text-dark">' . get_string('setting:versioninghelpinfo', 'quizaccess_sebserver') . '</div>';
+    $default = get_string('setting:noversionrestriction', 'quizaccess_sebserver');
+    $setting = new admin_setting_configtextarea("quizaccess_sebserver/sebversions", $text, $help, $default, PARAM_RAW, '50', '10');
+    $settings->add($setting);
 }

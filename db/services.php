@@ -31,7 +31,7 @@ $services = [
          'functions' => ['quizaccess_sebserver_backup_course', 'quizaccess_sebserver_get_exams',
          'quizaccess_sebserver_set_exam_data', 'quizaccess_sebserver_get_restriction',
          'quizaccess_sebserver_set_restriction', 'core_webservice_get_site_info', 'core_user_get_users_by_field',
-         'quizaccess_sebserver_connection', 'quizaccess_sebserver_connection_delete'],
+         'quizaccess_sebserver_connection', 'quizaccess_sebserver_connection_delete', 'quizaccess_sebserver_validate_sebversion'],
          'enabled' => 1,
          'downloadfiles' => 1,
          'uploadfiles' => 1,
@@ -98,9 +98,9 @@ $functions = [
         'type' => 'write',
         'capabilities' => 'quizaccess/sebserver:managesebserverconnection',
     ],
-    'quizaccess_sebserver_validate_version' => [
+    'quizaccess_sebserver_validate_sebversion' => [
         'classname' => 'quizaccess_sebserver_external',
-        'methodname' => 'validate_version',
+        'methodname' => 'validate_sebversion',
         'classpath' => 'mod/quiz/accessrule/sebserver/externallib.php',
         'description' => 'Validate minimum required version of SebClient',
         'type' => 'read',
