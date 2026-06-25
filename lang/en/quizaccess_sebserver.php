@@ -72,21 +72,21 @@ $string['manageddevicetemplate'] = 'Exam Configuration ID =';
 $string['proceednextquiz'] = 'Go to';
 $string['hasconsecutivequiz'] = 'Subsequent quiz';
 $string['setting:sebclientsrestrictiondetails'] = 'SEB Client version restrictions';
-$string['setting:sebclientrestrictionvalues'] = 'List of restricted versions';
+$string['setting:sebclientrestrictionvalues'] = 'List of permitted versions';
 $string['setting:noversionrestriction'] = 'Empty (No restriction)';
-$string['setting:versioninghelpinfo'] = 'Allows you to specify one or more SEB version(s) that are accepted.<br />A version restriction has the following format:
+$string['setting:versioninghelpinfo'] = 'Allows you to specify one or more SEB version(s) that are permitted.<br />A version restriction has the following format:
 <b>OS.Major.Minor.[Patch].[min/max/eq/ne]</b><br >
-Please enter one restriction per line, e.g. Win.3.9.min to allow all SEB for Windows versions starting with 3.9 or
+Please enter one version per line, e.g. Win.3.9.min to allow all SEB for Windows versions starting with 3.9 or
 newer.<ul>
 <li><b>OS</b>: Win , macOS , 10S, or iPadOS</li>
 <li><b>Major / Minor / Patch</b>: numeric version components (e.g. 3.9.1)</li>
 <li><b>min or max or eq or ne</b>: appends "operator" semantics to the rest of the rule</ul>';
-$string['invalidversiontitle'] = 'SEB version mismatch';
-$string['invalidversionmsg'] = 'The installed Safe Exam Browser version does not meet the minimum requirement set for this quiz. Please install the required version and start Safe Exam Browser again.';
-$string['currentversion'] = 'Current SEB Client version';
+$string['invalidversiontitle'] = 'Wrong SEB version';
+$string['invalidversionmsg'] = 'The installed Safe Exam Browser version does not meet the minimum requirement set. Please install the required version and start Safe Exam Browser again.';
+$string['currentversion'] = 'Installed SEB Client version';
 $string['requiredversions'] = 'Required SEB Client version(s)';
 $string['howtofixversionerror'] = '<b>How to fix this:</b><ol><li>Click Exit Safe Exam Browser below to quit SEB.</li>
-<li>Install Safe Exam Browser the above required version(s) for your operating system.</li>
-<li>Open the quiz link again from your browser and start Safe Exam Browser.</li></ol>';
+<li>Install the required (minimal) version of SEB for your operating system.</li>
+<li>NAvigate to the quiz again and click on the button Start Safe Exam Browser.</li></ol>';
 $string['checkingversion'] = 'Checking SEB Client version..';
 $string['allowedsebversions'] = 'Allowed SEB Client version(s)';
