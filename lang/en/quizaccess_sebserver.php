@@ -86,7 +86,7 @@ $string['invalidversionmsg'] = 'The installed Safe Exam Browser version does not
 $string['currentversion'] = 'Installed SEB Client version';
 $string['requiredversions'] = 'Required SEB Client version(s)';
 $string['howtofixversionerror'] = '<b>How to fix this:</b><ol><li>Click Exit Safe Exam Browser below to quit SEB.</li>
-<li>Install the required (minimal) version of SEB for your operating system.</li>
+<li>Install the required (minimum) version of SEB for your operating system.</li>
 <li>NAvigate to the quiz again and click on the button Start Safe Exam Browser.</li></ol>';
 $string['checkingversion'] = 'Checking SEB Client version..';
 $string['allowedsebversions'] = 'Allowed SEB Client version(s)';
