@@ -71,26 +71,22 @@ $string['sebservertemplateid_help'] = 'Wählen Sie passend zu Ihrem Prüfungssze
 $string['manageddevicetemplate'] = 'Exam Konfiguration ID=';
 $string['proceednextquiz'] = 'Gehe zu';
 $string['hasconsecutivequiz'] = 'Anschliessender Test';
-$string['setting:sebclientsrestrictiondetails'] = 'SEB Clients versions restrictions';
-$string['setting:sebclientrestrictionvalues'] = 'List of restricted versions';
-$string['setting:noversionrestriction'] = 'Empty (No restriction)';
-$string['setting:versioninghelpinfo'] = 'Allows you to specify one or more SEB version(s) that are accepted.<br />A version restriction has the following format:
+$string['setting:sebclientsrestrictiondetails'] = 'SEB Client Versionsbeschränkung';
+$string['setting:sebclientrestrictionvalues'] = 'Liste der akzeptierten Versionen';
+$string['setting:noversionrestriction'] = 'Leer (Keine Versionsbeschränkung)';
+$string['setting:versioninghelpinfo'] = 'Hier die erlaubte(n) SEB-Version(en) festgelegen.<br />Eine Versionsbeschränkung hat folgendes Format:
 <b>OS.Major.Minor.[Patch].[min/max/eq/ne]</b><br >
-Please enter one restriction per line, e.g. Win.3.9.min to allow all SEB for Windows versions starting with 3.9 or
-newer.<ul>
-<li><b>OS</b>: Win , macOS , 10S, or iPadOS</li>
-<li><b>Major / Minor / Patch</b>: numeric version components (e.g. 3.9.1)</li>
-<li><b>min or max or eq or ne</b>: appends "operator" semantics to the rest of the rule</ul>
-<pre>Ps maybe in future (extra attribute "release" in JSAPI) :
-= or > or >= or < or <= or <>|os:macos/win/ios|major:3|minor:11|patch:999|maturity:stable/rc1/dev/beta/alpha/etc|special:ae|fullversion:3.11.06.999|etc:etc
-</pre>
-';
-$string['invalidversiontitle'] = 'SEB version mismatch';
-$string['invalidversionmsg'] = 'The installed Safe Exam Browser version does not meet the minimum requirement set for this quiz. Please install the required version and start Safe Exam Browser again.';
-$string['currentversion'] = 'Current SEB Client version';
-$string['requiredversions'] = 'Required SEB Client version(s)';
-$string['howtofixversionerror'] = '<b>How to fix this:</b><ol><li>Click Exit Safe Exam Browser below to quit SEB.</li>
-<li>Install Safe Exam Browser the above required version(s) for your operating system.</li>
-<li>Open the quiz link again from your browser and start Safe Exam Browser.</li></ol>';
-$string['checkingversion'] = 'Checking SEB Client version..';
-$string['allowedsebversions'] = 'Allowed SEB Client version(s)';
+Bitte pro Zeile eine Version eingeben, z.B. Win.3.9.min um alle SEB für Windows Versionen grösser gleich 3.9 zu erlauben.
+<ul>
+<li><b>OS</b>: Win , macOS , 10S oder iPadOS</li>
+<li><b>Major / Minor / Patch</b>: numerische Versionsbestandteile (z.B. 3.9.1)</li>
+<li><b>min oder max oder eq oder ne</b>: fügt der Regel eine "Operator"-Semantik hinzu</ul>';
+$string['invalidversiontitle'] = 'Falsche SEB Version';
+$string['invalidversionmsg'] = 'Die installierte Version des Safe Exam Browser erfüllt nicht die festgelegten Anforderungen. Bitte installieren Sie die erforderliche Version und starten Sie den Safe Exam Browser erneut.';
+$string['currentversion'] = 'Installierte SEB Client Version';
+$string['requiredversions'] = 'Erforderliche SEB Client Version(en)';
+$string['howtofixversionerror'] = '<b>Um dies zu beheben:</b><ol><li>Klicken Sie den Button Safe Exam Browser beenden, um SEB zu beenden.</li>
+<li>Installieren Sie die für Ihr Betriebssystem erforderliche (Mindest-)Version des Safe Exam Browser.</li>
+<li>Navigieren Sie wieder zum Quiz und klicken Sie erneut den Button Safe Exam Browser starten.</li></ol>';
+$string['checkingversion'] = 'Überprüfe SEB Client Version..';
+$string['allowedsebversions'] = 'Erlaubte SEB Client Version(en)';
