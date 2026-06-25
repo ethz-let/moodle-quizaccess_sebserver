@@ -72,11 +72,11 @@ $string['manageddevicetemplate'] = 'Exam Konfiguration ID=';
 $string['proceednextquiz'] = 'Gehe zu';
 $string['hasconsecutivequiz'] = 'Anschliessender Test';
 $string['setting:sebclientsrestrictiondetails'] = 'SEB Client Versionsbeschränkung';
-$string['setting:sebclientrestrictionvalues'] = 'Liste der akzeptierten Versionen';
+$string['setting:sebclientrestrictionvalues'] = 'Liste der erlaubten Versionen';
 $string['setting:noversionrestriction'] = 'Leer (Keine Versionsbeschränkung)';
 $string['setting:versioninghelpinfo'] = 'Hier die erlaubte(n) SEB-Version(en) festgelegen.<br />Eine Versionsbeschränkung hat folgendes Format:
 <b>OS.Major.Minor.[Patch].[min/max/eq/ne]</b><br >
-Bitte pro Zeile eine Version eingeben, z.B. Win.3.9.min um alle SEB für Windows Versionen grösser gleich 3.9 zu erlauben.
+Bitte pro Zeile eine Version eingeben, z.B. Win.3.9.min um alle SEB für Windows Versionen ab 3.9 oder neuer zu erlauben.
 <ul>
 <li><b>OS</b>: Win , macOS , 10S oder iPadOS</li>
 <li><b>Major / Minor / Patch</b>: numerische Versionsbestandteile (z.B. 3.9.1)</li>
