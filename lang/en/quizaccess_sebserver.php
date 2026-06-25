@@ -82,7 +82,7 @@ newer.<ul>
 <li><b>Major / Minor / Patch</b>: numeric version components (e.g. 3.9.1)</li>
 <li><b>min or max or eq or ne</b>: appends "operator" semantics to the rest of the rule</ul>';
 $string['invalidversiontitle'] = 'Wrong SEB version';
-$string['invalidversionmsg'] = 'The installed Safe Exam Browser version does not meet the minimum requirement set. Please install the required version and start Safe Exam Browser again.';
+$string['invalidversionmsg'] = 'The installed Safe Exam Browser version does not meet the specified minimum requirements. Please install the required version and start Safe Exam Browser again.';
 $string['currentversion'] = 'Installed SEB Client version';
 $string['requiredversions'] = 'Required SEB Client version(s)';
 $string['howtofixversionerror'] = '<b>How to fix this:</b><ol><li>Click Exit Safe Exam Browser below to quit SEB.</li>
