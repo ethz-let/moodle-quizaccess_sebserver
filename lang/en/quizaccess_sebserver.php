@@ -71,7 +71,7 @@ $string['sebservertemplateid_help'] = 'Select from your organisation\'s SEB Serv
 $string['manageddevicetemplate'] = 'Exam Configuration ID =';
 $string['proceednextquiz'] = 'Go to';
 $string['hasconsecutivequiz'] = 'Subsequent quiz';
-$string['setting:sebclientsrestrictiondetails'] = 'SEB Clients versions restrictions';
+$string['setting:sebclientsrestrictiondetails'] = 'SEB Client version restrictions';
 $string['setting:sebclientrestrictionvalues'] = 'List of restricted versions';
 $string['setting:noversionrestriction'] = 'Empty (No restriction)';
 $string['setting:versioninghelpinfo'] = 'Allows you to specify one or more SEB version(s) that are accepted.<br />A version restriction has the following format:
@@ -80,11 +80,7 @@ Please enter one restriction per line, e.g. Win.3.9.min to allow all SEB for Win
 newer.<ul>
 <li><b>OS</b>: Win , macOS , 10S, or iPadOS</li>
 <li><b>Major / Minor / Patch</b>: numeric version components (e.g. 3.9.1)</li>
-<li><b>min or max or eq or ne</b>: appends "operator" semantics to the rest of the rule</ul>
-<pre>Ps maybe in future (extra attribute "release" in JSAPI) :
-= or > or >= or < or <= or <>|os:macos/win/ios|major:3|minor:11|patch:999|maturity:stable/rc1/dev/beta/alpha/etc|special:ae|fullversion:3.11.06.999|etc:etc
-</pre>
-';
+<li><b>min or max or eq or ne</b>: appends "operator" semantics to the rest of the rule</ul>';
 $string['invalidversiontitle'] = 'SEB version mismatch';
 $string['invalidversionmsg'] = 'The installed Safe Exam Browser version does not meet the minimum requirement set for this quiz. Please install the required version and start Safe Exam Browser again.';
 $string['currentversion'] = 'Current SEB Client version';
