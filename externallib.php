@@ -1393,7 +1393,8 @@ class quizaccess_sebserver_external extends external_api{
         $result['versionvalidated'] = false;
         $requiredversions = [];
 
-        if ($versionrestrictions && !empty(trim($versionrestrictions))) {
+        if ($versionrestrictions && !empty(trim($versionrestrictions)) &&
+            str_contains(strtolower($versionrestrictions), $clientos)) {
             $availableversion = explode("\r\n", $versionrestrictions);
             foreach ($availableversion as $ver) {
                                                   
