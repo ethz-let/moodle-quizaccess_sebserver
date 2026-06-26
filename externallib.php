@@ -1393,8 +1393,7 @@ class quizaccess_sebserver_external extends external_api{
         $result['versionvalidated'] = false;
         $requiredversions = [];
 
-        if ($versionrestrictions && !empty(trim($versionrestrictions)) &&
-            str_contains(strtolower($versionrestrictions), $clientos)) {
+        if (str_contains(strtolower(trim($versionrestrictions)), $clientos)) {
             $availableversion = explode("\r\n", $versionrestrictions);
             foreach ($availableversion as $ver) {
                                                   
@@ -1458,9 +1457,21 @@ class quizaccess_sebserver_external extends external_api{
                 }
             }
         } else {
-            // Seems No version restriction is set. Allow all.
-            $SESSION->quizaccess_sebserver_sebversion[$cmid] = true;
-            $result['versionvalidated'] = true;
+            // Seems No version restriction is set. Prevent all.
+            if ($versionrestrictions && !empty(trim($versionrestrictions))) {
+                $SESSION->quizaccess_sebserver_sebversion[$cmid] = false;
+                $result['versionvalidated'] = false;
+                // List all OS's and versions.
+                $availableversion = explode("\r\n", $versionrestrictions);
+                foreach ($availableversion as $ver) {
+                    $requiredversions[] = $ver;
+                }
+            } else {
+                // Empty list means all allowed.
+                $SESSION->quizaccess_sebserver_sebversion[$cmid] = true;
+                $result['versionvalidated'] = true;
+            }
+
         }
 
         $result['restrectedversions'] = $requiredversions;
