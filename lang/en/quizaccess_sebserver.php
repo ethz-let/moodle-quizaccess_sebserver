@@ -78,7 +78,7 @@ $string['setting:versioninghelpinfo'] = 'Allows you to specify one or more SEB v
 <b>OS.Major.Minor.[Patch].[min/max/eq/ne]</b><br >
 Please enter one version per line, e.g. Win.3.9.min to allow all SEB for Windows versions starting with 3.9 or
 newer.<ul>
-<li><b>OS</b>: Win , macOS , 10S, or iOS</li>
+<li><b>OS</b>: Win , macOS , i0S, or iPadOS</li>
 <li><b>Major / Minor / Patch</b>: numeric version components (e.g. 3.9.1)</li>
 <li><b>min or max or eq or ne</b>: appends "operator" semantics to the rest of the rule</ul>';
 $string['invalidversiontitle'] = 'Wrong SEB version';
