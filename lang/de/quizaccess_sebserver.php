@@ -78,7 +78,7 @@ $string['setting:versioninghelpinfo'] = 'Hier die erlaubte(n) SEB-Version(en) fe
 <b>OS.Major.Minor.[Patch].[min/max/eq/ne]</b><br >
 Bitte pro Zeile eine Version eingeben, z.B. Win.3.9.min um alle SEB für Windows Versionen ab 3.9 oder neuer zu erlauben.
 <ul>
-<li><b>OS</b>: Win , macOS , i0S oder iPadOS</li>
+<li><b>OS</b>: Win , macOS oder iOS</li>
 <li><b>Major / Minor / Patch</b>: numerische Versionsbestandteile (z.B. 3.9.1)</li>
 <li><b>min oder max oder eq oder ne</b>: fügt der Regel eine "Operator"-Semantik hinzu</ul>';
 $string['invalidversiontitle'] = 'Falsche SEB Version';
@@ -86,7 +86,9 @@ $string['invalidversionmsg'] = 'Die installierte Version des Safe Exam Browser e
 $string['currentversion'] = 'Installierte SEB Client Version';
 $string['requiredversions'] = 'Erforderliche SEB Client Version(en)';
 $string['howtofixversionerror'] = '<b>Um dies zu beheben:</b><ol><li>Klicken Sie den Button Safe Exam Browser beenden um SEB zu beenden.</li>
-<li>Installieren Sie die für Ihr Betriebssystem erforderliche (Mindest-)Version des Safe Exam Browsers.</li>
+<li>Klicken Sie den Button Safe Exam Browser downloaden und installieren Sie die für Ihr Betriebssystem erforderliche (Mindest-)Version des Safe Exam Browsers.</li>
+<li>Klicken Sie den Button Zurück zum Kurs und loggen Sie sich aus.</li>
+<li>Loggen Sie sich wieder in Moodle ein.</li>
 <li>Navigieren Sie wieder zum Quiz und klicken Sie erneut den Button Safe Exam Browser starten.</li></ol>';
 $string['checkingversion'] = 'Überprüfe SEB Client Version..';
 $string['allowedsebversions'] = 'Erlaubte SEB Client Version(en)';
