@@ -91,3 +91,5 @@ $string['howtofixversionerror'] = '<b>How to fix this:</b><ol><li>Click the butt
 <li><b>Restart your computer</b> and navigate to the exam.</li></ol>';
 $string['checkingversion'] = 'Checking SEB Client version..';
 $string['allowedsebversions'] = 'Allowed SEB Client version(s)';
+$string['exitshortcut'] = 'To exit SEB, please press A + B (win), or C + D (Mac).';
+
