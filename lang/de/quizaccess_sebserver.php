@@ -87,7 +87,7 @@ $string['currentversion'] = 'Installierte SEB Client Version';
 $string['requiredversions'] = 'Erforderliche SEB Client Version(en)';
 $string['howtofixversionerror'] = '<b>Um dies zu beheben:</b><ol><li>Klicken Sie den untenstehenden Button "Safe Exam Browser beenden".</li>
 <li>Klicken Sie den Button "Safe Exam Browser downloaden".</li>
-<li>Installieren Sie die für Ihr Betriebssystem erforderliche Version des Safe Exam Browsers.</li>
-<li>Starten Sie Ihren Computer neu und navigieren Sie zur Prüfung.</li></ol>';
+<li><b>Installieren</b> Sie die für Ihr Betriebssystem erforderliche Version des Safe Exam Browsers.</li>
+<li><b>Starten Sie Ihren Computer neu</b> und navigieren Sie zur Prüfung.</li></ol>';
 $string['checkingversion'] = 'Überprüfe SEB Client Version..';
 $string['allowedsebversions'] = 'Erlaubte SEB Client Version(en)';
