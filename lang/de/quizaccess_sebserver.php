@@ -87,7 +87,7 @@ $string['currentversion'] = 'Installierte SEB Client Version';
 $string['requiredversions'] = 'Erforderliche SEB Client Version(en)';
 $string['howtofixversionerror'] = '<b>Um dies zu beheben:</b><ol><li>Klicken Sie den Button Safe Exam Browser beenden um SEB zu beenden.</li>
 <li>Klicken Sie den Button Safe Exam Browser downloaden und installieren Sie die für Ihr Betriebssystem erforderliche (Mindest-)Version des Safe Exam Browsers.</li>
-<li>Aktualisieren Sie die Moodle-Seite (reload).</li>
+<li>Aktualisieren Sie die Moodle-Seite (Reload im Browser).</li>
 <li>Bei Bedarf loggen Sie sich wieder in Moodle ein.</li>
 <li>Klicken Sie erneut den Button Safe Exam Browser starten.</li></ol>';
 $string['checkingversion'] = 'Überprüfe SEB Client Version..';
