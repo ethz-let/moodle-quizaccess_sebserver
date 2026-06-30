@@ -36,7 +36,7 @@ $PAGE->set_context($context);
 $params = ['cnfg' => $urltogo];
 $middleman = new moodle_url('/mod/quiz/accessrule/sebserver/middleman.php?',
                             $params);
-$dielink = ' <a href="'.$CFG->wwwroot.'">' . get_string('continue') . '</a>';
+$dielink = ' ' . get_string('exitshortcut', 'quizaccess_sebserver');
 // Check if the user is already logged-in.
 if (isloggedin() && !isguestuser()) {
     delete_user_key( 'quizaccess_sebserver', $userid, $id);
