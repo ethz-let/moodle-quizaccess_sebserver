@@ -91,3 +91,5 @@ $string['howtofixversionerror'] = '<b>Um dies zu beheben:</b><ol><li>Klicken Sie
 <li><b>Starten Sie Ihren Computer neu</b> und navigieren Sie zur Prüfung.</li></ol>';
 $string['checkingversion'] = 'Überprüfe SEB Client Version..';
 $string['allowedsebversions'] = 'Erlaubte SEB Client Version(en)';
+$string['exitshortcut'] = 'To exit SEB, please press A + B (win), or C + D (Mac).';
+
