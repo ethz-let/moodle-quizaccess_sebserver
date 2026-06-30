@@ -87,8 +87,8 @@ $string['currentversion'] = 'Installed SEB Client version';
 $string['requiredversions'] = 'Required SEB Client version(s)';
 $string['howtofixversionerror'] = '<b>How to fix this:</b><ol><li>Click the button Exit Safe Exam Browser below to quit SEB.</li>
 <li>Click the button Download Safe Exam Browser and install the required (minimum) version of SEB for your operating system.</li>
-<li>Click the button Back to course and log out.</li>
-<li>Log in to Moodle again</li>
-<li>Navigate to the quiz again and click on the button Start Safe Exam Browser.</li></ol>';
+<li>Reload the Moodle Page.</li>
+<li>You might need to log in to Moodle again.</li>
+<li>Click on the button Start Safe Exam Browser.</li></ol>';
 $string['checkingversion'] = 'Checking SEB Client version..';
 $string['allowedsebversions'] = 'Allowed SEB Client version(s)';
