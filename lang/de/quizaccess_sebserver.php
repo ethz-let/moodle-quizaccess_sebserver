@@ -80,7 +80,7 @@ Bitte pro Zeile eine Version eingeben, z.B. Win.3.9.min um alle SEB für Windows
 <ul>
 <li><b>OS</b>: Win , macOS oder iOS</li>
 <li><b>Major / Minor / Patch</b>: numerische Versionsbestandteile (z.B. 3.9.1)</li>
-<li><b>min oder max oder eq oder ne</b>: fügt der Regel eine "Operator"-Semantik hinzu</ul>';
+<li><b>min oder max oder eq oder ne</b>: fügt der Regel eine "Operator"-Semantik hinzu</li></ul>';
 $string['invalidversiontitle'] = 'Falsche SEB Version';
 $string['invalidversionmsg'] = 'Die installierte Version des Safe Exam Browsers erfüllt nicht die festgelegten Anforderungen. Bitte installieren Sie die erforderliche Version und starten Sie den Safe Exam Browser erneut.';
 $string['currentversion'] = 'Installierte SEB Client Version';
