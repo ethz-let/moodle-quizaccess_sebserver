@@ -44,7 +44,7 @@ $string['modificationinstruction'] = 'Um die Einstellungen zu ändern, deaktivie
 $string['adminsonly'] = 'Nur für Website-Administratoren';
 $string['resetseb'] = 'SEB Server Verbindung aufheben';
 $string['resetseb_help'] = 'Website-Administratoren können die Verbindung zum SEB Server aufheben.';
-$string['examnotrestrictedyet'] = 'Die Überprüfung des Browser Exam Keys ist nicht aktiviert! Damit der Test absolviert werden kann, muss im SEB Server die Überprüfung des Browser Exam Key aktiviert werden.';
+$string['examnotrestrictedyet'] = 'Die Überprüfung des Browser Exam Keys ist nicht aktiviert! Damit der Test absolviert werden kann, muss im SEB Server die Überprüfung des Browser Exam Keys aktiviert werden.';
 $string['launchsebserverconfig'] = 'Safe Exam Browser starten';
 $string['downloadsebserverconfig'] = 'SEB Server Konfiguration herunterladen';
 $string['sebseverconfignotfound'] = ' SEB Server Konfiguration ist nicht vorhanden';
@@ -63,7 +63,7 @@ $string['setting:sebserverconnectiondetails'] = 'Verbindungsangaben';
 $string['setting:sebserversettings'] = 'Einstellungen';
 $string['sebserver:canusesebserver'] = 'Kann SEB Server verwenden';
 $string['sebserver:candeletesebserver'] = 'Kann SEB Server deaktivieren';
-$string['sebserver:managesebserverconnection'] = 'Kann die Seb Server Verbindung verwalten';
+$string['sebserver:managesebserverconnection'] = 'Kann die SEB Server Verbindung verwalten';
 $string['sebserver:sebserverautologinlink'] = 'Kann automatisch in SEB Server einloggen';
 $string['selectemplate'] = 'Exam Vorlage auswählen';
 $string['sebservertemplateid'] = 'SEB Server Vorlage';
@@ -74,7 +74,7 @@ $string['hasconsecutivequiz'] = 'Anschliessender Test';
 $string['setting:sebclientsrestrictiondetails'] = 'SEB Client Versionsbeschränkung';
 $string['setting:sebclientrestrictionvalues'] = 'Liste der erlaubten Versionen';
 $string['setting:noversionrestriction'] = 'Leer (Keine Versionsbeschränkung)';
-$string['setting:versioninghelpinfo'] = 'Hier die erlaubte(n) SEB-Version(en) festgelegen.<br />Eine Versionsbeschränkung hat folgendes Format:
+$string['setting:versioninghelpinfo'] = 'Hier die erlaubte(n) SEB-Version(en) festlegen.<br />Eine Versionsbeschränkung hat folgendes Format:
 <b>OS.Major.Minor.[Patch].[min/max/eq/ne]</b><br >
 Bitte pro Zeile eine Version eingeben, z.B. Win.3.9.min um alle SEB für Windows Versionen ab 3.9 oder neuer zu erlauben.
 <ul>
@@ -82,7 +82,7 @@ Bitte pro Zeile eine Version eingeben, z.B. Win.3.9.min um alle SEB für Windows
 <li><b>Major / Minor / Patch</b>: numerische Versionsbestandteile (z.B. 3.9.1)</li>
 <li><b>min oder max oder eq oder ne</b>: fügt der Regel eine "Operator"-Semantik hinzu</ul>';
 $string['invalidversiontitle'] = 'Falsche SEB Version';
-$string['invalidversionmsg'] = 'Die installierte Version des Safe Exam Browser erfüllt nicht die festgelegten Anforderungen. Bitte installieren Sie die erforderliche Version und starten Sie den Safe Exam Browser erneut.';
+$string['invalidversionmsg'] = 'Die installierte Version des Safe Exam Browsers erfüllt nicht die festgelegten Anforderungen. Bitte installieren Sie die erforderliche Version und starten Sie den Safe Exam Browser erneut.';
 $string['currentversion'] = 'Installierte SEB Client Version';
 $string['requiredversions'] = 'Erforderliche SEB Client Version(en)';
 $string['howtofixversionerror'] = '<b>Um dies zu beheben:</b><ol><li>Klicken Sie den untenstehenden Button "Safe Exam Browser beenden".</li>
