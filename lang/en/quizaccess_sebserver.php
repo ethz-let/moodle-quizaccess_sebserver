@@ -39,15 +39,15 @@ $string['sebserverexamtemplate'] = 'Exam template';
 $string['sebserverexamtemplate_help'] = 'Select from your organization\'s SEB Server exam templates according to your scenario.';
 $string['showquitbtn'] = 'Show quit button';
 $string['sebserverquitsecret'] = 'Quit/unlock password';
-$string['sebserverquitsecret_help'] = 'With either the "Quit" button or Ctrl+q (CMD-Q) the user can quit SEB with this password or unlock the screen. For summative exams it is recommended to use a quit password.';
+$string['sebserverquitsecret_help'] = 'With either the "Quit" button or Ctrl+Q (Cmd-Q) the user can quit SEB with this password or unlock the screen. For summative exams it is recommended to use a quit password.';
 $string['modificationinstruction'] = 'To change settings, first disable SEB Server and save the settings. This releases the SEB Server connection. Then enable SEB Server again for the options to become available again.';
 $string['adminsonly'] = 'Admins only';
 $string['resetseb'] = 'Release SEB Server connection';
-$string['resetseb_help'] = 'Website administrators can terminate the connection to the SEB server.';
+$string['resetseb_help'] = 'Website administrators can terminate the connection to the SEB Server.';
 $string['examnotrestrictedyet'] = 'The browser exam key check is not activated! In order for the test to be completed, the browser exam key check must be activated in the SEB server.';
 $string['launchsebserverconfig'] = 'Start Safe Exam Browser';
 $string['downloadsebserverconfig'] = 'Download SEB Server configuration file';
-$string['sebseverconfignotfound'] = ' SEB Server configuration file is not found!';
+$string['sebseverconfignotfound'] = 'SEB Server configuration file is not found!';
 $string['autologintosebserver'] = 'SEB Server monitoring';
 $string['templatemustbeselected'] = 'You must select an Exam template';
 $string['connectionid'] = 'Connection ID';
@@ -63,11 +63,11 @@ $string['setting:sebserverconnectiondetails'] = 'Connection details';
 $string['setting:sebserversettings'] = 'Settings';
 $string['sebserver:canusesebserver'] = 'Can use SEB Server';
 $string['sebserver:candeletesebserver'] = 'Can deactivate SEB Server';
-$string['sebserver:managesebserverconnection'] = 'Can manage Seb Server connection';
+$string['sebserver:managesebserverconnection'] = 'Can manage SEB Server connection';
 $string['sebserver:sebserverautologinlink'] = 'Can autologin into SEB Server';
 $string['selectemplate'] = 'Select Exam template';
 $string['sebservertemplateid'] = 'SEB Server template';
-$string['sebservertemplateid_help'] = 'Select from your organisation\'s SEB Server exam templates according to your scenario.';
+$string['sebservertemplateid_help'] = 'Select from your organization\'s SEB Server exam templates according to your scenario.';
 $string['manageddevicetemplate'] = 'Exam Configuration ID =';
 $string['proceednextquiz'] = 'Go to';
 $string['hasconsecutivequiz'] = 'Subsequent quiz';
@@ -80,7 +80,7 @@ Please enter one version per line, e.g. Win.3.9.min to allow all SEB for Windows
 newer.<ul>
 <li><b>OS</b>: Win , macOS , or iOS</li>
 <li><b>Major / Minor / Patch</b>: numeric version components (e.g. 3.9.1)</li>
-<li><b>min or max or eq or ne</b>: appends "operator" semantics to the rest of the rule</ul>';
+<li><b>min or max or eq or ne</b>: appends "operator" semantics to the rest of the rule</li></ul>';
 $string['invalidversiontitle'] = 'Wrong SEB version';
 $string['invalidversionmsg'] = 'The installed Safe Exam Browser version does not meet the specified minimum requirements. Please install the required version and start Safe Exam Browser again.';
 $string['currentversion'] = 'Installed SEB Client version';
@@ -89,7 +89,7 @@ $string['howtofixversionerror'] = '<b>How to fix this:</b><ol><li>Click the butt
 <li>Click the button "Download Safe Exam Browser".</li>
 <li><b>Install</b> the required version of Safe Exam Browser for your operating system.</li>
 <li><b>Restart your computer</b> and navigate to the exam.</li></ol>';
-$string['checkingversion'] = 'Checking SEB Client version..';
+$string['checkingversion'] = 'Checking SEB Client version...';
 $string['allowedsebversions'] = 'Allowed SEB Client version(s)';
-$string['exitshortcut'] = 'To quit SEB on Windows use the key combination Ctrl+Q, to quit SEB on Mac use Cmd-Q,  restart your computer and navigate to the exam again.';
+$string['exitshortcut'] = 'To quit SEB on Windows use the key combination Ctrl+Q, to quit SEB on Mac use Cmd-Q, restart your computer and navigate to the exam again.';
 
