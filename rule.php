@@ -224,6 +224,9 @@ class quizaccess_sebserver extends access_rule_base {
                                     coresebplugin.value = 4;
                                     allowedexamkeys.readOnly = true;
                                   } else {
+                                    if (typeof initialselectedseboption == "undefined") {
+                                        initialselectedseboption = 0;
+                                    }
                                     coresebplugin.value = initialselectedseboption;
                                     coresebplugin.setAttribute("style","pointer-events: inherit!important;");
                                     coresebplugin.setAttribute("style","background-color: inherit!important;");
