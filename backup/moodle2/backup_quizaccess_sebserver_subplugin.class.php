@@ -39,7 +39,6 @@ require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/backup_mod_quiz_access_su
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_quizaccess_sebserver_subplugin extends backup_mod_quiz_access_subplugin{
-
     /**
      * Use this method to describe the XML structure required to store your
      * sub-plugin's settings for a particular quiz, and how that data is stored
@@ -52,20 +51,30 @@ class backup_quizaccess_sebserver_subplugin extends backup_mod_quiz_access_subpl
 
         $subpluginwrapper = new backup_nested_element($this->get_recommended_name());
         $subplugintablesettings = new backup_nested_element('quizaccess_sebserver');
-        $subplugintablesettings = new backup_nested_element('quizaccess_sebserver',
-                                                            null, ['sebserverenabled', 'sebserverrestricted',
-                                                            'sebserverquitsecret',
-                                                            'sebserverquitlink', 'sebservertemplateid',
-                                                            'sebservershowquitbtn', 'sebservertimemodified',
-                                                            'sebservercalled', 'nextquizid', 'nextcourseid']
-                                                           );
+        $subplugintablesettings = new backup_nested_element(
+            'quizaccess_sebserver',
+            null,
+            ['sebserverenabled',
+             'sebserverrestricted',
+             'sebserverquitsecret',
+             'sebserverquitlink',
+             'sebservertemplateid',
+             'sebservershowquitbtn',
+             'sebservertimemodified',
+             'sebservercalled',
+             'nextquizid',
+             'nextcourseid',
+            ]
+        );
         // Connect XML elements into the tree.
         $subplugin->add_child($subpluginwrapper);
         $subpluginwrapper->add_child($subplugintablesettings);
 
         // Set source to populate the data.
-        $subplugintablesettings->set_source_table('quizaccess_sebserver',
-                ['sebserverquizid' => backup::VAR_ACTIVITYID]);
+        $subplugintablesettings->set_source_table(
+            'quizaccess_sebserver',
+            ['sebserverquizid' => backup::VAR_ACTIVITYID]
+        );
 
         return $subplugin;
     }

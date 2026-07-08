@@ -21,7 +21,7 @@
  * @copyright  2024 ETH Zurich (moodle@id.ethz.ch)
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
- // @codingStandardsIgnoreLine
+// @codingStandardsIgnoreLine
 require_once('../../../../config.php');
 
 $urltogo = optional_param('cnfg', $CFG->wwwroot, PARAM_RAW);

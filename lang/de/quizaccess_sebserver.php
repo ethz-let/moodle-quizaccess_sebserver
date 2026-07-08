@@ -92,4 +92,3 @@ $string['howtofixversionerror'] = '<b>Um dies zu beheben:</b><ol><li>Klicken Sie
 $string['checkingversion'] = 'Überprüfe SEB Client Version..';
 $string['allowedsebversions'] = 'Erlaubte SEB Client Version(en)';
 $string['exitshortcut'] = 'Um SEB unter Windows zu beenden, verwenden Sie die Tastenkombination Ctrl+Q, um SEB auf einem Mac zu beenden, verwenden Sie Cmd-Q. Starten Sie anschliessend Ihren Computer neu und navigieren Sie erneut zur Prüfung.';
-

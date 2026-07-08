@@ -43,12 +43,14 @@ $headers[] = 'Content-Type: application/seb';
 // Retrieve the config for quiz.
 $context = context_module::instance($cmid);
 $fs = new file_storage();
-$files = $fs->get_area_files($context->id,
-                            'quizaccess_sebserver',
-                            'filemanager_sebserverconfigfile',
-                            0,
-                            'id DESC',
-                            false);
+$files = $fs->get_area_files(
+    $context->id,
+    'quizaccess_sebserver',
+    'filemanager_sebserverconfigfile',
+    0,
+    'id DESC',
+    false
+);
 $file = reset($files);
 
 if (empty($file)) {

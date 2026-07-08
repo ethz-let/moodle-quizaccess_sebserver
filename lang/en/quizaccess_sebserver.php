@@ -92,4 +92,3 @@ $string['howtofixversionerror'] = '<b>How to fix this:</b><ol><li>Click the butt
 $string['checkingversion'] = 'Checking SEB Client version...';
 $string['allowedsebversions'] = 'Allowed SEB Client version(s)';
 $string['exitshortcut'] = 'To quit SEB on Windows use the key combination Ctrl+Q, to quit SEB on Mac use Cmd-Q, restart your computer and navigate to the exam again.';
-

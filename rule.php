@@ -36,7 +36,6 @@ use mod_quiz\access_manager;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class quizaccess_sebserver extends access_rule_base {
-
     /**
      * Return an appropriately configured instance of this rule, if it is applicable
      * to the given quiz, otherwise return null.
@@ -85,8 +84,10 @@ class quizaccess_sebserver extends access_rule_base {
         if (empty($this->get_user_finished_attempts())) {
             return $quitbutton;
         }
-        if (isset($this->quiz->nextquizid) && isset($this->quiz->nextcourseid) &&
-                  $this->quiz->nextquizid != 0 && $this->quiz->nextcourseid != 0) {
+        if (
+            isset($this->quiz->nextquizid) && isset($this->quiz->nextcourseid) &&
+            $this->quiz->nextquizid != 0 && $this->quiz->nextcourseid != 0
+        ) {
             // Get cmid for the next quiz.
             [$nextquizcourse, $nextquizcm] = get_course_and_cm_from_instance($this->quiz->nextquizid, 'quiz');
             $nextquizcontext = context_module::instance($nextquizcm->id);
@@ -100,9 +101,10 @@ class quizaccess_sebserver extends access_rule_base {
             );
         } else {
             // Only display if the link has been configured and attempts are greater than 0.
-            if (!empty($this->quiz->sebservershowquitbtn) &&
-                $this->quiz->sebservershowquitbtn &&
-                !empty($this->quiz->sebserverquitlink)) {
+            if (
+                !empty($this->quiz->sebservershowquitbtn) && $this->quiz->sebservershowquitbtn &&
+                !empty($this->quiz->sebserverquitlink)
+            ) {
                 $quitbutton = html_writer::link(
                     $this->quiz->sebserverquitlink,
                     get_string('exitsebbutton', 'quizaccess_seb'),
@@ -131,10 +133,13 @@ class quizaccess_sebserver extends access_rule_base {
             if (!empty($sebserver) && $sebserver->sebserverenabled == 1) {
                 $displaydwnloadbutton = ['style="pointer-events: none!important;background-color: #ededed;"'];
                 if (!quiz_has_attempts($quizid)) {
-                    $mform->addElement('html',
-                    '<script>var sebsection = document.getElementById("fitem_id_seb_requiresafeexambrowser"); ' .
-                    'if(sebsection){ sebsection.insertAdjacentHTML("beforebegin", "<div class=\"alert alert-warning alert-block fade in\">' .
-                    get_string('managedbysebserver', 'quizaccess_sebserver') . '</div>");} </script>');
+                    $mform->addElement(
+                        'html',
+                        '<script>var sebsection = document.getElementById("fitem_id_seb_requiresafeexambrowser"); ' .
+                        'if(sebsection){
+                        sebsection.insertAdjacentHTML("beforebegin", "<div class=\"alert alert-warning alert-block fade in\">' .
+                        get_string('managedbysebserver', 'quizaccess_sebserver') . '</div>");} </script>'
+                    );
                 }
             }
         } else {
@@ -149,9 +154,11 @@ class quizaccess_sebserver extends access_rule_base {
         $readonlymanageddevices = '';
         $templates = [];
         if (empty($connection)) {
-            $mform->addElement('html',
-                    '<div class="alert alert-warning alert-block fade in">' .
-                    get_string('connectionnotsetupyet', 'quizaccess_sebserver') . '</div>');
+            $mform->addElement(
+                'html',
+                '<div class="alert alert-warning alert-block fade in">' .
+                get_string('connectionnotsetupyet', 'quizaccess_sebserver') . '</div>'
+            );
         } else {
             $templates = [-1 => get_string('selectemplate', 'quizaccess_sebserver')];
             // Sometimes Sebserver set quiz with no template.
@@ -168,7 +175,7 @@ class quizaccess_sebserver extends access_rule_base {
                         get_string('manageddevicetemplate', 'quizaccess_sebserver') . ' ' . $sebserver->sebservertemplateid];
                     $readonlymanageddevices =
                         'sebserverenabled.setAttribute("style","pointer-events: none!important;background-color: #ededed;");';
-                    $readonly = ' readonly style="background-color: #ededed; pointer-events: none;"';    
+                    $readonly = ' readonly style="background-color: #ededed; pointer-events: none;"';
                 }
             }
             // Now prevent anyone from modifying if there are attempts.
@@ -190,8 +197,12 @@ class quizaccess_sebserver extends access_rule_base {
         }
 
         $sebserverformchange = $enableselectchange + ['onChange' => 'sebserevrselectionchange(this)'];
-        $mform->addElement('selectyesno', 'sebserverenabled', get_string('enablesebserver', 'quizaccess_sebserver'),
-          $sebserverformchange);
+        $mform->addElement(
+            'selectyesno',
+            'sebserverenabled',
+            get_string('enablesebserver', 'quizaccess_sebserver'),
+            $sebserverformchange
+        );
         $mform->setType('sebserverenabled', PARAM_INT);
 
         $embedjsscript = '<script>
@@ -233,31 +244,43 @@ class quizaccess_sebserver extends access_rule_base {
                 $allowtemplatechange = ['style="pointer-events: none!important;background-color: #ededed;"'];
             }
             // Address previous quizes that were created before sebserver.
-            if ($ineditmode && empty($enableselectchange) && (!$sebserver || $sebserver->sebserverenabled == 0) ) {
+            if ($ineditmode && empty($enableselectchange) && (!$sebserver || $sebserver->sebserverenabled == 0)) {
                 $allowtemplatechange = [];
                 $readonly = ''; // Quit secret needs to be enabled too.
             }
-            $mform->addElement('select', 'sebservertemplateid', get_string('sebserverexamtemplate', 'quizaccess_sebserver'),
-                               $templates, $allowtemplatechange);
+            $mform->addElement(
+                'select',
+                'sebservertemplateid',
+                get_string('sebserverexamtemplate', 'quizaccess_sebserver'),
+                $templates,
+                $allowtemplatechange
+            );
             $mform->setType('sebservertemplateid', PARAM_INT);
-            $mform->disabledif ('sebservertemplateid', 'sebserverenabled', 'neq', 1);
+            $mform->disabledif('sebservertemplateid', 'sebserverenabled', 'neq', 1);
             $mform->addHelpButton('sebservertemplateid', 'sebservertemplateid', 'quizaccess_sebserver');
         }
-        $mform->addElement('selectyesno', 'sebservershowquitbtn', get_string('showquitbtn', 'quizaccess_sebserver'),
-                           $displaydwnloadbutton);
+        $mform->addElement(
+            'selectyesno',
+            'sebservershowquitbtn',
+            get_string('showquitbtn', 'quizaccess_sebserver'),
+            $displaydwnloadbutton
+        );
         $mform->setType('sebservershowquitbtn', PARAM_INT);
         $mform->setDefault('sebservershowquitbtn', 1);
-        $mform->disabledif ('sebservershowquitbtn', 'sebserverenabled', 'neq', 1);
-        $mform->addElement('text', 'sebserverquitsecret',
-                            get_string('sebserverquitsecret', 'quizaccess_sebserver'), $readonly . ' size="70"');
+        $mform->disabledif('sebservershowquitbtn', 'sebserverenabled', 'neq', 1);
+        $mform->addElement(
+            'text',
+            'sebserverquitsecret',
+            get_string('sebserverquitsecret', 'quizaccess_sebserver'),
+            $readonly . ' size="70"'
+        );
         $mform->setType('sebserverquitsecret', PARAM_RAW);
         $mform->setDefault('sebserverquitsecret', '');
-        $mform->disabledif ('sebserverquitsecret', 'sebserverenabled', 'neq', 1);
+        $mform->disabledif('sebserverquitsecret', 'sebserverenabled', 'neq', 1);
         $mform->addHelpButton('sebserverquitsecret', 'sebserverquitsecret', 'quizaccess_sebserver');
-        
         $defaultempty = get_string('setting:noversionrestriction', 'quizaccess_sebserver');
         $versionrestrictions = get_config('quizaccess_sebserver', 'sebversions');
-        if(!$versionrestrictions || empty(trim($versionrestrictions))) {
+        if (!$versionrestrictions || empty(trim($versionrestrictions))) {
             $sebversionsinfo = $defaultempty;
         } else {
             $sebversionsinfo = '<ul>';
@@ -265,20 +288,30 @@ class quizaccess_sebserver extends access_rule_base {
             $sebversionsinfo .= '</ul>';
         }
 
-        $mform->addElement('static', 'allowedsebversions', get_string('allowedsebversions', 'quizaccess_sebserver'), $sebversionsinfo);
+        $mform->addElement(
+            'static',
+            'allowedsebversions',
+            get_string('allowedsebversions', 'quizaccess_sebserver'),
+            $sebversionsinfo
+        );
         if ($ineditmode) {
-            if(trim($readonlymanageddevices) == '') {
-                $mform->addElement('html',
-                        '<div class="alert alert-warning alert-block fade in">' .
-                        get_string('modificationinstruction', 'quizaccess_sebserver') . '</div>');
+            if (trim($readonlymanageddevices) == '') {
+                $mform->addElement(
+                    'html',
+                    '<div class="alert alert-warning alert-block fade in">' .
+                    get_string('modificationinstruction', 'quizaccess_sebserver') . '</div>'
+                );
             }
             if (is_siteadmin() && $sebserver) {
-                $mform->addElement('checkbox', 'resetseb', get_string('adminsonly', 'quizaccess_sebserver'),
-                                   get_string('resetseb', 'quizaccess_sebserver'));
+                $mform->addElement(
+                    'checkbox',
+                    'resetseb',
+                    get_string('adminsonly', 'quizaccess_sebserver'),
+                    et_string('resetseb', 'quizaccess_sebserver')
+                );
                 $mform->addHelpButton('resetseb', 'resetseb', 'quizaccess_sebserver');
             }
         }
-
     }
 
     /**
@@ -303,7 +336,6 @@ class quizaccess_sebserver extends access_rule_base {
     public function get_superceded_rules() {
         return [];
     }
-    
     /**
      * This is called when the current attempt at the quiz is finished.
      */
@@ -311,7 +343,6 @@ class quizaccess_sebserver extends access_rule_base {
         global $SESSION;
         unset($SESSION->quizaccess_sebserver_sebversion[$this->quizobj->get_cmid()]);
     }
-    
     /**
      * Information, such as might be shown on the quiz view page, relating to this restriction.
      * There is no obligation to return anything. If it is not appropriate to tell students
@@ -329,40 +360,46 @@ class quizaccess_sebserver extends access_rule_base {
         $return = '';
 
         if ($this->quizobj->has_capability('quizaccess/sebserver:sebserverautologinlink')) {
-            $return .= html_writer::start_div('alert alert-info alert-block fade in',
-                                             ['style' => "text-align: left;"]) .
-                                             get_string('quizismanagedbysebserver', 'quizaccess_sebserver') .
-                                             html_writer::end_div('');
+            $return .= html_writer::start_div(
+                'alert alert-info alert-block fade in',
+                ['style' => "text-align: left;"]
+            ) .
+                get_string('quizismanagedbysebserver', 'quizaccess_sebserver') .
+                html_writer::end_div('');
             if (isset($this->quiz->nextquizid) && $this->quiz->nextquizid != 0) {
                 [$nextquizcourse, $nextquizcm] = get_course_and_cm_from_instance($this->quiz->nextquizid, 'quiz');
                 $nextquizparams = ['id' => $nextquizcm->id];
-                $nextquizurl = new moodle_url('/mod/quiz/view.php?',
-                                                $nextquizparams);
-                $nextquizinfo = html_writer::link($nextquizurl->out(),
-                                                  $nextquizcm->name . ' (' . $nextquizcourse->fullname . ')',
-                                                  ['target' => '_blank']);
-                $return .= html_writer::start_div('alert alert-info alert-block fade in',
-                                                ['style' => "text-align: left;"]) .
-                                                get_string('hasconsecutivequiz', 'quizaccess_sebserver') .
-                                                ': ' . $nextquizinfo .
-                                                html_writer::end_div('');
+                $nextquizurl = new moodle_url('/mod/quiz/view.php?', $nextquizparams);
+                $nextquizinfo = html_writer::link(
+                    $nextquizurl->out(),
+                    $nextquizcm->name . ' (' . $nextquizcourse->fullname . ')',
+                    ['target' => '_blank']
+                );
+                $return .= html_writer::start_div(
+                    'alert alert-info alert-block fade in',
+                    ['style' => "text-align: left;"]
+                ) .
+                    get_string('hasconsecutivequiz', 'quizaccess_sebserver') .
+                    ': ' . $nextquizinfo . html_writer::end_div('');
             }
         }
         $validsession = !empty($SESSION->quizaccess_seb_access[$cmid]);
         $validversion = !empty($SESSION->quizaccess_sebserver_sebversion[$cmid]);
         if ($validsession) {
-            $return .= html_writer::div($this->get_quit_button()) .' ';
+            $return .= html_writer::div($this->get_quit_button()) . ' ';
 
-            if(!$this->quiz->sebserverquitlink){
+            if (!$this->quiz->sebserverquitlink) {
                 $this->quiz->sebserverquitlink = '';
             }
-            
-            if(!$validversion || !$SESSION->quizaccess_sebserver_sebversion[$cmid]){
+            if (!$validversion || !$SESSION->quizaccess_sebserver_sebversion[$cmid]) {
                 unset($SESSION->quizaccess_seb_access[$cmid]);
                 unset($SESSION->quizaccess_sebserver_sebversion[$cmid]);
 
-                $PAGE->requires->js_call_amd('quizaccess_sebserver/validate_sebversion', 'init',
-                    [$this->quiz->cmid, $this->quiz->sebserverquitlink]);
+                $PAGE->requires->js_call_amd(
+                    'quizaccess_sebserver/validate_sebversion',
+                    'init',
+                    [$this->quiz->cmid, $this->quiz->sebserverquitlink]
+                );
 
                 $quitbutton = html_writer::link(
                     $this->quiz->sebserverquitlink,
@@ -374,7 +411,6 @@ class quizaccess_sebserver extends access_rule_base {
                 return $return;
             }
         }
-        
         // Get SebConfig file from SebServer.
         $conndetails = self::sebserverconnectiondetails();
         if (empty($conndetails)) {
@@ -385,8 +421,7 @@ class quizaccess_sebserver extends access_rule_base {
         $connid = $conndetails[2];
 
         // Check Sebserver settings for this quiz.
-        if (!$sebserversettings = $DB->get_record('quizaccess_sebserver',
-                                      ['sebserverquizid' => $quizid])) {
+        if (!$sebserversettings = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quizid])) {
              throw new moodle_exception('quizhasnosebserverenabled', 'quizaccess_sebserver');
         }
         $context = context_module::instance($cmid);
@@ -395,8 +430,7 @@ class quizaccess_sebserver extends access_rule_base {
         // This function will be called so long as the sebservercalled is not set.
         if ($sebserversettings->sebservercalled == 0) {
             // Never call make_sebserver_exam_call it again after the first call.
-            $DB->set_field('quizaccess_sebserver', 'sebservercalled', 1,
-                    ['sebserverquizid' => $quizid]);
+            $DB->set_field('quizaccess_sebserver', 'sebservercalled', 1, ['sebserverquizid' => $quizid]);
             $sebserversettings = self::make_sebserver_exam_call($conndetails, $context, $cmid);
         }
         $showactionbtns = 1;
@@ -414,8 +448,11 @@ class quizaccess_sebserver extends access_rule_base {
         if ($this->display_sebserver_actionbtns($cmid) && $showactionbtns != 0) {
             $timenow = time();
             $quizobj = quiz_settings::create_for_cmid($cmid, $USER->id);
-            $accessmanager = new access_manager($quizobj, $timenow,
-            has_capability('mod/quiz:ignoretimelimits', $context, null, false));
+            $accessmanager = new access_manager(
+                $quizobj,
+                $timenow,
+                has_capability('mod/quiz:ignoretimelimits', $context, null, false)
+            );
 
             $timewindowcheck = new quizaccess_openclosedate($quizobj, time());
             if ($timewindowcheck->prevent_access() && !$this->quizobj->has_capability('quizaccess/seb:bypassseb')) {
@@ -428,8 +465,14 @@ class quizaccess_sebserver extends access_rule_base {
             }
 
             $fs = new file_storage();
-            $files = $fs->get_area_files($context->id, 'quizaccess_sebserver', 'filemanager_sebserverconfigfile',  0,
-                        'id DESC', false);
+            $files = $fs->get_area_files(
+                $context->id,
+                'quizaccess_sebserver',
+                'filemanager_sebserverconfigfile',
+                0,
+                'id DESC',
+                false
+            );
             $file  = reset($files);
             if ($file) {
                 $url = \moodle_url::make_pluginfile_url(
@@ -443,8 +486,10 @@ class quizaccess_sebserver extends access_rule_base {
                 );
 
                 // Autologin area (only non admins).
-                if (!has_capability('moodle/site:config', context_system::instance(), $USER->id) &&
-                                   !is_siteadmin($USER->id)) {
+                if (
+                    !has_capability('moodle/site:config', context_system::instance(), $USER->id) &&
+                    !is_siteadmin($USER->id)
+                ) {
                     // Delete previous keys.
                     delete_user_key('quizaccess_sebserver', $USER->id);
                     // Create a new key.
@@ -452,8 +497,10 @@ class quizaccess_sebserver extends access_rule_base {
                     $validuntil = time() + 900; // Expires in 15 mins.
                     $key = create_user_key('quizaccess_sebserver', $USER->id, $cmid, $iprestriction, $validuntil);
                     $params = ['id' => $cmid, 'userid' => $USER->id, 'key' => $key, 'urltogo' => $url];
-                    $autologinurl = new moodle_url('/mod/quiz/accessrule/sebserver/sebclientautologin.php?',
-                                                $params);
+                    $autologinurl = new moodle_url(
+                        '/mod/quiz/accessrule/sebserver/sebclientautologin.php?',
+                        $params
+                    );
                 } else {
                     $autologinurl = new moodle_url('/mod/quiz/accessrule/sebserver/config.php?cmid=' . $cmid);
                 }
@@ -481,14 +528,17 @@ class quizaccess_sebserver extends access_rule_base {
                 );
             } else {
                 $error = get_string('sebseverconfignotfound', 'quizaccess_sebserver');
-                $return .= '<div class="alert alert-warning alert-block fade in">'.$error."</div>";
-
+                $return .= '<div class="alert alert-warning alert-block fade in">' . $error . "</div>";
             }
             // SebServer Auto-login link.
-            if ($this->quizobj->has_capability('quizaccess/sebserver:sebserverautologinlink')  &&
-                ($this->quiz->timeclose == 0 || $this->quiz->timeclose > time())) {
-                $sebserverautologinlink = new moodle_url('/mod/quiz/accessrule/sebserver/sebserverautologin.php?',
-                                                         ['id' => $cmid, 'sesskey' => sesskey()]);
+            if (
+                $this->quizobj->has_capability('quizaccess/sebserver:sebserverautologinlink')  &&
+                ($this->quiz->timeclose == 0 || $this->quiz->timeclose > time())
+            ) {
+                $sebserverautologinlink = new moodle_url(
+                    '/mod/quiz/accessrule/sebserver/sebserverautologin.php?',
+                    ['id' => $cmid, 'sesskey' => sesskey()]
+                );
                 $return .= ' ' . html_writer::link(
                     $sebserverautologinlink,
                     get_string('autologintosebserver', 'quizaccess_sebserver'),
@@ -500,7 +550,6 @@ class quizaccess_sebserver extends access_rule_base {
             }
         }
         return $return;
-
     }
     /**
      * Validate the data from any form fields added.
@@ -511,8 +560,12 @@ class quizaccess_sebserver extends access_rule_base {
      * @param mod_quiz_mod_form $quizform the quiz form object.
      * @return array $errors the updated $errors array.
      */
-    public static function validate_settings_form_fields(array $errors,
-                                                         array $data, $files, mod_quiz_mod_form $quizform): array {
+    public static function validate_settings_form_fields(
+        array $errors,
+        array $data,
+        $files,
+        mod_quiz_mod_form $quizform
+    ): array {
         global $CFG, $DB, $USER;
         $quizid = $data['instance'];
         $courseid = $data['course'];
@@ -544,15 +597,14 @@ class quizaccess_sebserver extends access_rule_base {
             $errors['sebservertemplateid'] = get_string('templatemustbeselected', 'quizaccess_sebserver');
             return $errors;
         }
-        
         $sebserver = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quizid]);
 
         // For old quizzes with lack of quitpass, let them skip pass validation.
-        if(!$sebserver) {
-            if($sebserverenabled == 1 && (empty(trim($sebserverquitsecret)) ||  is_null($sebserverquitsecret) ) ) {
+        if (!$sebserver) {
+            if ($sebserverenabled == 1 && (empty(trim($sebserverquitsecret)) || is_null($sebserverquitsecret))) {
                 $errors['sebserverquitsecret'] = get_string('required');
                 return $errors;
-            }  
+            }
             if ($data['sebserverquitsecret'] !== null && $data['sebserverquitsecret'] !== trim($data['sebserverquitsecret'])) {
                 $errors['sebserverquitsecret'] = get_string('err_wrappingwhitespace', 'core_form');
                 return $errors;
@@ -572,9 +624,8 @@ class quizaccess_sebserver extends access_rule_base {
                             'quiz_id' => $quizid,
                       ];
             $method = 'delete';
-
             $url = $endpoint . $function;
-            $sebserverresponse = self::call_sebsever($url, $token, $params , $method);
+            $sebserverresponse = self::call_sebsever($url, $token, $params, $method);
             // SebServer deletion issue?.
             if ($sebserverresponse[2] !== 200) {
                 $responsebody = $sebserverresponse[0];
@@ -587,9 +638,8 @@ class quizaccess_sebserver extends access_rule_base {
                     if (isset($responsebody->error)) {
                         $error .= $responsebody->error;
                     }
-
                 } else {
-                    $error = ' ERROR ' . $sebserverresponse[2] . ' ' .$sebserverresponse[1] .
+                    $error = ' ERROR ' . $sebserverresponse[2] . ' ' . $sebserverresponse[1] .
                             ' [' . $function . '/' . $method . ']';
                 }
                 $errors['sebserverenabled'] = $error;
@@ -620,8 +670,7 @@ class quizaccess_sebserver extends access_rule_base {
             return;
         }
         $context = context_module::instance($quiz->coursemodule);
-        if (empty($quiz->sebserverenabled) || $quiz->sebserverenabled == 0 ||
-            (isset($quiz->resetseb) && is_siteadmin()) ) {
+        if (empty($quiz->sebserverenabled) || $quiz->sebserverenabled == 0 || (isset($quiz->resetseb) && is_siteadmin())) {
             $fs = get_file_storage();
             $fs->delete_area_files($context->id, 'quizaccess_sebserver', 'filemanager_sebserverconfigfile');
             $DB->delete_records('quizaccess_sebserver', ['sebserverquizid' => $quiz->id]);
@@ -673,7 +722,7 @@ class quizaccess_sebserver extends access_rule_base {
                   ];
         $method = 'delete';
         $url = $conndetails[0] . $function;
-        @self::call_sebsever($url, $conndetails[1], $params , $method);
+        @self::call_sebsever($url, $conndetails[1], $params, $method);
         $DB->delete_records('quizaccess_sebserver', ['sebserverquizid' => $quiz->id]);
     }
 
@@ -737,14 +786,14 @@ class quizaccess_sebserver extends access_rule_base {
     public static function call_sebsever($url, $token, $data, $method = 'post', $binary = 0): array {
 
         $ch = curl_init();
-        $data = http_build_query($data,  '&amps;', '&');
+        $data = http_build_query($data, '&amps;', '&');
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt( $ch, CURLOPT_AUTOREFERER, true );
+        curl_setopt($ch, CURLOPT_AUTOREFERER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt( $ch, CURLOPT_FOLLOWLOCATION, true );
-        $authorization = "Authorization: Bearer " . trim ($token);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        $authorization = "Authorization: Bearer " . trim($token);
         $header = [
                   'application/x-www-form-urlencoded',
                   $authorization,
@@ -822,13 +871,13 @@ class quizaccess_sebserver extends access_rule_base {
                   ];
         $method = 'POST';
         $endpoint = $conndetails[0];
-        $url = $endpoint . $function . '?' . http_build_query($params,  '&amps;', '&');
+        $url = $endpoint . $function . '?' . http_build_query($params, '&amps;', '&');
         $binaryfileopts = [
                             'http' => [
-                                      'method'  => $method,
-                                      'header'  => "Content-Type: application/x-www-form-urlencoded\r\n".
-                                                   "Content-Encoding: compress, deflate, gzip\r\n".
-                                                   "Authorization: Bearer " . $conndetails[1] . "\r\n",
+                                      'method' => $method,
+                                      'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
+                                                  "Content-Encoding: compress, deflate, gzip\r\n" .
+                                                  "Authorization: Bearer " . $conndetails[1] . "\r\n",
                                       'timeout' => 60,
                                       ],
                             'ssl' => [
@@ -842,14 +891,14 @@ class quizaccess_sebserver extends access_rule_base {
         if ($file !== false) {
             // Copy the file into temp.
             $realfilename = 'SEBServerSettings.seb';
-            $destinationdir = $CFG->tempdir.'/sebserver';
+            $destinationdir = $CFG->tempdir . '/sebserver';
             if (!is_dir($destinationdir)) {
                 mkdir($destinationdir, 0777, true);
             }
             $destinationfile = $destinationdir . '/' . $realfilename;
             file_put_contents($destinationfile, $file);
             // Generate componenet file.
-            $filerecord = new stdClass;
+            $filerecord = new stdClass();
             $filerecord->component = 'quizaccess_sebserver';
             $filerecord->contextid = $contextid;
             $filerecord->filearea = 'filemanager_sebserverconfigfile';
@@ -860,13 +909,11 @@ class quizaccess_sebserver extends access_rule_base {
             // Check if the file already exist.
             $fs = get_file_storage();
             // Only one file is allowed. Clear the area.
-            $fs->delete_area_files($filerecord->contextid, $filerecord->component,
-                                   $filerecord->filearea);
+            $fs->delete_area_files($filerecord->contextid, $filerecord->component, $filerecord->filearea);
 
             if ($storedfile = $fs->create_file_from_pathname($filerecord, $destinationfile)) {
                 unlink($destinationfile);
             }
-
         } else {
             $error = 'Error: ' . $function . ': ' . json_encode(error_get_last());
         }
@@ -881,9 +928,7 @@ class quizaccess_sebserver extends access_rule_base {
     public static function sebserverconnectiondetails($returntemplates = 0) {
         global $DB;
         // Get SebConfig file from SebServer.
-        if (!$connection = $DB->get_record('config_plugins',
-                                      ['plugin' => 'quizaccess_sebserver',
-                                       'name' => 'connection'])) {
+        if (!$connection = $DB->get_record('config_plugins', ['plugin' => 'quizaccess_sebserver', 'name' => 'connection'])) {
             return [];
         }
         $conndetails = json_decode($connection->value);
@@ -910,8 +955,7 @@ class quizaccess_sebserver extends access_rule_base {
             return false;
         }
         // Check SEB Header.
-        if (isset($_SERVER['HTTP_USER_AGENT']) &&
-            strpos($_SERVER['HTTP_USER_AGENT'], 'SEB') !== false) {
+        if (isset($_SERVER['HTTP_USER_AGENT']) && strpos($_SERVER['HTTP_USER_AGENT'], 'SEB') !== false) {
             return false;
         }
         // Leave other validation else to Seb based on USE_SEB_CLIENT_CONFIG.
@@ -939,7 +983,7 @@ class quizaccess_sebserver extends access_rule_base {
                 "perpage":10
             },
             "results": [{
-                "id": "' . $COURSE->id. '",
+                "id": "' . $COURSE->id . '",
                 "shortname": ' . json_encode($COURSE->shortname) . ',
                 "fullname": ' . json_encode($COURSE->fullname) . ',
                 "idnumber": ' . json_encode($COURSE->idnumber) . ',
@@ -975,7 +1019,7 @@ class quizaccess_sebserver extends access_rule_base {
                   ];
         $method = 'post';
         $url = $endpoint . $function;
-        $sebserverresponse = self::call_sebsever($url, $token, $params , $method);
+        $sebserverresponse = self::call_sebsever($url, $token, $params, $method);
         // SebServer validation issue?.
         if ($sebserverresponse[2] !== 200) {
             $responsebody = $sebserverresponse[0];
@@ -989,7 +1033,7 @@ class quizaccess_sebserver extends access_rule_base {
                     $error .= $responsebody->error;
                 }
             } else {
-                $error = ' ERROR ' . $sebserverresponse[2] . ' ' .$sebserverresponse[1] .
+                $error = ' ERROR ' . $sebserverresponse[2] . ' ' . $sebserverresponse[1] .
                          ' [' . $function . '/' . $method . ']';
             }
             // Delete SebServer record.
@@ -1006,8 +1050,7 @@ class quizaccess_sebserver extends access_rule_base {
             throw new moodle_exception($error, 'quizaccess_sebserver');
         }
         // Request Seb Server config file.
-        $sebconfigresult = self::request_sebserverconfig($COURSE->id, $quiz->id,
-        $cmid, $context->id);
+        $sebconfigresult = self::request_sebserverconfig($COURSE->id, $quiz->id, $cmid, $context->id);
         if (isset($sebconfigresult) && trim($sebconfigresult) !== '') {
             // Delete SebServer record.
             $DB->delete_records('quizaccess_sebserver', ['sebserverquizid' => $quiz->id]);

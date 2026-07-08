@@ -84,7 +84,7 @@ if ($sebserverresponse[2] !== 200) {
             $error .= $responsebody->error;
         }
     } else {
-        $error = ' ERROR ' . $sebserverresponse[2] . ' ' .$sebserverresponse[1] . ' [' . $function . '/' . $method . ']';
+        $error = ' ERROR ' . $sebserverresponse[2] . ' ' . $sebserverresponse[1] . ' [' . $function . '/' . $method . ']';
     }
     throw new moodle_exception($error);
 } else {

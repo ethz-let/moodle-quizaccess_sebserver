@@ -26,14 +26,11 @@
  * AJAX_SCRIPT - exception will be converted into JSON
  */
 define('AJAX_SCRIPT', true);
-
 /**
  * NO_MOODLE_COOKIES - we don't want any cookie
  */
 define('NO_MOODLE_COOKIES', true);
-
-
-require_once( '../../../../config.php');
+require_once('../../../../config.php');
 require_once($CFG->libdir . '/filelib.php');
 require_once($CFG->dirroot . '/webservice/lib.php');
 
@@ -70,28 +67,28 @@ if (empty($enabledfiledownload)) {
 }
 
 $result = [];
-$filescontext = 
 // Get course-level backups (course or quiz).
 $sql = 'select id, contextid, component, filearea, filename, timecreated, timemodified, filesize
         from {files} where
         filename != :filename and component = :component and mimetype = :mimetype
         and contextid = :contextid order by timemodified desc limit 10';
-        $params = ['filename' => '.', 'component' => 'backup',
-                   'mimetype' => 'application/vnd.moodle.backup',
-                   'contextid' => $context->id];
-$backups = $DB->get_records_sql($sql, $params);
-foreach($backups as $backup){
-   $location = '/' . $backup->component . '/' . $backup->filearea. '/';
-   $basedownload = $CFG->wwwroot . '/mod/quiz/accessrule/sebserver/downloadbackup.php';
-   $relativelink = '/' . $backup->contextid . $location . $backup->filename;
-   $downloadlink = $basedownload . 
-                   '?token=' . $token . '&relativelink=' . $relativelink;
-   $backupdata = ['name' => $backup->filename, 'timecreated' => userdate($backup->timecreated),
-                  'timemodified' => userdate($backup->timemodified), 'filesize' => display_size($backup->filesize),
-                  'directdownload' => $downloadlink, 'basedownload' => $basedownload, 'relativelink' => $relativelink];
+        $params = [
+            'filename' => '.',
+            'component' => 'backup',
+            'mimetype' => 'application/vnd.moodle.backup',
+            'contextid' => $context->id,
+        ];
+        $backups = $DB->get_records_sql($sql, $params);
+        foreach ($backups as $backup) {
+            $location = '/' . $backup->component . '/' . $backup->filearea . '/';
+            $basedownload = $CFG->wwwroot . '/mod/quiz/accessrule/sebserver/downloadbackup.php';
+            $relativelink = '/' . $backup->contextid . $location . $backup->filename;
+            $downloadlink = $basedownload . '?token=' . $token . '&relativelink=' . $relativelink;
+            $backupdata = ['name' => $backup->filename, 'timecreated' => userdate($backup->timecreated),
+                            'timemodified' => userdate($backup->timemodified), 'filesize' => display_size($backup->filesize),
+                            'directdownload' => $downloadlink, 'basedownload' => $basedownload, 'relativelink' => $relativelink];
 
-   $result[$backup->id] = $backupdata;
-   unset($backupdata);
-
-}
-echo json_encode($result);
+            $result[$backup->id] = $backupdata;
+            unset($backupdata);
+        }
+        echo json_encode($result);

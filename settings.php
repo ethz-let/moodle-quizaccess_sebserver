@@ -28,9 +28,7 @@ defined('MOODLE_INTERNAL') || die;
 global $ADMIN;
 
 if ($hassiteconfig) {
-
-    if($record = $DB->get_record('config_plugins', ['plugin' => 'quizaccess_sebserver', 'name' => 'connection'])) {
-
+    if ($record = $DB->get_record('config_plugins', ['plugin' => 'quizaccess_sebserver', 'name' => 'connection'])) {
         $table = new html_table();
         $conndetails = json_decode($record->value);
         $table->data[] = ['<strong>' . get_string('connectionid', 'quizaccess_sebserver') . '</strong>',
@@ -50,8 +48,8 @@ if ($hassiteconfig) {
             if (!isset($templatedetails->{'template_description'})) {
                 $templatedetails->{'template_description'} = '';
             }
-            $template->data[] = [$templatedetails->{'template_id'} , $templatedetails->{'template_name'},
-                                 $templatedetails->{'template_description'}
+            $template->data[] = [$templatedetails->{'template_id'}, $templatedetails->{'template_name'},
+                                 $templatedetails->{'template_description'},
                                 ];
         }
         $examtemplatestable = html_writer::table($template);
@@ -64,18 +62,23 @@ if ($hassiteconfig) {
         $connectiondetails = get_string('connectionnotsetupyet', 'quizaccess_sebserver');
     }
 
-    $settings->add(new admin_setting_heading(
-        'quizaccess_sebserver/sebserverconnectiondetails',
-        get_string('setting:sebserverconnectiondetails', 'quizaccess_sebserver'),
-        $connectiondetails)
+    $settings->add(
+        new admin_setting_heading(
+            'quizaccess_sebserver/sebserverconnectiondetails',
+            get_string('setting:sebserverconnectiondetails', 'quizaccess_sebserver'),
+            $connectiondetails
+        )
     );
-    
-    $settings->add(new admin_setting_heading(
-        'quizaccess_sebserver/sebclientsrestrictiondetails',
-        get_string('setting:sebclientsrestrictiondetails', 'quizaccess_sebserver'), '&nbsp;')
+    $settings->add(
+        new admin_setting_heading(
+            'quizaccess_sebserver/sebclientsrestrictiondetails',
+            get_string('setting:sebclientsrestrictiondetails', 'quizaccess_sebserver'),
+            '&nbsp;'
+        )
     );
     $text = get_string('setting:sebclientrestrictionvalues', 'quizaccess_sebserver');
-    $help = '<div class="p-3 mb-2 bg-light text-dark">' . get_string('setting:versioninghelpinfo', 'quizaccess_sebserver') . '</div>';
+    $help = '<div class="p-3 mb-2 bg-light text-dark">' . get_string('setting:versioninghelpinfo', 'quizaccess_sebserver') .
+            '</div>';
     $default = '';
     $setting = new admin_setting_configtextarea("quizaccess_sebserver/sebversions", $text, $help, $default, PARAM_RAW, '50', '10');
     $settings->add($setting);

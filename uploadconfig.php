@@ -166,10 +166,14 @@ foreach ($files as $file) {
     $filerecord->filesize = $file->size;
 
     // Check if the file already exist.
-    $existingfile = $fs->file_exists($filerecord->contextid, $filerecord->component,
-                                     $filerecord->filearea,$filerecord->itemid,
-                                     $filerecord->filepath, $filerecord->filename
-                                    );
+    $existingfile = $fs->file_exists(
+        $filerecord->contextid,
+        $filerecord->component,
+        $filerecord->filearea,
+        $filerecord->itemid,
+        $filerecord->filepath,
+        $filerecord->filename
+    );
     if ($existingfile) {
           $fs->delete_area_files($filerecord->contextid, $filerecord->component, $filerecord->filearea);
     }
@@ -191,7 +195,6 @@ foreach ($files as $file) {
             ],
      ]);
      $logevent->trigger();
-
 }
 $DB->set_field('quizaccess_sebserver', 'sebservercalled', 1, ['sebserverquizid' => $quizid]);
 echo json_encode($results);

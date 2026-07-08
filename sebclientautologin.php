@@ -34,12 +34,11 @@ $context = context_system::instance();
 $PAGE->set_context($context);
 
 $params = ['cnfg' => $urltogo];
-$middleman = new moodle_url('/mod/quiz/accessrule/sebserver/middleman.php?',
-                            $params);
+$middleman = new moodle_url('/mod/quiz/accessrule/sebserver/middleman.php?', $params);
 $dielink = ' ' . get_string('exitshortcut', 'quizaccess_sebserver');
 // Check if the user is already logged-in.
 if (isloggedin() && !isguestuser()) {
-    delete_user_key( 'quizaccess_sebserver', $userid, $id);
+    delete_user_key('quizaccess_sebserver', $userid, $id);
     if ($USER->id == $userid) {
         redirect($middleman);
         exit;
@@ -58,16 +57,14 @@ if (!is_https()) {
      die(get_string('httpsrequired', 'tool_mobile') . $dielink);
 }
 
-if (has_capability('moodle/site:config', context_system::instance(), $userid) ||
-    is_siteadmin($userid)) {
+if (has_capability('moodle/site:config', context_system::instance(), $userid) || is_siteadmin($userid)) {
      die(get_string('autologinnotallowedtoadmins', 'tool_mobile') . $dielink);
 }
-
 // Validate and delete the key.
 if (!$keyrec = $DB->get_record('user_private_key', ['script' => 'quizaccess_sebserver', 'value' => $key, 'instance' => $id])) {
     // Check if the user is already logged-in.
     if (isloggedin() && !isguestuser()) {
-        delete_user_key( 'quizaccess_sebserver', $userid, $id);
+        delete_user_key('quizaccess_sebserver', $userid, $id);
         if ($USER->id == $userid) {
             redirect($middleman);
             exit;

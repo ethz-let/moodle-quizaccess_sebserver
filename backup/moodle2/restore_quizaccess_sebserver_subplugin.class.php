@@ -42,7 +42,6 @@ require_once($CFG->dirroot . '/mod/quiz/backup/moodle2/restore_mod_quiz_access_s
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class restore_quizaccess_sebserver_subplugin extends restore_mod_quiz_access_subplugin{
-
     /**
      * Use this method to describe the XML structure required to store your
      * sub-plugin's settings for a particular quiz, and how that data is stored
@@ -70,10 +69,10 @@ class restore_quizaccess_sebserver_subplugin extends restore_mod_quiz_access_sub
         $data = (object)$data;
         $quizid = $this->get_new_parentid('quiz');
 
-        if($data && $data->sebserverenabled == 1) {
-           $quizsettings = seb_quiz_settings::get_by_quiz_id($quizid);
-           if (!empty($quizsettings)) {
-               $quizsettings->delete();
+        if ($data && $data->sebserverenabled == 1) {
+            $quizsettings = seb_quiz_settings::get_by_quiz_id($quizid);
+            if (!empty($quizsettings)) {
+                $quizsettings->delete();
             }
         }
     }

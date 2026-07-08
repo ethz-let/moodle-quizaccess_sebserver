@@ -53,10 +53,15 @@ $fs = new file_storage();
 $files = $fs->get_area_files($context->id, 'quizaccess_sebserver', 'filemanager_sebserverconfigfile', 0, 'id DESC', false);
 $file  = reset($files);
 if ($file) {
-    $fileurl = \moodle_url::make_pluginfile_url($file->get_contextid(), $file->get_component(),
-                                                $file->get_filearea(), $file->get_itemid(),
-                                                $file->get_filepath(), $file->get_filename(), false
-                                               );
+    $fileurl = \moodle_url::make_pluginfile_url(
+        $file->get_contextid(),
+        $file->get_component(),
+        $file->get_filearea(),
+        $file->get_itemid(),
+        $file->get_filepath(),
+        $file->get_filename(),
+        false
+    );
 } else {
     $error = get_string('sebseverconfignotfound', 'quizaccess_sebserver');
     throw new moodle_exception($error);
@@ -71,8 +76,9 @@ $validuntil = time() + 60; // Expires in 60 sec.
 
 $key = create_user_key('quizaccess_sebserver', $USER->id, $id, $iprestriction, $validuntil);
 $params = ['id' => $id, 'userid' => $USER->id, 'key' => $key, 'urltogo' => $fileurl];
-$autologinurl = new moodle_url('/mod/quiz/accessrule/sebserver/sebclientautologin.php?',
-                               $params
+$autologinurl = new moodle_url(
+    '/mod/quiz/accessrule/sebserver/sebclientautologin.php?',
+    $params
 );
 is_https() ? $autologinurl->set_scheme('sebs') : $autologinurl->set_scheme('seb');
 @header($_SERVER['SERVER_PROTOCOL'] . ' 303 See Other');

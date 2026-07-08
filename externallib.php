@@ -29,7 +29,6 @@ require_once($CFG->dirroot . '/mod/quiz/accessrule/sebserver/rule.php');
  * Service functions.
  */
 class quizaccess_sebserver_external extends external_api{
-
     /**
      * Returns description of method parameters
      *
@@ -56,9 +55,10 @@ class quizaccess_sebserver_external extends external_api{
     public static function backup_course($id, $backuptype) {
         global $USER, $DB, $CFG;
         // Parameter validation.
-        $params = self::validate_parameters(self::backup_course_parameters(),
-                                            ['id' => $id, 'backuptype' => $backuptype]
-                                           );
+        $params = self::validate_parameters(
+            self::backup_course_parameters(),
+            ['id' => $id, 'backuptype' => $backuptype]
+        );
 
         $id = $params['id'];
         $backuptype = $params['backuptype'];
@@ -104,17 +104,26 @@ class quizaccess_sebserver_external extends external_api{
         $dir = '';
         $storage = 0;
         if ($backuptype == 'quiz') {
-            $bc = new backup_controller(backup::TYPE_1ACTIVITY, $quizcmid, backup::FORMAT_MOODLE, backup::INTERACTIVE_NO,
-                                        backup::MODE_GENERAL, $userid
-                                       );
+            $bc = new backup_controller(
+                backup::TYPE_1ACTIVITY,
+                $quizcmid,
+                backup::FORMAT_MOODLE,
+                backup::INTERACTIVE_NO,
+                backup::MODE_GENERAL,
+                $userid
+            );
         } else {
-            $bc = new backup_controller(backup::TYPE_1COURSE, $course->id, backup::FORMAT_MOODLE, backup::INTERACTIVE_NO,
-                                        backup::MODE_AUTOMATED, $userid
-                                       );
+            $bc = new backup_controller(
+                backup::TYPE_1COURSE,
+                $course->id,
+                backup::FORMAT_MOODLE,
+                backup::INTERACTIVE_NO,
+                backup::MODE_AUTOMATED,
+                $userid
+            );
         }
 
         try {
-
             // Set the default filename.
             $format = $bc->get_format();
             $type = $bc->get_type();
@@ -122,9 +131,15 @@ class quizaccess_sebserver_external extends external_api{
             $users = $bc->get_plan()->get_setting('users')->get_value();
             $anonymised = $bc->get_plan()->get_setting('anonymize')->get_value();
             $incfiles = (bool) $config->backup_auto_files;
-            $backupvaluename = backup_plan_dbops::get_default_backup_filename($format, $type,
-                                                                              $id, $users, $anonymised, false, $incfiles
-                                                                             );
+            $backupvaluename = backup_plan_dbops::get_default_backup_filename(
+                $format,
+                $type,
+                $id,
+                $users,
+                $anonymised,
+                false,
+                $incfiles
+            );
             $bc->get_plan()->get_setting('filename')->set_value($backupvaluename);
             $bc->set_execution(backup::EXECUTION_INMEDIATE);
             $bc->set_status(backup::STATUS_AWAITING);
@@ -137,8 +152,7 @@ class quizaccess_sebserver_external extends external_api{
             // If we need to copy the backup file to an external dir and it is not writable, change status to error.
             // This is a feature to prevent moodledata to be filled up and break a site when the admin misconfigured
             // the automated backups storage type and destination directory.
-            if ($storage !== 0 && (empty($dir) || !file_exists($dir) ||
-                !is_dir($dir) || !is_writable($dir))) {
+            if ($storage !== 0 && (empty($dir) || !file_exists($dir) || !is_dir($dir) || !is_writable($dir))) {
                 $bc->log('Specified backup directory is not writable - ', backup::LOG_ERROR, $dir);
                 $dir = null;
                 $outcome = backup_cron_automated_helper::BACKUP_STATUS_ERROR;
@@ -151,13 +165,17 @@ class quizaccess_sebserver_external extends external_api{
             }
 
             // Copy file only if there was no error.
-            if ($file && !empty($dir) && $storage !== 0 &&
-                $outcome != backup_cron_automated_helper::BACKUP_STATUS_ERROR) {
-                $filename = backup_plan_dbops::get_default_backup_filename($format,
-                            $type, $course->id, $users, $anonymised, !$config->backup_shortname);
+            if ($file && !empty($dir) && $storage !== 0 && $outcome != backup_cron_automated_helper::BACKUP_STATUS_ERROR) {
+                $filename = backup_plan_dbops::get_default_backup_filename(
+                    $format,
+                    $type,
+                    $course->id,
+                    $users,
+                    $anonymised,
+                    !$config->backup_shortname
+                );
                 if (!$file->copy_content_to($dir . '/' . $filename)) {
-                    $bc->log('Attempt to copy backup file to the specified directory failed - ',
-                        backup::LOG_ERROR, $dir);
+                    $bc->log('Attempt to copy backup file to the specified directory failed - ', backup::LOG_ERROR, $dir);
                     $outcome = backup_cron_automated_helper::BACKUP_STATUS_ERROR;
                     $warnings[] = [
                         'item' => 'backup',
@@ -169,8 +187,11 @@ class quizaccess_sebserver_external extends external_api{
                 if ($outcome != backup_cron_automated_helper::BACKUP_STATUS_ERROR && $storage === 1) {
                     if (!$file->delete()) {
                         $outcome = backup_cron_automated_helper::BACKUP_STATUS_WARNING;
-                        $bc->log('Attempt to delete the backup file from course automated backup area failed - ',
-                            backup::LOG_WARNING, $file->get_filename());
+                        $bc->log(
+                            'Attempt to delete the backup file from course automated backup area failed - ',
+                            backup::LOG_WARNING,
+                            $file->get_filename()
+                        );
                         $warnings[] = [
                             'item' => 'backup',
                             'itemid' => $course->id,
@@ -181,7 +202,6 @@ class quizaccess_sebserver_external extends external_api{
                     }
                 }
             }
-
         } catch (moodle_exception $e) {
             $bc->log('backup_auto_failed_on_course', backup::LOG_ERROR, $course->shortname); // Log error header.
             $bc->log('Exception: ' . $e->errorcode, backup::LOG_ERROR, $e->a, 1); // Log original exception problem.
@@ -197,7 +217,6 @@ class quizaccess_sebserver_external extends external_api{
 
         // Delete the backup file immediately if something went wrong.
         if ($outcome === backup_cron_automated_helper::BACKUP_STATUS_ERROR) {
-
             // Delete the file from file area if exists.
             if (!empty($file)) {
                 $file->delete();
@@ -212,8 +231,10 @@ class quizaccess_sebserver_external extends external_api{
         $bc->destroy();
         unset($bc);
 
-        if ($outcome == backup_cron_automated_helper::BACKUP_STATUS_ERROR ||
-            $outcome == backup_cron_automated_helper::BACKUP_STATUS_UNFINISHED) {
+        if (
+            $outcome == backup_cron_automated_helper::BACKUP_STATUS_ERROR ||
+            $outcome == backup_cron_automated_helper::BACKUP_STATUS_UNFINISHED
+        ) {
             // Reset unfinished to error.
             throw new moodle_exception('Automated backup for course: ' . $course->fullname . ' failed.');
         }
@@ -227,7 +248,6 @@ class quizaccess_sebserver_external extends external_api{
         $result['data'] = $bkupdata;
         $result['warnings'] = $warnings;
         return $result;
-
     }
 
     /**
@@ -245,12 +265,12 @@ class quizaccess_sebserver_external extends external_api{
                         [
                             'status' => new external_value(PARAM_INT, 'The backup status code'),
                         ]
-                    ), 'Backup Course'
+                    ),
+                    'Backup Course'
                 ),
                 'warnings' => new external_warnings(),
             ]
         );
-
     }
 
     /**
@@ -262,25 +282,48 @@ class quizaccess_sebserver_external extends external_api{
     public static function get_exams_parameters() {
         return new external_function_parameters(
             [
-                'courseid' => new external_multiple_structure(new external_value(PARAM_INT, 'Course id'),
-                    'List of course id. If empty return all courses except front page course.', VALUE_OPTIONAL),
-                'conditions' => new external_value(PARAM_TEXT,
+                'courseid' => new external_multiple_structure(
+                    new external_value(
+                        PARAM_INT,
+                        'Course id'
+                    ),
+                    'List of course id. If empty return all courses except front page course.',
+                    VALUE_OPTIONAL
+                ),
+                'conditions' => new external_value(
+                    PARAM_TEXT,
                     'SQL condition (without WHERE). uses fields "startdate", "enddate", "timecreated" with any operator ' .
                     '(AND, OR, BETWEEN, >, <, ..etc). Should be styled as standard SQL.. Example: "((start date between 20000 ' .
                     'and 1000000) and (enddate < 400000)) or (timecreated <= 20000) ". use empty string "" to remove the ' .
                     'conditions',
-                    VALUE_DEFAULT, ''),
-                'filtercourses' => new external_value(PARAM_INT,
-                    'Apply startdate and enddate "conditions" to courses too? use 0 for no conditions.', VALUE_DEFAULT, 0),
-                'showemptycourses' => new external_value(PARAM_INT,
+                    VALUE_DEFAULT,
+                    ''
+                ),
+                'filtercourses' => new external_value(
+                    PARAM_INT,
+                    'Apply startdate and enddate "conditions" to courses too? use 0 for no conditions.',
+                    VALUE_DEFAULT,
+                    0
+                ),
+                'showemptycourses' => new external_value(
+                    PARAM_INT,
                     'List courses that have no quizzes? use 1 to list all courses regardless if they have quizzes or not.',
-                    VALUE_DEFAULT, 1),
-                'startneedle' => new external_value(PARAM_INT, 'Starting needle for the records. use 0 for first record.',
-                    VALUE_DEFAULT, 0),
-                'perpage' => new external_value(PARAM_INT, 'How many records to retrieve. Leave empty for unlimited', VALUE_DEFAULT,
-                    99999),
+                    VALUE_DEFAULT,
+                    1
+                ),
+                'startneedle' => new external_value(
+                    PARAM_INT,
+                    'Starting needle for the records. use 0 for first record.',
+                    VALUE_DEFAULT,
+                    0
+                ),
+                'perpage' => new external_value(
+                    PARAM_INT,
+                    'How many records to retrieve. Leave empty for unlimited',
+                    VALUE_DEFAULT,
+                    99999
+                ),
             ]
-
         );
     }
 
@@ -295,12 +338,26 @@ class quizaccess_sebserver_external extends external_api{
      * @param int $perpage perpage.
      * @return array
      */
-    public static function get_exams($courseid = [], $conditions = '', $filtercourses = 0, $showemptycourses = 1,
-        $startneedle = 0, $perpage = 99999) {
+    public static function get_exams(
+        $courseid = [],
+        $conditions = '',
+        $filtercourses = 0,
+        $showemptycourses = 1,
+        $startneedle = 0,
+        $perpage = 99999
+    ) {
         global $DB;
-        $params = self::validate_parameters(self::get_exams_parameters(),
-            ['courseid' => $courseid, 'conditions' => $conditions, 'filtercourses' => $filtercourses,
-             'showemptycourses' => $showemptycourses, 'startneedle' => $startneedle, 'perpage' => $perpage]);
+        $params = self::validate_parameters(
+            self::get_exams_parameters(),
+            [
+                'courseid' => $courseid,
+                'conditions' => $conditions,
+                'filtercourses' => $filtercourses,
+                'showemptycourses' => $showemptycourses,
+                'startneedle' => $startneedle,
+                'perpage' => $perpage,
+            ]
+        );
 
         if (!$conditions || trim($conditions) == '') {
             $conditions = '';
@@ -364,13 +421,12 @@ class quizaccess_sebserver_external extends external_api{
         $coursesinfo['stats'] = $statsarray;
 
         foreach ($courses as $course) {
-
             // Now security checks.
             $context = context_course::instance($course->id, IGNORE_MISSING);
             try {
                 self::validate_context($context);
             } catch (Exception $e) {
-                $exceptionparam = new stdClass;
+                $exceptionparam = new stdClass();
                 $exceptionparam->message = $e->getMessage();
                 $exceptionparam->courseid = $course->id;
                 throw new moodle_exception('errorcoursecontextnotvalid', 'webservice', '', $exceptionparam);
@@ -399,8 +455,11 @@ class quizaccess_sebserver_external extends external_api{
             $returnedquizzes = [];
             $quizzes = [];
 
-            list($coursessql, $qparams) = $DB->get_in_or_equal(array_keys([$course->id => $course]),
-                                          SQL_PARAMS_NAMED, 'c0');
+            [$coursessql, $qparams] = $DB->get_in_or_equal(
+                array_keys([$course->id => $course]),
+                QL_PARAMS_NAMED,
+                'c0'
+            );
             $includeinvisible = true;
 
             $foundquizes = 1;
@@ -416,16 +475,20 @@ class quizaccess_sebserver_external extends external_api{
             if (str_contains($quizsqlconditions, 'shortname')) {
                 $quizsqlconditions = '';
             }
-            if (!$rawmods = $DB->get_records_sql("SELECT cm.id AS coursemodule, m.*, cw.section, cm.visible AS visible,
-                                                       cm.groupmode, cm.groupingid
-                                                  FROM {course_modules} cm, {course_sections} cw, {modules} md,
-                                                       {quiz} m
-                                                 WHERE cm.course $coursessql AND
-                                                       cm.instance = m.id AND
-                                                       cm.section = cw.id AND
-                                                       md.name = 'quiz' AND
-                                                       md.id = cm.module
-                                                       $quizsqlconditions", $qparams)) {
+            if (
+                !$rawmods = $DB->get_records_sql(
+                    "SELECT cm.id AS coursemodule, m.*, cw.section, cm.visible AS visible,
+                    cm.groupmode, cm.groupingid
+                    FROM {course_modules} cm, {course_sections} cw, {modules} md, {quiz} m
+                    WHERE cm.course $coursessql AND
+                    cm.instance = m.id AND
+                    cm.section = cw.id AND
+                    md.name = 'quiz' AND
+                    md.id = cm.module
+                    $quizsqlconditions",
+                    $qparams
+                )
+            ) {
                 $courseinfo['quizzes'] = [];
                 $foundquizes = 0;
             }
@@ -460,16 +523,13 @@ class quizaccess_sebserver_external extends external_api{
                     $courseinfo['quizzes'] = $returnedquizzes;
                 }
             }
-            if ($courseadmin || $course->visible
-                || has_capability('moodle/course:viewhiddencourses', $context)) {
+            if ($courseadmin || $course->visible || has_capability('moodle/course:viewhiddencourses', $context)) {
                 if ($foundquizes == 0 && $showemptycourses == 0) {
                     unset($courseinfo);
                 } else {
                     $coursesinfo['results'][] = $courseinfo;
                 }
-
             }
-
         }
         return $coursesinfo;
     }
@@ -485,15 +545,12 @@ class quizaccess_sebserver_external extends external_api{
         return new external_single_structure(
             [
                 'stats' => new external_single_structure(
-
                     [
                         'coursecount' => new external_value(PARAM_RAW, 'Course count'),
                         'needle' => new external_value(PARAM_INT, 'needle'),
                         'perpage' => new external_value(PARAM_INT, 'perpage'),
-
                     ]
-                )
-            ,
+                ),
                 'results' => new external_multiple_structure(
                     new external_single_structure(
                         [
@@ -501,14 +558,10 @@ class quizaccess_sebserver_external extends external_api{
                             'shortname' => new external_value(PARAM_RAW, 'course short name'),
                             'fullname' => new external_value(PARAM_RAW, 'full name'),
                             'idnumber' => new external_value(PARAM_RAW, 'id number', VALUE_OPTIONAL),
-                            'startdate' => new external_value(PARAM_INT,
-                                'timestamp when the course start'),
-                            'enddate' => new external_value(PARAM_INT,
-                                'timestamp when the course end'),
-                            'timecreated' => new external_value(PARAM_INT,
-                                'timestamp when the course have been created', VALUE_OPTIONAL),
-                            'visible' => new external_value(PARAM_INT,
-                                '1: available to student, 0:not available', VALUE_OPTIONAL),
+                            'startdate' => new external_value(PARAM_INT, 'timestamp when the course start'),
+                            'enddate' => new external_value(PARAM_INT, 'timestamp when the course end'),
+                            'timecreated' => new external_value(PARAM_INT, 'Creation timestamp', VALUE_OPTIONAL),
+                            'visible' => new external_value(PARAM_INT, '1: available to student, 0:not available', VALUE_OPTIONAL),
                             'quizzes' => new external_multiple_structure(
                                 new external_single_structure(
                                     [
@@ -517,20 +570,31 @@ class quizaccess_sebserver_external extends external_api{
                                         'coursemodule' => new external_value(PARAM_INT, 'Coursemodule id'),
                                         'name' => new external_value(PARAM_RAW, 'Quiz name'),
                                         'intro' => new external_value(PARAM_RAW, 'Quiz intro'),
-                                        'timeopen' => new external_value(PARAM_INT,
-                                            'The time when this quiz opens. (0 = no restriction.)',
-                                            VALUE_OPTIONAL),
-                                        'timeclose' => new external_value(PARAM_INT,
+                                        'timeopen' => new external_value(
+                                            PARAM_INT,
+                                            'Quiz open time. (0 = no restriction.)',
+                                            VALUE_OPTIONAL
+                                        ),
+                                        'timeclose' => new external_value(
+                                            PARAM_INT,
                                             'The time when this quiz closes. (0 = no restriction.)',
-                                            VALUE_OPTIONAL),
-                                        'timecreated' => new external_value(PARAM_INT, 'The time when this quiz was created',
-                                            VALUE_OPTIONAL),
+                                            VALUE_OPTIONAL
+                                        ),
+                                        'timecreated' => new external_value(
+                                            PARAM_INT,
+                                            'The time when this quiz was created',
+                                            VALUE_OPTIONAL
+                                        ),
                                     ]
-                                ), 'Quizes in this course.', VALUE_OPTIONAL),
-                        ] )),
+                                ),
+                                'Quizes in this course.',
+                                VALUE_OPTIONAL
+                            ),
+                        ]
+                    )
+                ),
 
             ]
-
         );
     }
 
@@ -545,13 +609,24 @@ class quizaccess_sebserver_external extends external_api{
         return new external_function_parameters(
             [
                 'quizid' => new external_value(PARAM_INT, 'Quiz ID', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
-                'browserkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Browser Keys',
-                    VALUE_OPTIONAL), 'Array of Browser Keys', VALUE_DEFAULT, []),
-                'configkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Config Keys',
-                    VALUE_OPTIONAL), 'Array of Config keys', VALUE_DEFAULT, []),
+                'browserkeys' => new external_multiple_structure(
+                    new external_value(
+                        PARAM_RAW,
+                        'Browser Keys',
+                        VALUE_OPTIONAL
+                    ),
+                    'Array of Browser Keys',
+                    VALUE_DEFAULT,
+                    []
+                ),
+                'configkeys' => new external_multiple_structure(
+                    new external_value(PARAM_RAW, 'Config Keys', VALUE_OPTIONAL),
+                    'Array of Config keys',
+                    VALUE_DEFAULT,
+                    []
+                ),
             ]
         );
-
     }
 
     /**
@@ -564,8 +639,7 @@ class quizaccess_sebserver_external extends external_api{
     public static function connection($connection) {
         global $USER, $DB;
 
-        $params = self::validate_parameters(self::connection_parameters(),
-            ['connection' => $connection]);
+        $params = self::validate_parameters(self::connection_parameters(), ['connection' => $connection]);
 
         // Capability checking.
         $context = context_system::instance();
@@ -582,19 +656,17 @@ class quizaccess_sebserver_external extends external_api{
         $decodeddata = json_decode($connectiondata);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new moodle_exception('Connection is not a valid JSON format: '.json_last_error_msg());
+            throw new moodle_exception('Connection is not a valid JSON format: ' . json_last_error_msg());
         }
 
         $warnings = [];
         $success = false;
-        if ($connrecord = $DB->get_record('config_plugins',
-                                      ['plugin' => 'quizaccess_sebserver',
-                                       'name' => 'connection'])) {
+        if ($connrecord = $DB->get_record('config_plugins', ['plugin' => 'quizaccess_sebserver', 'name' => 'connection'])) {
             $conndetails = json_decode($connrecord->value);
 
             if ($conndetails->{'id'} == $decodeddata->{'id'}) {
                 // Update same ID connection.
-                $newconnection = new stdClass;
+                $newconnection = new stdClass();
                 $newconnection->id = $connrecord->id;
                 $newconnection->plugin = 'quizaccess_sebserver';
                 $newconnection->name = 'connection';
@@ -611,7 +683,6 @@ class quizaccess_sebserver_external extends external_api{
                         'message' => s('Connection update failed. ID: ' . $conndetails->{'id'}),
                     ];
                 }
-
             } else {
                 $success = false;
                 $warnings[] = [
@@ -625,7 +696,7 @@ class quizaccess_sebserver_external extends external_api{
             }
         } else {
             // No previous Connection. Insert new Connection.
-            $newconnection = new stdClass;
+            $newconnection = new stdClass();
             $newconnection->plugin = 'quizaccess_sebserver';
             $newconnection->name = 'connection';
             $newconnection->value = $connectiondata;
@@ -675,8 +746,7 @@ class quizaccess_sebserver_external extends external_api{
     public static function connection_delete($id) {
         global $USER, $DB;
 
-        $params = self::validate_parameters(self::connection_delete_parameters(),
-                                            ['id' => $id]);
+        $params = self::validate_parameters(self::connection_delete_parameters(), ['id' => $id]);
         // Capability checking.
         $context = context_system::instance();
         if (!has_capability('quizaccess/sebserver:managesebserverconnection', $context)) {
@@ -690,13 +760,9 @@ class quizaccess_sebserver_external extends external_api{
             throw new moodle_exception('Connection ID missing.');
         }
 
-        if ($connrecord = $DB->get_record('config_plugins',
-                                      ['plugin' => 'quizaccess_sebserver',
-                                       'name' => 'connection'])) {
+        if ($connrecord = $DB->get_record('config_plugins', ['plugin' => 'quizaccess_sebserver', 'name' => 'connection'])) {
             $conndetails = json_decode($connrecord->value);
-
             if ($conndetails->{'id'} == $params['id']) {
-
                 if ($deletion = $DB->delete_records('config_plugins', ['id' => $connrecord->id])) {
                     $success = true;
                 } else {
@@ -708,7 +774,6 @@ class quizaccess_sebserver_external extends external_api{
                         'message' => s('Connection deletion failed.'),
                     ];
                 }
-
             } else {
                 $success = false;
                 $warnings[] = [
@@ -790,8 +855,10 @@ class quizaccess_sebserver_external extends external_api{
     public static function set_restriction($quizid, $browserkeys = [], $configkeys = []) {
         global $USER, $DB;
 
-        $params = self::validate_parameters(self::set_restriction_parameters(),
-            ['quizid' => $quizid, 'browserkeys' => $browserkeys, 'configkeys' => $configkeys]);
+        $params = self::validate_parameters(
+            self::set_restriction_parameters(),
+            ['quizid' => $quizid, 'browserkeys' => $browserkeys, 'configkeys' => $configkeys]
+        );
 
         if (empty($params['quizid'])) {
             throw new moodle_exception('quizidmissing');
@@ -813,7 +880,6 @@ class quizaccess_sebserver_external extends external_api{
                 'warningcode' => 'quiznotfound',
                 'message' => $e->getMessage(),
             ];
-
         }
         try {
             global $CFG;
@@ -838,12 +904,16 @@ class quizaccess_sebserver_external extends external_api{
                 }
                 // EMDL-1043 do not allow setting restirctions when there is an attempt.
                 if (quiz_has_attempts($quizid)) {
-                    throw new moodle_exception('attemptexist', 'sebserver', '', null,
-                        'Quiz already has at least one attempt. You can not change restriction.');
+                    throw new moodle_exception(
+                        'attemptexist',
+                        'sebserver',
+                        '',
+                        null,
+                        'Quiz already has at least one attempt. You can not change restriction.'
+                    );
                 }
                 if ($ckempty == 1 && $bkempty == 1) { // Delete restriction.
-                    $DB->set_field('quizaccess_sebserver', 'sebserverrestricted', 0,
-                    ['sebserverquizid' => $quizid]);
+                    $DB->set_field('quizaccess_sebserver', 'sebserverrestricted', 0, ['sebserverquizid' => $quizid]);
                     // Disable seb deeper integration regardless. See EMDL-1602.
                     $DB->delete_records('quizaccess_seb_quizsettings', ['quizid' => $quizid]);
                     $saved[] = [
@@ -861,7 +931,6 @@ class quizaccess_sebserver_external extends external_api{
                     $result['data'] = $saved;
                     $result['warnings'] = $warnings;
                     return $result;
-
                 } else {
                     if ($ckempty == 0 && $bkempty == 1) {
                         throw new moodle_exception('browserkeysempty');
@@ -878,7 +947,6 @@ class quizaccess_sebserver_external extends external_api{
                         if (!$updaterec = $DB->update_record('quizaccess_sebserver', $record)) {
                             throw new moodle_exception('Failed to update SebServer record: ' . $sebserverrecord->id);
                         }
-
                     } else {
                         throw new moodle_exception('You can not set restriction on a quiz with no SebServer Info!');
                     }
@@ -886,7 +954,7 @@ class quizaccess_sebserver_external extends external_api{
                     // Get core seb settings.
                     $sebsettingsrec = $DB->get_record('quizaccess_seb_quizsettings', ['quizid' => $quizid]);
                     if ($sebsettingsrec) { // Update.
-                        $sebsettings = new stdClass;
+                        $sebsettings = new stdClass();
                         $sebsettings->id = $sebsettingsrec->id;
                         $sebsettings->quizid = $quizid;
                         $sebsettings->cmid = $cmid;
@@ -899,7 +967,7 @@ class quizaccess_sebserver_external extends external_api{
                             throw new moodle_exception('Failed to update SEB Deeper record: ' . $sebsettingsrec->id);
                         }
                     } else { // Insert.
-                        $sebsettings = new stdClass;
+                        $sebsettings = new stdClass();
                         $sebsettings->quizid = $quizid;
                         $sebsettings->cmid = $cmid;
                         $sebsettings->requiresafeexambrowser = \quizaccess_seb\settings_provider::USE_SEB_CLIENT_CONFIG;
@@ -911,9 +979,7 @@ class quizaccess_sebserver_external extends external_api{
                         if (!$insertrec = $DB->insert_record('quizaccess_seb_quizsettings', $sebsettings)) {
                             throw new moodle_exception('Failed to insert SEB Deeper for quizid: ' . $quizid);
                         }
-
                     }
-
                 }
 
                 $saved[] = [
@@ -921,7 +987,6 @@ class quizaccess_sebserver_external extends external_api{
                     'browserkeys' => $params['browserkeys'],
                     'configkeys' => [],
                 ];
-
             } else {
                 $warnings[] = [
                     'item' => 'quiz',
@@ -971,12 +1036,12 @@ class quizaccess_sebserver_external extends external_api{
                             'browserkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Browser Keys')),
                             'configkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Config Keys')),
                         ]
-                    ), 'Get Restrictions'
+                    ),
+                    'Get Restrictions'
                 ),
                 'warnings' => new external_warnings(),
             ]
         );
-
     }
 
     /**
@@ -987,12 +1052,11 @@ class quizaccess_sebserver_external extends external_api{
      */
     public static function get_restriction_parameters() {
 
-        return new external_function_parameters (
+        return new external_function_parameters(
             [
                 'quizid' => new external_value(PARAM_INT, 'Quiz ID', VALUE_REQUIRED, '', NULL_NOT_ALLOWED),
             ]
         );
-
     }
 
     /**
@@ -1038,28 +1102,27 @@ class quizaccess_sebserver_external extends external_api{
             $quizcontextid = $quizcontext->id;
             $cmid = $quizcm->id;
             if (has_capability('mod/quiz:manage', $quizcontext)) {
-
-                $sebserverrecord = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quizid],
-                    '*');
+                $sebserverrecord = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quizid], '*');
                 if (!$sebserverrecord) {
                     throw new moodle_exception('SEB Server is not enabled for quiz ID ' . $quizid);
                 } else { // Insert.
                     if ($sebserverrecord->sebserverenabled == 0) {
                         throw new moodle_exception('SEB Server is disabled for quiz ID ' . $quizid);
                     }
-
                 }
                 // Get core seb settings.
-                $sebsettingsrec =
-                    $DB->get_record('quizaccess_seb_quizsettings', ['quizid' => $quizid],
-                                    'id, allowedbrowserexamkeys');
+                $sebsettingsrec = $DB->get_record(
+                    'quizaccess_seb_quizsettings',
+                    ['quizid' => $quizid],
+                    'id,
+                    allowedbrowserexamkeys'
+                );
 
                 if (!$sebsettingsrec) {
                     throw new moodle_exception('SEB Client is not enabled for quiz ID ' . $quizid .
                         '. Check if someone updated the quiz manually.');
                 }
-                $bkeys = preg_split('~[ \t\n\r,;]+~', $sebsettingsrec->allowedbrowserexamkeys, -1,
-                                    PREG_SPLIT_NO_EMPTY);
+                $bkeys = preg_split('~[ \t\n\r,;]+~', $sebsettingsrec->allowedbrowserexamkeys, -1, PREG_SPLIT_NO_EMPTY);
                 foreach ($bkeys as $i => $key) {
                     $bkeys[$i] = strtolower($key);
                 }
@@ -1108,12 +1171,12 @@ class quizaccess_sebserver_external extends external_api{
                             'browserkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Browser Keys')),
                             'configkeys' => new external_multiple_structure(new external_value(PARAM_RAW, 'Config Keys')),
                         ]
-                    ), 'Get Restrictions'
+                    ),
+                    'Get Restrictions'
                 ),
                 'warnings' => new external_warnings(),
             ]
         );
-
     }
     /**
      * Returns description of method result value
@@ -1125,8 +1188,7 @@ class quizaccess_sebserver_external extends external_api{
     public static function set_exam_data($data) {
         global $USER, $DB;
 
-        $parameters = self::validate_parameters(self::set_exam_data_parameters(),
-                  ['data' => $data]);
+        $parameters = self::validate_parameters(self::set_exam_data_parameters(), ['data' => $data]);
         $params = $parameters['data'];
 
         if (empty($params['quizid']) || $params['quizid'] == 0) {
@@ -1167,7 +1229,6 @@ class quizaccess_sebserver_external extends external_api{
                 'warningcode' => 'quiznotfound',
                 'message' => $e->getMessage(),
             ];
-
         }
         if (!empty($nextquizid) && !empty($nextcourseid)) {
             // Get next quiz context data.
@@ -1178,8 +1239,7 @@ class quizaccess_sebserver_external extends external_api{
         if (empty($params['addordelete']) && $params['addordelete'] != 0) {
             throw new moodle_exception('No Add or Delete option is selected.');
         }
-        if ((empty($params['templateid']) && $params['templateid'] != 0) ||
-            is_null($params['templateid'])) {
+        if ((empty($params['templateid']) && $params['templateid'] != 0) || is_null($params['templateid'])) {
             $templateid = 0;
         } else {
             $templateid = $params['templateid'];
@@ -1212,7 +1272,7 @@ class quizaccess_sebserver_external extends external_api{
         } else {
             $rec = $DB->get_record('quizaccess_sebserver', ['sebserverquizid' => $quizid]);
             if (!$rec) {
-                $sebservrecord = new stdClass;
+                $sebservrecord = new stdClass();
                 $sebservrecord->sebserverquizid = $quizid;
                 $sebservrecord->sebserverenabled = 1;
                 $sebservrecord->sebservertemplateid = $templateid;
@@ -1245,7 +1305,7 @@ class quizaccess_sebserver_external extends external_api{
                     ];
                 }
             } else {
-                $sebservrecord = new stdClass;
+                $sebservrecord = new stdClass();
                 $sebservrecord->id = $rec->id;
                 $sebservrecord->sebserverquizid = $quizid;
                 $sebservrecord->sebserverenabled = 1;
@@ -1285,8 +1345,7 @@ class quizaccess_sebserver_external extends external_api{
             throw new \moodle_exception('Unknown quiz with id: ' . $quizid);
         }
         $context = context_module::instance($cm->id);
-        $sebconfigresult = \quizaccess_sebserver::request_sebserverconfig($cm->course, $quizid,
-        $cm->id, $context->id);
+        $sebconfigresult = \quizaccess_sebserver::request_sebserverconfig($cm->course, $quizid, $cm->id, $context->id);
 
         if (isset($sebconfigresult) && trim($sebconfigresult) !== '') {
             $success = false;
@@ -1306,8 +1365,7 @@ class quizaccess_sebserver_external extends external_api{
                 'item' => 'quiz',
                 'itemid' => $quizid,
                 'warningcode' => 'requestsebconfig',
-                'message' => s('Successfully uploaded Seb Server config for : ' . $quizid . ' CMID: '.
-                                $cm->id),
+                'message' => s('Successfully uploaded config for : ' . $quizid . ' CMID: ' . $cm->id),
             ];
         }
         $result = [
@@ -1316,7 +1374,6 @@ class quizaccess_sebserver_external extends external_api{
             'warnings' => $warnings,
         ];
         return $result;
-
     }
     /**
      * Returns description of method result value
@@ -1351,9 +1408,8 @@ class quizaccess_sebserver_external extends external_api{
                 'quitlink' => new external_value(PARAM_TEXT, 'Exam quit link', VALUE_OPTIONAL, ''),
                 'nextquizid' => new external_value(PARAM_INT, 'Next quiz ID', VALUE_OPTIONAL),
                 'nextcourseid' => new external_value(PARAM_INT, 'Next course ID', VALUE_OPTIONAL),
-            ] ),
+            ]),
         ]);
-
     }
 
     /**
@@ -1367,36 +1423,30 @@ class quizaccess_sebserver_external extends external_api{
     public static function validate_sebversion($version, $cmid) {
         global $SESSION;
 
-        $params = self::validate_parameters(self::validate_sebversion_parameters(),
-                                            ['version' => $version, 'cmid' => $cmid]);
+        $params = self::validate_parameters(self::validate_sebversion_parameters(), ['version' => $version, 'cmid' => $cmid]);
         // Capability checking.
         $context = context_system::instance();
 
         if (empty($params['version'])) {
             throw new moodle_exception('SEB Client version missing.');
         }
-         if (!($params['cmid']) || $params['cmid'] == 0) {
+        if (!($params['cmid']) || $params['cmid'] == 0) {
             throw new moodle_exception('cmid missing.');
         }
         $versionrestrictions = get_config('quizaccess_sebserver', 'sebversions');
         $version = strtolower(trim($params['version']));
-       // $version = "SEB_Windows_2.10.2.906";
-       // $version = strtolower(trim($version));
         // Convert windows to win.
         $tornversionstr = explode('_', $version);
         $clientos = strtolower($tornversionstr[1]);
         $clientos = str_replace('windows', 'win', $clientos);
-
         $clientversion = $tornversionstr[2];
         $foundversion = $clientos . '[' . $clientversion . ']';
-        
         $result['versionvalidated'] = false;
         $requiredversions = [];
 
         if (str_contains(strtolower(trim($versionrestrictions)), $clientos)) {
             $availableversion = explode("\r\n", $versionrestrictions);
             foreach ($availableversion as $ver) {
-                                                  
                 // Check if version contains .min.
                 $ver = trim(strtolower($ver));
                 $verpieces = explode('.', $ver);
@@ -1410,21 +1460,21 @@ class quizaccess_sebserver_external extends external_api{
                     if (!str_contains($version, 'Alliance Edition')) {
                         continue;
                     } else {
-                        $restrectedversion = str_replace('.AE', '', $ver); 
+                        $restrectedversion = str_replace('.AE', '', $ver);
                     }
                 }
                 if (str_contains($ver, '.min')) {
                     $operator = '>=';
-                    $restrectedversion = str_replace('.min', '', $ver); 
-                } elseif (str_contains($ver, '.max')) {
+                    $restrectedversion = str_replace('.min', '', $ver);
+                } else if (str_contains($ver, '.max')) {
                     $operator = '<=';
-                    $restrectedversion = str_replace('.max', '', $ver); 
-                } elseif (str_contains($ver, '.ne')) {
+                    $restrectedversion = str_replace('.max', '', $ver);
+                } else if (str_contains($ver, '.ne')) {
                     $operator = '<>';
                     $restrectedversion = str_replace('.min', '', $ver);
                 } else {
                     $operator = '=';
-                    $restrectedversion = str_replace('.eq', '', $ver); 
+                    $restrectedversion = str_replace('.eq', '', $ver);
                 }
 
                 $splitrestrectedversion = explode('.', $restrectedversion);
@@ -1432,8 +1482,7 @@ class quizaccess_sebserver_external extends external_api{
                                   '.' . $splitrestrectedversion[3];
 
                 // Another exception for windows build versions.
-                if (array_key_exists(4, $splitrestrectedversion) &&
-                    is_numeric($splitrestrectedversion[4])) {
+                if (array_key_exists(4, $splitrestrectedversion) && is_numeric($splitrestrectedversion[4])) {
                     // If restricted version contains buildID, then include it.
                     $versioncompare .= '.' . $splitrestrectedversion[4];
                     if ($clientos != 'win') {
@@ -1445,15 +1494,14 @@ class quizaccess_sebserver_external extends external_api{
                         $splitclientversion = explode('.', $clientversion);
                         $clientversion = $splitclientversion[0] . '.' . $splitclientversion[1] . '.' . $splitclientversion[2];
                     }
-                }        
-
+                }
                 if (version_compare($clientversion, $versioncompare, $operator)) {
                     $SESSION->quizaccess_sebserver_sebversion[$cmid] = true;
-                    $requiredversions[] =  $clientos . ': ' . $operator . $versioncompare;
+                    $requiredversions[] = $clientos . ': ' . $operator . $versioncompare;
                     $result['versionvalidated'] = true;
                     break;
                 } else {
-                    $requiredversions[] =  $clientos . ': ' . $operator . $versioncompare;
+                    $requiredversions[] = $clientos . ': ' . $operator . $versioncompare;
                 }
             }
         } else {
@@ -1471,16 +1519,14 @@ class quizaccess_sebserver_external extends external_api{
                 $SESSION->quizaccess_sebserver_sebversion[$cmid] = true;
                 $result['versionvalidated'] = true;
             }
-
         }
 
         $result['restrectedversions'] = $requiredversions;
-        $result['foundversion'] = $clientos . '[' . $clientversion . ']';//$foundversion;
+        $result['foundversion'] = $clientos . '[' . $clientversion . ']';
 
-        if($result['versionvalidated'] !== true) {
+        if ($result['versionvalidated'] !== true) {
              unset($SESSION->quizaccess_sebserver_sebversion[$cmid]);
-        }   
-
+        }
         return $result;
     }
 
@@ -1497,7 +1543,8 @@ class quizaccess_sebserver_external extends external_api{
                 'versionvalidated' => new external_value(PARAM_BOOL, 'Whether valid version'),
                 'restrectedversions' => new external_multiple_structure(new external_value(PARAM_RAW, 'List of valid versions')),
                 'foundversion' => new external_value(PARAM_RAW, 'Current seb client version'),
-            ]);
+            ]
+        );
     }
 
     /**
