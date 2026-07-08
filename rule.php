@@ -307,7 +307,7 @@ class quizaccess_sebserver extends access_rule_base {
                     'checkbox',
                     'resetseb',
                     get_string('adminsonly', 'quizaccess_sebserver'),
-                    et_string('resetseb', 'quizaccess_sebserver')
+                    get_string('resetseb', 'quizaccess_sebserver')
                 );
                 $mform->addHelpButton('resetseb', 'resetseb', 'quizaccess_sebserver');
             }
