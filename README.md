@@ -1,5 +1,5 @@
 # moodle-quizaccess_sebserver
-[![Moodle Plugin CI](https://github.com/ethz-let/moodle-quizaccess_sebserver/actions/workflows/moodle-plugin-ci.yml/badge.svg)](https://github.com/ethz-let/moodle-quizaccess_sebserver/actions/workflows/moodle-plugin-ci.yml)
+[![Moodle Plugin CI](https://github.com/ethz-let/moodle-quizaccess_sebserver/actions/workflows/moodle-plugin-ci.yml/badge.svg?branch=MOODLE_502_SEBVERSION_RESTRICTION)](https://github.com/ethz-let/moodle-quizaccess_sebserver/actions/workflows/moodle-plugin-ci.yml?branch=MOODLE_502_SEBVERSION_RESTRICTION)
 
 SEB Server plugin for moodle. This plugin works only with SEB Server version 2.0.
 
