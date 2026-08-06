@@ -457,7 +457,7 @@ class quizaccess_sebserver_external extends external_api{
 
             [$coursessql, $qparams] = $DB->get_in_or_equal(
                 array_keys([$course->id => $course]),
-                QL_PARAMS_NAMED,
+                SQL_PARAMS_NAMED,
                 'c0'
             );
             $includeinvisible = true;
